@@ -1,0 +1,14 @@
+{
+  "boss":      true,
+  "node":      true,
+  "eqeqeq":    true,
+  "eqnull": true,
+  "strict":    true,
+  "newcap":    false,
+  "undef":     true,
+  "unused":    true,
+  "onecase":   true,
+  "lastsemic": true,
+  "curly": true,
+  "browser": true
+}

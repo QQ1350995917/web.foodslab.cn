@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="widget_manger.css">
+    <link rel="stylesheet" type="text/css" href="widget_recommend.css">
+</head>
+<body id="body">
+<!--<div id="managerContainer" class="managerContainer"></div>-->
+<div id="recommendContainer" class="recommendContainer"></div>
+</body>
+<script type="text/javascript" src="../temp/DataProvider.js"></script>
+<script type="text/javascript" src="widget_manger.js"></script>
+<script type="text/javascript" src="widget_recommend.js"></script>
+<script>
+
+    //    window.onload = initManagerList("managerContainer",getManagers());
+        window.onload = initRecommendView("recommendContainer",getRecommend());
+</script>
+</html>

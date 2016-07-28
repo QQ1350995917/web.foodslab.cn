@@ -1,0 +1,52 @@
+html{
+    width: 100%;
+    position:absolute;
+    z-index:0;
+    background-color: black;
+    font-family: STHeiti;
+    font-size: 1.2rem;
+    font-style: normal;
+    color: #FFFFFF;
+}
+.hidden{
+    color: transparent;
+}
+
+div.loginPanel{
+    height: 8rem;
+    width: 18rem;
+    padding: 0.3rem;
+    margin-top: 30%;
+    margin-left: 50%;
+    border: 1px solid #FFFFFF;
+}
+
+div.loginPanelItem{
+    display: inline-block;
+    margin-top: 1rem;
+}
+
+button,input{
+    height: 1rem;
+    width: 13rem;
+    background-color: transparent;
+    border-color: #FFFFFF;
+    border: 2px solid;
+    font-size: 1rem;
+    max-lines: 1;
+    color: #FFFFFF;
+}
+
+.loginButton {
+    height: 1.5rem;
+    width: 13.3rem;
+    margin-left: 4.0rem;
+}
+
+.loginButton:hover{
+    cursor: pointer;
+    border-color: dodgerblue;
+    color: dodgerblue;
+}
+
+
