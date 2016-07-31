@@ -15,3 +15,7 @@ function httpGetAsync(url,onDataCallback,onErrorCallback,onTimeoutCallback) {
     xmlHttp.open("GET", url, true);
     xmlHttp.send(null);
 }
+
+function applicationOnload() {
+    requestMenus("");
+}
