@@ -38,6 +38,7 @@ div.verticalSelected{
     background-color: red;
     border-left: 1px solid;
     border-left-color: #CCCCCC;
+    border-bottom: 1px solid #66666E;
     background: linear-gradient(to bottom, #999999 0%,#ffffff 100%);
     pointer-events: none;
 }
