@@ -35,11 +35,12 @@ function addExclusiveId(exclusiveId) {
         }
     }
 }
-
 /**
  * 初始化横向的TabHost
  * @param id 容器ID
- * @param tabItems 数据源集合
+ * @param tabItems 数据集合
+ * @param width 设定宽度
+ * @param isExclusive 是否和其他的容器有互斥性
  */
 function initHorizontalTabHostView(id, tabItems, width,isExclusive) {
     var tabHost = document.getElementById(id);
@@ -148,7 +149,6 @@ function onTabItemClick() {
     if (this.childNodes.length > 1) {
         this.childNodes[1].className = this.childNodes[1].selectedClassName;
     }
-    new Toast('body', null, null, 200, 30).show(this.childNodes[0].data);
 
     if (exclusiveIds.indexOf(this.parentNode.id) >= 0){
         for (var index = 0; index < exclusiveIds.length; index++) {
@@ -158,5 +158,5 @@ function onTabItemClick() {
         }
     }
 
-
+    new Toast('body', null, null, 200, 30).show(this.childNodes[0].data);
 }

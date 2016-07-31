@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>食坊管理系统</title>
+    <link rel="stylesheet" type="text/css" href="../asserts/frame.css">
+    <link rel="stylesheet" type="text/css" href="../asserts/tab_host.css">
+</head>
+<body id="body">
+<div id="header" class="headerContainer">
+    <div id="header_icon" class="header_icon" onclick="frame_OnIconClick()">foodslab.cn</div>
+    <div id="header_menu" class="header_menu"></div>
+    <div id="header_user" class="header_user">
+        <label style="float:left;"> 用户名用户名 </label>
+        <label href="#" style="cursor: pointer;" onclick="new Toast('body',null,null,200,30).show('退出')">退出</label>
+    </div>
+</div>
+<div id="leftMenu" class="leftMenuContainer"></div>
+
+<div id="main" class="mainContainer">
+    <div id="main_title" class="main_title"></div>
+    <div id="main_content" class="main_content">
+
+    </div>
+</div>
+</body>
+<script type="text/javascript" src="../asserts/application.js"></script>
+<script type="text/javascript" src="../asserts/frame.js"></script>
+<script type="text/javascript" src="../asserts/tab_host.js"></script>
+
+<script type="text/javascript">
+   window.onload = requestMenus("");
+</script>
+</html>

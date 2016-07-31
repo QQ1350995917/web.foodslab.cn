@@ -4,7 +4,7 @@ body, html {
 
 }
 
-div.header {
+div.headerContainer {
     background-color: #333333;
     position: fixed;
     float: left;
@@ -42,7 +42,7 @@ div.header_user{
 }
 
 
-div.leftMenu {
+div.leftMenuContainer {
     background-color: #66666E;
     position: fixed;
     float: left;
@@ -54,7 +54,7 @@ div.leftMenu {
     height: 100%;
 }
 
-div.main {
+div.mainContainer {
     float: right;
     margin-top: 40px;
     margin-left: 15%;

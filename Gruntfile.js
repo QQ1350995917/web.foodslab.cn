@@ -36,8 +36,8 @@ module.exports = function (grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: 'src/chart/*.js',
-                dest: 'build/<%= pkg.name %>.min.js'
+                src: ['src/webapp/asserts/*.js'],
+                dest: 'release/webapp/asserts/frame-all-release.js'
             }
         },
         csslint: {
@@ -48,13 +48,13 @@ module.exports = function (grunt) {
                 options: {
                     import: 2
                 },
-                src: ['path/to/**/*.css']
+                src: ['src/webapp/asserts/frame.css']
             },
             lax: {
                 options: {
                     import: false
                 },
-                src: ['path/to/**/*.css']
+                src: ['release/webapp/asserts/frame.css']
             }
         },
         cssmin: {
@@ -62,9 +62,9 @@ module.exports = function (grunt) {
                 shorthandCompacting: false,
                 roundingPrecision: -1
             },
-            target: {
+            compress: {
                 files: {
-
+                    "release/webapp/asserts/frame-all-release.css": ["src/webapp/asserts/*.css"]
                 }
             }
         }
