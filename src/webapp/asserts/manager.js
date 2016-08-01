@@ -47,7 +47,11 @@ function onIndexDataCallback(data) {
         managerContainer.id = "managerContainer";
         managerContainer.className = "managerContainer";
         document.getElementById(MAIN_CONTENT_ID).appendChild(managerContainer);
+<<<<<<< HEAD
         initManagerList(managerContainer,managers);
+=======
+        initManagerList("managerContainer",managers);
+>>>>>>> d4d112e749106f7fbb6b5cde2c19d9b0a80327b0
     }
 }
 
