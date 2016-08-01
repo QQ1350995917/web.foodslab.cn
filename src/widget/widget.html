@@ -7,15 +7,24 @@
     <link rel="stylesheet" type="text/css" href="widget_recommend.css">
 </head>
 <body id="body">
-<!--<div id="managerContainer" class="managerContainer"></div>-->
-<div id="recommendContainer" class="recommendContainer"></div>
+
+<div id="main" class="mainContainer">
+    <div id="main_title" class="main_title"></div>
+    <div id="main_content" class="main_content">
+        <div id="main_content_container" class="main_content_container">
+            <div id="managerContainer" class="managerContainer"></div>
+        </div>
+    </div>
+</div>
+
+<!--<div id="recommendContainer" class="recommendContainer"></div>-->
 </body>
 <script type="text/javascript" src="../temp/DataProvider.js"></script>
 <script type="text/javascript" src="widget_manger.js"></script>
 <script type="text/javascript" src="widget_recommend.js"></script>
 <script>
 
-    //    window.onload = initManagerList("managerContainer",getManagers());
-        window.onload = initRecommendView("recommendContainer",getRecommend());
+        window.onload = initManagerList("managerContainer",getManagers());
+//        window.onload = initRecommendView("recommendContainer",getRecommend());
 </script>
 </html>
