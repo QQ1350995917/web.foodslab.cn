@@ -104,6 +104,7 @@ function createTabItem(parent, tabItemData, isVertical) {
     tabItemView.className = tabItemData.currentClassName;
     tabItemView.normalClassName = tabItemData.normalClassName;
     tabItemView.selectedClassName = tabItemData.selectedClassName;
+    tabItemView.dataId = tabItemData.id;
     tabItemView.addEventListener("click", onTabItemClick);
     if (isVertical) {
         var tabItemViewArrow = document.createElement('div');
@@ -158,7 +159,7 @@ function onTabItemClick() {
         }
     }
 
-    managerIndex();
+    onFrameMenuItemClick(this.dataId);
 
-    new Toast('body', null, null, 200, 30).show(this.childNodes[0].data);
+    new Toast(TOAST_CONTAINER_ID, null, null, 200, 30).show(this.childNodes[0].data);
 }

@@ -3,12 +3,13 @@
  */
 const BASE_PATH = "http://localhost:8080";
 const MAIN_TITLE_ID = "main_title";
-const MAIN_CONTENT_ID = "main_content";
+const MAIN_CONTENT_ID = "main_content_container";
+const TOAST_CONTAINER_ID = "body";
 
 function resetView() {
-    let main_title_view = document.getElementById(MAIN_TITLE_ID);
+    var main_title_view = document.getElementById(MAIN_TITLE_ID);
     main_title_view.innerHTML = null;
-    let main_content_view = document.getElementById(MAIN_CONTENT_ID);
+    var main_content_view = document.getElementById(MAIN_CONTENT_ID);
     main_content_view.innerHTML = null;
 }
 

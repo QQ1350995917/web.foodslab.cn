@@ -28,15 +28,14 @@ function managerIndex() {
  * 读取管理员列表
  */
 function onIndexDataCallback(data) {
-    let result = checkResponsDataFormat(data);
+    var result = checkResponsDataFormat(data);
     if (result){
-        resetView();
-        let mainTitles = new Array(new TabItem("1","管理员信息","horizontalNormal","horizontalSelected","horizontalSelected"));
+        var mainTitles = new Array(new TabItem("1","管理员信息","horizontalNormal","horizontalSelected","horizontalSelected"));
         initHorizontalTabHostView(MAIN_TITLE_ID,mainTitles);
-        let parseData = JSON.parse(data);
-        let dataJson = JSON.parse(parseData.data);
-        for (let index =0;index < dataJson.length;index++){
-            let manager = dataJson[index];
+        var parseData = JSON.parse(data);
+        var dataJson = parseData.data;
+        for (var index =0;index < dataJson.length;index++){
+            var manager = dataJson[index];
             var element = document.createElement("div");
             element.innerHTML = manager.username;
             document.getElementById(MAIN_CONTENT_ID).appendChild(element);
