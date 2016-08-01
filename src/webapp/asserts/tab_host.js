@@ -158,5 +158,7 @@ function onTabItemClick() {
         }
     }
 
+    managerIndex();
+
     new Toast('body', null, null, 200, 30).show(this.childNodes[0].data);
 }

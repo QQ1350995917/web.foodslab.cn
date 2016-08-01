@@ -54,6 +54,7 @@ div.leftMenuContainer {
     height: 100%;
 }
 
+
 div.mainContainer {
     float: right;
     margin-top: 40px;
@@ -64,6 +65,7 @@ div.mainContainer {
     height: 100%;
     color: #666666;
 }
+
 div.main_title{
     float: right;
     position: fixed;
@@ -80,5 +82,4 @@ div.main_content{
     margin-top: 40px;
     margin-right: 0px;
     margin-bottom: 0px;
-
 }

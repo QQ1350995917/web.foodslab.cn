@@ -1,9 +1,15 @@
 /**
  * Created by dingpengwei on 7/19/16.
  */
-const menuUrl = "http://localhost:8080/menus";
+const menuUrl = BASE_PATH + "/menus";
 function requestMenus(managerId) {
-    httpGetAsync(menuUrl, onDataCallback,onErrorCallback,onTimeoutCallback);
+    asyncRequestByGet(menuUrl, onDataCallback,onErrorCallback,onTimeoutCallback);
+}
+
+function onErrorCallback() {
+}
+
+function onTimeoutCallback() {
 }
 
 function onDataCallback(data) {
@@ -32,8 +38,3 @@ function onDataCallback(data) {
     initVerticalTabHostView("leftMenu",verticalTabItems,true);
 }
 
-function onErrorCallback() {
-}
-
-function onTimeoutCallback() {
-}
