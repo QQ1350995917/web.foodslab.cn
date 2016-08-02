@@ -23,6 +23,10 @@ function onMenuDataCallback(data) {
 
     for (var index = 0; index < menus.length; index++) {
         var menu = menus[index];
+        if (menu.status == 1){
+            menu.menuLabel = menu.label;
+            APP_CONST_MENU.push(menu);
+        }
         if (menu.positionId == "51bf4162-5270-11e6-8311-1cae145b8cab") {
             horizontalTabItems.push(new TabItem(menu.menuId, menu.label,menu.method, "horizontalIndexNormal", "horizontalIndexSelect", "horizontalIndexNormal"));
         } else if (menu.positionId == "8e2e3fc7-1968-4f1b-bd4c-07794c5855b5") {

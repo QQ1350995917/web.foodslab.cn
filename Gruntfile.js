@@ -36,7 +36,7 @@ module.exports = function (grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
             },
             build: {
-                src: ['src/webapp/asserts/*.js'],
+                src: ['lib/webapp/asserts/*.js'],
                 dest: 'release/webapp/asserts/frame-all-release.js'
             }
         },

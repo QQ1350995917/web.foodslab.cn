@@ -109,7 +109,7 @@ div.managerItem_label{
 /*定义容器内容中的数据对象功能名称(比如密码,确认)后面的输入框的样式*/
 div.managerItem_managerEditor {
     float: left;
-    width: 50%;
+    width: 30%;
     height: 30px;
     border: 1px solid #CCCCCC;
     line-height: 30px;
@@ -154,4 +154,28 @@ div.widget_editable_button{
     cursor: pointer;
     border-top: 0px;
     border-bottom: 0px;
+}
+
+
+.selector_selected{
+    float: left;
+    width: 80px;
+    height:30px;
+    line-height: 30px;
+    margin-left: 5px;
+    padding-left: 10px;
+    border-top: 0px solid #CCCCCC;
+    border-right: 1px solid #CCCCCC;
+    border-bottom: 0px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+}
+div.selector_selected_delete{
+    float: right;
+    width: 15px;
+    height:32px;
+    line-height: 32px;
+    color: red;
+    cursor: pointer;
+    border: 0px solid red;
+    visibility: hidden;
 }

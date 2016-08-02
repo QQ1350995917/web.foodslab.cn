@@ -1,3 +1,5 @@
+//create Gruntfile.js file
+//create Package.json file
 npm install grunt-cli --save-dev
 npm install grunt --save-dev
 npm install grunt-contrib-watch --save-dev

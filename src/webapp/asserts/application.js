@@ -6,6 +6,9 @@ const MAIN_TITLE_ID = "main_title";
 const MAIN_CONTENT_ID = "main_content_container";
 const TOAST_CONTAINER_ID = "body";
 
+const APP_CONST_MENU = new Array();//全局变量,保存所有的菜单引用
+const APP_CONST_CLIENT_ID = "clientId";
+
 function resetView() {
     var main_title_view = document.getElementById(MAIN_TITLE_ID);
     main_title_view.innerHTML = null;
@@ -28,7 +31,7 @@ function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallba
     xmlHttp.send(null);
 }
 
-function asyncRequestByPost(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
+function asyncRequestByPost(url,onDataCallback, onErrorCallback, onTimeoutCallback,params) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -41,7 +44,7 @@ function asyncRequestByPost(url, onDataCallback, onErrorCallback, onTimeoutCallb
     xmlHttp.ontimeout = onTimeoutCallback;
     xmlHttp.open("POST", url, true);
     xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xmlHttp.send(encodeURI("firstName=firstName&birthday=birthday"));
+    xmlHttp.send(encodeURI(params));
 }
 
 /**

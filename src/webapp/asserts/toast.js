@@ -12,6 +12,15 @@
  * @constructor
  */
 function Toast(id, startX, startY, width, height, className) {
+    if (id == undefined || id == "" || id == null){
+        id = "body";
+    }
+    if (width == 0 || width == undefined || width == "" || width == null){
+        width = 200;
+    }
+    if (height == 0 || height == undefined || height == "" || height == null){
+        height = 30;
+    }
     this.view = document.getElementById(id);
     this.startX = startX;
     this.startY = startY;
