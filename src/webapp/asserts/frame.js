@@ -24,9 +24,9 @@ function onMenuDataCallback(data) {
     for (var index = 0; index < menus.length; index++) {
         var menu = menus[index];
         if (menu.positionId == "51bf4162-5270-11e6-8311-1cae145b8cab") {
-            horizontalTabItems.push(new TabItem(menu.menuId, menu.label, "horizontalIndexNormal", "horizontalIndexSelect", "horizontalIndexNormal"));
+            horizontalTabItems.push(new TabItem(menu.menuId, menu.label,menu.method, "horizontalIndexNormal", "horizontalIndexSelect", "horizontalIndexNormal"));
         } else if (menu.positionId == "8e2e3fc7-1968-4f1b-bd4c-07794c5855b5") {
-            verticalTabItems.push(new TabItem(menu.menuId, menu.label, "verticalNormal", "verticalSelected", "verticalNormal", "verticalNormalArrow", "verticalSelectedArrow", "verticalNormalArrow"));
+            verticalTabItems.push(new TabItem(menu.menuId, menu.label,menu.method, "verticalNormal", "verticalSelected", "verticalNormal", "verticalNormalArrow", "verticalSelectedArrow", "verticalNormalArrow"));
         }
     }
 
@@ -36,7 +36,7 @@ function onMenuDataCallback(data) {
 
 function onFrameMenuItemClick(dataId) {
     resetView();
-    if (dataId == "0f12bdb8-85e2-4fa5-a5aa-25ea1c88b40b") {
+    if (dataId == "manager") {
         managerIndex();
     } else if (dataId == "") {
 

@@ -30,11 +30,10 @@ function managerIndex() {
 function onIndexDataCallback(data) {
     var result = checkResponsDataFormat(data);
     if (result){
-        var mainTitles = new Array(new TabItem("1","管理员信息","horizontalNormal","horizontalSelected","horizontalSelected"));
+        var mainTitles = new Array(new TabItem("1","管理员信息","","horizontalNormal","horizontalSelected","horizontalSelected"));
         initHorizontalTabHostView(MAIN_TITLE_ID,mainTitles);
         var parseData = JSON.parse(data);
         var dataJson = parseData.data;
-        console.log(dataJson.length);
         var managers = new Array();
         for (var index =0;index < dataJson.length;index++){
             var manager = dataJson[index];

@@ -10,9 +10,10 @@
  * @param currentClassName 当前状态下的样式名称
  * @constructor
  */
-function TabItem(id, displayName, normalClassName, selectedClassName, currentClassName, verticalNormalArrowClassName, verticalSelectedArrowClassName, verticalCurrentArrowClassName, width, height) {
+function TabItem(id, displayName,method, normalClassName, selectedClassName, currentClassName, verticalNormalArrowClassName, verticalSelectedArrowClassName, verticalCurrentArrowClassName, width, height) {
     this.id = id;
     this.displayName = displayName;
+    this.method = method;
     this.normalClassName = normalClassName;
     this.selectedClassName = selectedClassName;
     this.currentClassName = currentClassName;
@@ -104,7 +105,7 @@ function createTabItem(parent, tabItemData, isVertical) {
     tabItemView.className = tabItemData.currentClassName;
     tabItemView.normalClassName = tabItemData.normalClassName;
     tabItemView.selectedClassName = tabItemData.selectedClassName;
-    tabItemView.dataId = tabItemData.id;
+    tabItemView.method = tabItemData.method;
     tabItemView.addEventListener("click", onTabItemClick);
     if (isVertical) {
         var tabItemViewArrow = document.createElement('div');
@@ -159,7 +160,7 @@ function onTabItemClick() {
         }
     }
 
-    onFrameMenuItemClick(this.dataId);
+    onFrameMenuItemClick(this.method);
 
     new Toast(TOAST_CONTAINER_ID, null, null, 200, 30).show(this.childNodes[0].data);
 }

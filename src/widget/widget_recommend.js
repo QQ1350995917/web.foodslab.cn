@@ -17,11 +17,11 @@ function onDragOver(event) {
 
 function onDrop(event) {
     event.preventDefault();
-    var targetId = event.target.id;
-    var sourceId = event.dataTransfer.getData("id");
-    var targetIdElement = document.getElementById(targetId);
-    var sourceIdElement = document.getElementById(sourceId);
-    var tempInnerHtml = targetIdElement.innerHTML;
+    let targetId = event.target.id;
+    let sourceId = event.dataTransfer.getData("id");
+    let targetIdElement = document.getElementById(targetId);
+    let sourceIdElement = document.getElementById(sourceId);
+    let tempInnerHtml = targetIdElement.innerHTML;
     targetIdElement.innerHTML = sourceIdElement.innerHTML;
     sourceIdElement.innerHTML = tempInnerHtml;
 

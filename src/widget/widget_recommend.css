@@ -1,7 +1,7 @@
 /*定义容器:宽度为百分比例,高度为JS根据数据量计算得出,定义左边框 */
 div.recommendContainer {
     width: 96%;
-    height: 1000px;
+    height: 100px;
     margin: auto;
     border-top: 0px solid transparent;
     border-right: 0px solid transparent;
