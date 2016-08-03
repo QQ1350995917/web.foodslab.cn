@@ -2,6 +2,74 @@
  * Created by dingpengwei on 7/31/16.
  */
 
+class ManagerEntity {
+    /**
+     * 管理员数据对象
+     * @param managerId // 数据ID
+     * @param username // 用户名，即登录名
+     * @param level // 管理员的等级
+     * @param queue // 顺序
+     * @param status // 数据状态，可以查询数据库元数据表，这里取值有3个，-1标示删除，0标示禁用，1标示正常
+     * @param pId
+     * @param managerMenuEntitiesMapping
+     */
+    constructor(managerId, username, level, queue, status, pId, managerMenuEntitiesMapping) {
+        this.managerId = managerId;
+        this.username = username;
+        this.level = level;
+        this.queue = queue;
+        this.status = status;
+        this.pId = pId;
+        this.managerMenuEntitiesMapping = managerMenuEntitiesMapping;
+        this.isUsernameU = false;
+        this.password = "";
+        this.isPasswordU = false;
+        this.isStatusU = false;
+    }
+
+    // 非数据库字段，标记是否要更新数据库字段，默认为false不更新，非false更新
+    setUsernameUpdate(isUsernameU) {
+        this.isUsernameU = isUsernameU;
+    }
+
+    // 用户密码，即登录密码，非明文 TODO: 采用哪种加密方式
+    setPassword(password) {
+        this.password = password;
+    }
+
+    // 非数据库字段，标记是否要更新数据库字段，默认为false不更新，非false更新
+    setPasswordUpdate(isPasswordU) {
+        this.isPasswordU = isPasswordU;
+    }
+
+    // 非数据库字段，标记是否要更新数据库字段，默认为false不更新，非false更新
+    setPasswordUpdate(isPasswordU) {
+        this.isStatusU = isStatusU;
+    }
+
+    toString() {
+        return '(' + this.managerId + ', ' + this.username + ')';
+    }
+}
+
+class ManagerMenuEntity {
+    /**
+     * 管理员-菜单数据映射对象
+     * @param managerId // 管理员数据ID
+     * @param menuId // 菜单数据ID
+     * @param menuLabel  // 菜单数据名称
+     */
+    constructor(managerId, menuId, menuLabel) {
+        this.managerId = managerId;
+        this.menuId = menuId;
+        this.menuLabel = menuLabel;
+    }
+
+    toString() {
+        return '(' + this.managerId + ', ' + this.username + ')';
+    }
+}
+
 /**
  * 管理员接口发生请求错误
  */
@@ -34,20 +102,16 @@ function onIndexDataCallback(data) {
         initHorizontalTabHostView(MAIN_TITLE_ID, mainTitles);
         var parseData = JSON.parse(data);
         var dataJson = parseData.data;
-        var managers = new Array();
+        var managerEntities = new Array();
         for (var index = 0; index < dataJson.length; index++) {
-            var manager = dataJson[index];
-            console.log(manager);
-            // var element = document.createElement("div");
-            // element.innerHTML = manager.username;
-            // document.getElementById(MAIN_CONTENT_ID).appendChild(element);
-            managers.push(new Manager(manager.managerId, manager.username, manager.level,manager.menus));
+            var managerEntity = dataJson[index];
+            managerEntities.push(new ManagerEntity(managerEntity.managerId, managerEntity.username, managerEntity.level, managerEntity.queue, managerEntity.status, managerEntity.pId, managerEntity.managerMenuEntitiesMapping));
         }
         var managerContainer = document.createElement("div");
         managerContainer.id = "managerContainer";
         managerContainer.className = "managerContainer";
         document.getElementById(MAIN_CONTENT_ID).appendChild(managerContainer);
-        initManagerList(managerContainer, managers);
+        initManagerList(managerContainer, managerEntities);
     }
 }
 
@@ -92,14 +156,14 @@ function create(username, password, menus) {
 /**
  * 更新管理员
  */
-function update(managerId,username, password, menus) {
+function update(managerId, username, password, menus) {
     const checkUrl = BASE_PATH + "/manager/update";
     let menusParams = "";
     for (let index = 0; index < menus.length; index++) {
         let menu = menus[index];
-        menusParams = menusParams + "," + menu.menuId + ":" + menu.label
+        menusParams = menusParams + "," + menu.menuId + ":" + menu.menuLabel;
     }
-    let params = "managerId="+managerId+"&username=" + username + "&password=" + password + "&menus=" + menusParams;
+    let params = "managerId=" + managerId + "&username=" + username + "&password=" + password + "&menus=" + menusParams;
     asyncRequestByPost(checkUrl, function (data) {
         var parseData = JSON.parse(data);
         var result = parseData.data;
@@ -111,51 +175,29 @@ function update(managerId,username, password, menus) {
     }, onManagerRequestError, onManagerRequestTimeout, params);
 }
 
-function initManagerList(managerViewContainer, managers) {
+function initManagerList(managerViewContainer, managerEntities) {
     managerViewContainer.innerHTML = null;
-    var size = managers.length;
+    var size = managerEntities.length;
     managerViewContainer.style.height = size * 240 + "px";
     for (var index = 0; index < size; index++) {
-        managerViewContainer.appendChild(createManagerItemView(managers[index]));
+        managerViewContainer.appendChild(createManagerItemView(managerEntities[index]));
     }
     let element = document.createElement("button");
     element.className = "managerItem_save";
     element.innerHTML = "添加管理员";
     managerViewContainer.appendChild(element);
     element.onclick = function () {
-        managers.push(new Manager(APP_CONST_CLIENT_ID, "default", 1,new Array()));
-        initManagerList(managerViewContainer, managers);
+        managerEntities.push(new ManagerEntity(APP_CONST_CLIENT_ID, "default", 1,1,"", new Array()));
+        initManagerList(managerViewContainer, managerEntities);
     };
 }
 
-
-/**
- * 定义Manager信息
- * @param managerId
- * @param managerName
- * @param managerLevel
- * @param managerOrder
- * @param managerStatus
- * @param managerPId
- * @constructor
- */
-function Manager(managerId, managerName, managerLevel, menus,managerOrder, managerStatus, managerPId) {
-    this.managerId = managerId;
-    this.managerName = managerName;
-    this.managerLevel = managerLevel;
-    this.menus = menus;
-    this.managerOrder = managerOrder;
-    this.managerStatus = managerStatus;
-    this.managerPId = managerPId;
-}
-
-
 /**
  * 构件Manager显示的View
- * @param manager
+ * @param managerEntity
  * @returns {Element}
  */
-function createManagerItemView(manager) {
+function createManagerItemView(managerEntity) {
     var managerItemContainer = document.createElement("div")
     managerItemContainer.className = "managerItemContainer";
     /**创建第一行:用户名**/
@@ -168,8 +210,8 @@ function createManagerItemView(manager) {
     /**创建用户名**/
     var managerItem_managerName = document.createElement("div");
     managerItem_managerName.className = "managerItem_managerName";
-    managerItem_managerName.innerHTML = manager.managerName;
-    managerItem_rowLevel1.appendChild(initWidgetEditable1(managerItem_managerName, manager));
+    managerItem_managerName.innerHTML = managerEntity.username;
+    managerItem_rowLevel1.appendChild(initWidgetEditable1(managerItem_managerName, managerEntity));
     /**添加第一行:用户名**/
     managerItemContainer.appendChild(managerItem_rowLevel1);
 
@@ -194,7 +236,7 @@ function createManagerItemView(manager) {
     var managerItem_managerEditor2_1 = document.createElement("div");
     managerItem_managerEditor2_1.className = "managerItem_managerEditor";
     // managerItem_rowLevel2_1.appendChild(managerItem_managerEditor2_1);
-    managerItem_rowLevel2_1.appendChild(initWidgetEditable2(managerItem_managerEditor2_1, manager, "password1"));
+    managerItem_rowLevel2_1.appendChild(initWidgetEditable2(managerItem_managerEditor2_1, managerEntity, "password1"));
     /**添加第二行:密码**/
     managerItemContainer.appendChild(managerItem_rowLevel2_1);
 
@@ -215,11 +257,11 @@ function createManagerItemView(manager) {
     var managerItem_managerEditor3_1 = document.createElement("div");
     managerItem_managerEditor3_1.className = "managerItem_managerEditor";
     // managerItem_rowLevel3_1.appendChild(managerItem_managerEditor3_1);
-    managerItem_rowLevel3_1.appendChild(initWidgetEditable2(managerItem_managerEditor3_1, manager, "password2"));
+    managerItem_rowLevel3_1.appendChild(initWidgetEditable2(managerItem_managerEditor3_1, managerEntity, "password2"));
     /**添加第三行:密码确认**/
     managerItemContainer.appendChild(managerItem_rowLevel3_1);
 
-    if (manager.managerLevel == 1) {
+    if (managerEntity.level == 1) {
         /**创建第四行:权限**/
         var managerItem_rowLevel4_1 = document.createElement("div");
         managerItem_rowLevel4_1.className = "managerItem_rowLevel2";
@@ -236,23 +278,24 @@ function createManagerItemView(manager) {
         var managerItem_managerEditor4_1 = document.createElement("div");
         managerItem_managerEditor4_1.className = "managerItem_managerEditor";
         managerItem_managerEditor4_1.style.width = "90%";
-        let selectedMenus = manager.menus;
+        let selectedManagerMenuEntities = managerEntity.managerMenuEntitiesMapping == undefined ? new Array() : managerEntity.managerMenuEntitiesMapping;
         let optionsMenus = new Array();
-        for (let index = 0;index < APP_CONST_MENU.length;index++){
-            let option =  APP_CONST_MENU[index];
+        for (let index = 0; index < APP_CONST_MENU.length; index++) {
+            let option = APP_CONST_MENU[index];
             let flag = undefined;
-            for (let i = 0;i<selectedMenus.length;i++){
-                let selected = selectedMenus[i]
-                if (option.menuId == selected.menuId){
+            for (let i = 0; i < selectedManagerMenuEntities.length; i++) {
+                let selected = selectedManagerMenuEntities[i]
+                if (option.menuId == selected.menuId) {
                     flag = 1;
                     break;
                 }
             }
-            if (!flag){
+
+            if (!flag) {
                 optionsMenus.push(option);
             }
         }
-        initWidgetSelector(managerItem_managerEditor4_1, selectedMenus, optionsMenus);
+        initWidgetSelector(managerItem_managerEditor4_1, selectedManagerMenuEntities, optionsMenus);
         managerItem_rowLevel4_1.appendChild(managerItem_managerEditor4_1);
         /**添加第四行:权限**/
         managerItemContainer.appendChild(managerItem_rowLevel4_1);
@@ -271,10 +314,12 @@ function createManagerItemView(manager) {
     managerItem_save.className = "managerItem_save";
     managerItem_save.innerHTML = "确认保存";
     managerItem_save.onclick = function () {
-        if (manager.managerId == APP_CONST_CLIENT_ID) {
-            create(managerItem_managerName.innerText, managerItem_managerEditor2_1.password, managerItem_managerEditor4_1.menus);
+        let menus = managerItem_managerEditor4_1.menus;
+
+        if (managerEntity.managerId == APP_CONST_CLIENT_ID) {
+            create(managerItem_managerName.innerText, managerItem_managerEditor2_1.password,menus );
         } else {
-            update(manager.managerId,managerItem_managerName.innerText, managerItem_managerEditor2_1.password, managerItem_managerEditor4_1.menus);
+            update(managerEntity.managerId, managerItem_managerName.innerText, managerItem_managerEditor2_1.password, menus);
         }
     };
     managerItem_rowLevel5_1.appendChild(managerItem_save);
@@ -288,30 +333,30 @@ function createManagerItemView(manager) {
 /**
  * 用户名称文本显示区域,输入框,操作按钮呼唤
  * @param container
- * @param widgetEditable
+ * @param managerEntity
  */
-function initWidgetEditable1(container, manager) {
+function initWidgetEditable1(container, managerEntity) {
     container.innerHTML = null;
-    if (manager.currentUserNameStatus == undefined || manager.currentUserNameStatus == "normalDisplay") {
+    if (managerEntity.currentUserNameStatus == undefined || managerEntity.currentUserNameStatus == "normalDisplay") {
         let username = document.createElement("div");
         username.className = "widget_editable_block";
-        username.innerHTML = manager.managerName;
+        username.innerHTML = managerEntity.username;
         container.appendChild(username);
         username.addEventListener("dblclick", function () {
-            manager.currentUserNameStatus = "selectDisplay";
-            if (manager.managerLevel == 1) {
+            managerEntity.currentUserNameStatus = "selectDisplay";
+            if (managerEntity.level == 1) {
                 container.style.width = "300px";
             }
-            initWidgetEditable1(container, manager)
+            initWidgetEditable1(container, managerEntity)
         });
-    } else if (manager.currentUserNameStatus == "selectDisplay") {
+    } else if (managerEntity.currentUserNameStatus == "selectDisplay") {
         let input = document.createElement("input");
         input.className = "widget_editable_block";
         input.type = "text";
         input.style.fontSize = 1 + "rem";
-        input.value = manager.managerName;
+        input.value = managerEntity.username;
         container.appendChild(input);
-        if (manager.managerLevel == 1 && manager.managerId != APP_CONST_CLIENT_ID) {
+        if (managerEntity.level == 1 && managerEntity.managerId != APP_CONST_CLIENT_ID) {
             let blockButton = document.createElement("div");
             blockButton.type = "button";
             blockButton.className = "widget_editable_button";
@@ -325,10 +370,10 @@ function initWidgetEditable1(container, manager) {
         }
         input.addEventListener("blur", function () {
             container.style.width = "200px";
-            manager.currentUserNameStatus = "normalDisplay";
-            manager.managerName = input.value;
-            initWidgetEditable1(container, manager)
-            check(manager.managerName);
+            managerEntity.currentUserNameStatus = "normalDisplay";
+            managerEntity.username = input.value;
+            initWidgetEditable1(container, managerEntity)
+            check(managerEntity.username);
         });
     }
     return container;
@@ -338,24 +383,24 @@ function initWidgetEditable1(container, manager) {
 /**
  * 用户密码文本显示区域,输入框
  * @param container
- * @param widgetEditable
+ * @param managerEntity
  */
-function initWidgetEditable2(container, manager, id) {
+function initWidgetEditable2(container, managerEntity, id) {
     container.innerHTML = null;
-    if (manager.currentPassword1Status == undefined || manager.currentPassword1Status == "normalDisplay") {
+    if (managerEntity.currentPassword1Status == undefined || managerEntity.currentPassword1Status == "normalDisplay") {
         let username = document.createElement("div");
         username.className = "widget_editable_block";
         username.id = id;
-        if (manager.passowrd1 != undefined && manager.passowrd1 != "") {
-            username.value = manager.passowrd1;
+        if (managerEntity.passowrd1 != undefined && managerEntity.passowrd1 != "") {
+            username.value = managerEntity.passowrd1;
             username.innerText = "......";
         }
         container.appendChild(username);
         username.addEventListener("dblclick", function () {
-            manager.currentPassword1Status = "selectDisplay";
-            initWidgetEditable2(container, manager)
+            managerEntity.currentPassword1Status = "selectDisplay";
+            initWidgetEditable2(container, managerEntity)
         });
-    } else if (manager.currentPassword1Status == "selectDisplay") {
+    } else if (managerEntity.currentPassword1Status == "selectDisplay") {
         let input = document.createElement("input");
         input.innerHTML = null;
         input.id = id;
@@ -365,10 +410,10 @@ function initWidgetEditable2(container, manager, id) {
         container.appendChild(input);
         input.addEventListener("blur", function () {
             // container.style.width = "50%";
-            manager.currentPassword1Status = "normalDisplay";
-            manager.passowrd1 = input.value;
+            managerEntity.currentPassword1Status = "normalDisplay";
+            managerEntity.passowrd1 = input.value;
             container.password = input.value;
-            initWidgetEditable2(container, manager)
+            initWidgetEditable2(container, managerEntity)
         });
     }
     return container;
@@ -377,56 +422,56 @@ function initWidgetEditable2(container, manager, id) {
 /**
  * 权限选择器
  * @param container
- * @param selected
- * @param options
+ * @param selectedManagerMenuEntities
+ * @param optionsMenus
  */
-function initWidgetSelector(container, selected, options) {
+function initWidgetSelector(container, selectedManagerMenuEntities, optionsMenus) {
     container.innerHTML = null;
-    let selectedSize = selected.length;
-    container.menus = selected;
+    let selectedSize = selectedManagerMenuEntities.length;
+    container.menus = selectedManagerMenuEntities;
     for (let index = 0; index < selectedSize; index++) {
-        let selectorItem = selected[index];
-        let displayLabel = document.createElement("div");
-        displayLabel.className = "selector_selected";
-        displayLabel.innerHTML = selectorItem.menuLabel;
-        let displayLabelDelete = document.createElement("div");
-        displayLabelDelete.innerHTML = "X";
-        displayLabelDelete.className = "selector_selected_delete";
-        displayLabel.appendChild(displayLabelDelete);
-        displayLabel.onmousemove = function () {
-            displayLabelDelete.style.visibility = "visible";
-            displayLabelDelete.onclick = function () {
-                let selected1 = selected.slice(0, index);
-                let selected2 = selected.slice(index + 1, selectedSize);
-                selected = selected1.concat(selected2);
-                options.push(selectorItem);
-                initWidgetSelector(container, selected, options);
+        let managerMenu = selectedManagerMenuEntities[index];
+        let managerMenuDiv = document.createElement("div");
+        managerMenuDiv.className = "selector_selected";
+        managerMenuDiv.innerHTML = managerMenu.menuLabel;
+        let managerMenuDeleteDiv = document.createElement("div");
+        managerMenuDeleteDiv.innerHTML = "X";
+        managerMenuDeleteDiv.className = "selector_selected_delete";
+        managerMenuDiv.appendChild(managerMenuDeleteDiv);
+        managerMenuDiv.onmousemove = function () {
+            managerMenuDeleteDiv.style.visibility = "visible";
+            managerMenuDeleteDiv.onclick = function () {
+                let selected1 = selectedManagerMenuEntities.slice(0, index);
+                let selected2 = selectedManagerMenuEntities.slice(index + 1, selectedSize);
+                selectedManagerMenuEntities = selected1.concat(selected2);
+                optionsMenus.push(managerMenu);
+                initWidgetSelector(container, selectedManagerMenuEntities, optionsMenus);
             }
         }
-        displayLabel.onmouseout = function () {
-            displayLabelDelete.style.visibility = "hidden";
+        managerMenuDiv.onmouseout = function () {
+            managerMenuDeleteDiv.style.visibility = "hidden";
         }
 
-        container.appendChild(displayLabel);
+        container.appendChild(managerMenuDiv);
     }
-    let optionsSize = options.length;
+    let optionsSize = optionsMenus.length;
     if (optionsSize > 0) {
         let selector = document.createElement("select");
         selector.className = "selector_selected";
         selector.options.add(new Option("请选择", "请选择"));
         container.appendChild(selector);
         for (let index = 0; index < optionsSize; index++) {
-            let option = new Option(options[index].label, options[index].menuId);
+            let option = new Option(optionsMenus[index].label, optionsMenus[index].menuId);
             selector.options.add(option);
         }
         selector.onchange = function () {
             if (selector.selectedIndex > 0) {
-                let selectedOption = options[selector.selectedIndex - 1];
-                let options1 = options.slice(0, selector.selectedIndex - 1);
-                let options2 = options.slice(selector.selectedIndex, optionsSize);
-                options = options1.concat(options2);
-                selected.push(selectedOption);
-                initWidgetSelector(container, selected, options);
+                let selectedOption = optionsMenus[selector.selectedIndex - 1];
+                let options1 = optionsMenus.slice(0, selector.selectedIndex - 1);
+                let options2 = optionsMenus.slice(selector.selectedIndex, optionsSize);
+                optionsMenus = options1.concat(options2);
+                selectedManagerMenuEntities.push(new ManagerMenuEntity("", selectedOption.menuId, selectedOption.label));
+                initWidgetSelector(container, selectedManagerMenuEntities, optionsMenus);
             }
         };
     }
