@@ -1,7 +1,7 @@
 /**
  * Created by dingpengwei on 7/20/16.
  */
-const BASE_PATH = "http://localhost:8080";
+const BASE_PATH = "http://localhost:8080/foodslab";
 const MAIN_TITLE_ID = "main_title";
 const MAIN_CONTENT_ID = "main_content_container";
 const TOAST_CONTAINER_ID = "body";
