@@ -109,8 +109,7 @@ function createTabItem(parent, tabItemData, isVertical) {
     tabItemView.addEventListener("click", onTabItemClick);
     if (isVertical) {
         var tabItemViewArrow = document.createElement('div');
-        tabItemViewArrow.tagName =
-            tabItemViewArrow.className = tabItemData.verticalCurrentArrowClassName;
+        tabItemViewArrow.className = tabItemData.verticalCurrentArrowClassName;
         tabItemViewArrow.normalClassName = tabItemData.verticalNormalArrowClassName;
         tabItemViewArrow.selectedClassName = tabItemData.verticalSelectedArrowClassName;
         tabItemView.appendChild(tabItemViewArrow)
