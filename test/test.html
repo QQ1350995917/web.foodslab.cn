@@ -4,8 +4,55 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="test.css">
+    <style type="text/css">
+        div.SS_IC{
+            width: 100%;
+            height: 50px;
+            margin: 0px auto;
+            border: 1px solid #CCCCCC;
+        }
+
+        hr.HL{
+            float: left;
+            width: 20px;
+            height: 1px;
+            border: 0px;
+            margin-top: 24px;
+            background-color: #CCCCCC;
+        }
+
+        hr.HL2{
+            float: left;
+            width: 20px;
+            height: 1px;
+            border: 0px;
+            margin-top: 24px;
+            background-color: #CCCCCC;
+        }
+    </style>
 </head>
 <body id="body">
-<script type="text/javascript" src="request.js"></script>
+<div class="outer" style="width: 100%;height: 500px ;background-color: transparent">
+    <div id="level1" class="SS_IC" >
+        <hr class="HL"/><hr class="HL"/>
+    </div>
+    <div class="SS_IC" >
+        <hr class="HL"/>
+    </div>
+    <div class="SS_IC" >
+        <hr class="HL"/>
+    </div>
+    <div class="SS_IC" >
+        <hr class="HL"/>
+    </div>
+</div>
+<script type="text/javascript" >
+    window.onload = function () {
+        let container = document.getElementById("level1");
+        container
+    }
+</script>
+
+<!--<script type="text/javascript" src="request.js"></script>-->
 </body>
 </html>

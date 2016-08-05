@@ -1,0 +1,33 @@
+div.PIC{
+
+}
+
+div.PI_VL1{
+    float: left;
+    width: 1px;
+    height: 100%;
+    border: 0px;
+    margin-left: 20px;
+    background-color: #CCCCCC;
+}
+
+div.PI_VL2{
+    float: left;
+    width: 1px;
+    height: 100%;
+    border: 0px;
+    margin-left: 40px;
+    background-color: #CCCCCC;
+}
+
+div.PI_HL1{
+
+}
+
+div.PI_HL2{
+
+}
+
+div.PI_HL3{
+
+}

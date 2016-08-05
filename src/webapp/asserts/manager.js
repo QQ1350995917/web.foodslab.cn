@@ -70,26 +70,13 @@ class ManagerMenuEntity {
     }
 }
 
-/**
- * 管理员接口发生请求错误
- */
-function onManagerRequestError() {
-
-}
-
-/**
- * 管理员接口发生请求超时
- */
-function onManagerRequestTimeout() {
-
-}
 
 /**
  * 读取管理员列表
  */
 function managerIndex() {
     const indexUrl = BASE_PATH + "/manager";
-    asyncRequestByGet(indexUrl, onIndexDataCallback, onManagerRequestError(), onManagerRequestTimeout());
+    asyncRequestByGet(indexUrl, onIndexDataCallback, onRequestError(), onRequestTimeout());
 }
 
 /**
@@ -128,7 +115,7 @@ function check(username) {
         } else {
             new Toast().show("用户名可用");
         }
-    }, onManagerRequestError, onManagerRequestTimeout, "username=" + username);
+    }, onRequestError, onRequestTimeout, "username=" + username);
 }
 
 /**
@@ -150,7 +137,7 @@ function create(username, password, menus) {
         } else {
             new Toast().show("创建成功");
         }
-    }, onManagerRequestError, onManagerRequestTimeout, params);
+    }, onRequestError, onRequestTimeout, params);
 }
 
 /**
@@ -172,7 +159,7 @@ function update(managerId, username, password, menus) {
         } else {
             new Toast().show("更新成功");
         }
-    }, onManagerRequestError, onManagerRequestTimeout, params);
+    }, onRequestError, onRequestTimeout, params);
 }
 
 function initManagerList(managerViewContainer, managerEntities) {

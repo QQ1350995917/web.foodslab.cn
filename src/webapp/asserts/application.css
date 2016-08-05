@@ -1,0 +1,66 @@
+/*
+悬挂风格样式
+每个数据单元的样式
+SS是suspensionStyle的缩写
+IC是itemContainer的缩写
+*/
+div.SS_IC {
+    width: 100%;
+    height: 50px;
+    border: 0px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+}
+
+/*
+悬挂风格样式
+每个数据单元的样式
+SS是suspensionStyle的缩写
+IC是itemContainer的缩写
+*/
+div.SS_IC_SUB {
+    width: 100%;
+    height: 50px;
+    border: 0px solid transparent;
+    border-left: 1px solid #CCCCCC;
+}
+
+/*
+悬挂风格样式
+数据单元的横向连接线样式
+H是horizontal的缩写
+L是line的缩写
+*/
+hr.SS_IC_HL {
+    float: left;
+    width: 20px;
+    height: 1px;
+    border: 0px;
+    margin-top: 15px;
+    background-color: #CCCCCC;
+}
+
+/*
+悬挂风格样式
+数据单元的横向连接线样式
+H是horizontal的缩写
+L是line的缩写
+*/
+hr.SS_IC_VL {
+    float: left;
+    width: 1px;
+    height: 100%;
+    border: 0px;
+    margin: 0px;
+    background-color: #CCCCCC;
+}
+
+div.SS_IC_R {
+    float: left;
+    width: 80px;
+    height: 30px;
+    margin: 0px auto;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid #CCCCCC;
+    border-left: 0px solid #CCCCCC;
+}

@@ -3,15 +3,23 @@
  */
 const menuUrl = BASE_PATH + "/menus";
 
+
+/**
+ * 发生请求错误
+ */
+function onRequestError() {}
+
+/**
+ * 接口发生请求超时
+ */
+function onRequestTimeout() {}
+
+
+
 function requestMenus(managerId) {
-    asyncRequestByGet(menuUrl, onMenuDataCallback, onMenuErrorCallback, onMenuTimeoutCallback);
+    asyncRequestByGet(menuUrl, onMenuDataCallback, onRequestError, onRequestTimeout);
 }
 
-function onMenuErrorCallback() {
-}
-
-function onMenuTimeoutCallback() {
-}
 
 function onMenuDataCallback(data) {
     var json = JSON.parse(data);
@@ -42,8 +50,8 @@ function onFrameMenuItemClick(dataId) {
     resetView();
     if (dataId == "manager") {
         managerIndex();
-    } else if (dataId == "") {
-
+    } else if (dataId == "product") {
+        productSeries();
     }
 
 }
