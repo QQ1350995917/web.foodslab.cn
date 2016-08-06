@@ -301,6 +301,8 @@ function initSeriesEditor() {
     titleView.className = "horizontalSelected";
     titleView.style.width = "95.6%";
     document.getElementById(MAIN_TITLE_ID).appendChild(titleView);
+
+    initTypeEditorView();
 }
 
 function onTypeDataCallBack(data){
