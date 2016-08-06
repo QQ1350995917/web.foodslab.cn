@@ -186,35 +186,11 @@
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |相应消息|
-|03|1|data     |         |jsonArray |否	|    |数据集合体|
-|04|2|seriesId |data     |String |否	|    |系列ID|
-|05|2|label     |data     |String |否	|    |系列Label|
-|06|2|queue     |data     |int |否	|    |系列排序|
-|07|2|status     |data     |int |否	|    |系类装态|
-|08|2|description     |data     |String |是	|    |系列描述|
-|09|2|createTime     |data     |long |否	|    |创建时间|
-|10|2|updateTime     |data     |long |否	|    |更新时间|
-|11|2|children     |data     |jsonArray |是	|    |子节点-型号数据|
-|12|3|typeId     |children     |String |否	|    |型号ID|
-|13|3|seriesId     |children     |String |否	|    |系列ID|
-|14|3|label     |children     |String |否	|    |型号Label|
-|15|3|queue     |children     |int |是	|    |型号排序|
-|16|3|status     |children     |int |否	|    |型号状态|
-|17|3|description     |children     |String |是	|    |型号的描述|
-|18|3|detail     |children     |String |是	|    |型号的详情说明|
-|19|3|crafts     |children     |String |是	|    |型号的工艺链接|
-|20|3|createTime     |children     |long  |否	|    |型号创建时间|
-|21|3|updateTime     |children     |long  |否	|    |型号的更新时间|
-|22|3|children     |children     |String |是	|    |子节点-规格数据|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
-|21|4|formatId     |children     |String |否	|    |规格ID|
+|03|1|data     |         |jsonArray |否	|    |数据体|
+|04|2|formatId |data     |String |否	|    |型号ID|
+|05|3|typeId   |data     |String |否	|    |typeId|
+|05|3|label    |data     |String |否	|    |新建成功的label |
+|05|3|meta    |data     |String |否	|    |新建成功的meta |
 
 - 响应数据结构示例：
 
@@ -270,6 +246,57 @@
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |相应消息|
 |03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|seriesId |data     |String |否	|    |系列ID|
+|05|2|label     |data     |String |否	|    |系列Label|
+|06|2|queue     |data     |int |否	|    |系列排序|
+|07|2|status     |data     |int |否	|    |系类装态|
+|08|2|description     |data     |String |是	|    |系列描述|
+|09|2|createTime     |data     |long |否	|    |创建时间|
+|10|2|updateTime     |data     |long |否	|    |更新时间|
+|11|2|children     |data     |jsonArray |是	|    |子节点-型号数据|
+|12|3|typeId     |children     |String |否	|    |型号ID|
+|13|3|seriesId     |children     |String |否	|    |系列ID|
+|14|3|label     |children     |String |否	|    |型号Label|
+|15|3|queue     |children     |int |是	|    |型号排序|
+|16|3|status     |children     |int |否	|    |型号状态|
+|17|3|description     |children     |String |是	|    |型号的描述|
+|18|3|detail     |children     |String |是	|    |型号的详情说明|
+|19|3|crafts     |children     |String |是	|    |型号的工艺链接|
+|20|3|createTime     |children     |long  |否	|    |型号创建时间|
+|21|3|updateTime     |children     |long  |否	|    |型号的更新时间|
+|22|3|children     |children     |String |是	|    |子节点-规格数据|
+|23|4|formatId     |children     |String |否	|    |规格ID|
+|24|4|label     |children     |String |否	|    |规格的量 比如 1，100，500，2，3，4|
+|25|4|meta     |children     |String |否	|    |规格的单位 比如 kg, mk，L，盒，包，瓶|
+|26|4|amount     |children     |int |否	|    |规格下的数量 通常是在，盒，包下的包含个数，比如每盒有4瓶|
+|27|4|amountMeta     |children     |String |否	|    |规格下的数量的单位|
+|28|4|pricing     |children     |float |否	|    |定价|
+|29|4|pricingMeta     |children     |String |否	|    |定价单位 通常是￥|
+|30|4|postage     |children     |float |否	|    |邮费|
+|31|4|postageMeta     |children     |String |否	|    |邮费单位 通常是￥|
+|32|4|price     |children     |float |是	|    |现价|
+|33|4|priceDiscount     |children     |float |是	|    |现价对比定价的折扣|
+|34|4|priceStart     |children     |long |是	|    |折扣活动开始时间|
+|35|4|priceEnd     |children     |long |是	|    |折扣活动结束时间|
+|36|4|priceStatus     |children     |int |是	|    |折扣活动所处于的状态，是否要显示|
+|37|4|expressCount     |children     |int |是	|    |包邮需要的数量|
+|38|4|expressName     |children     |String |是	|    |邮递公司名称|
+|39|4|expressStart     |children     |long |是	|    |包邮活动开始时间|
+|40|4|expressEnd     |children     |long |是	|    |包邮活动结束时间|
+|41|4|expressStatus     |children     |int |是	|    |包邮活动所处于的状态，是否要显示|
+|42|4|giftCount     |children     |int |是	|    |满赠需要的数量|
+|43|4|giftLabel     |children     |String |是	|    |满赠产品的名称|
+|44|4|giftId     |children     |String |是	|    |满赠产品规格的ID|
+|45|4|giftStart     |children     |long |是	|    |满赠活动开始时间|
+|46|4|giftEnd     |children     |long |是	|    |满赠活动结束时间|
+|47|4|giftStatus     |children     |int |是	|    |满赠活动所处于的状态|
+|48|4|queue     |children     |String |是	|    |该规格的顺序|
+|49|4|status     |children     |String |否	|    |该规格的状态|
+|50|4|typeId     |children     |String |否	|    |规格的类型ID|
+|51|4|createTime     |children     |long |是	|    |规格的创建时间|
+|52|4|updateTime     |children     |long |是	|    |规格的更新时间|
+
+
 
 - 响应数据结构示例：
 
