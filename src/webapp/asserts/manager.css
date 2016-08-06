@@ -119,13 +119,15 @@ div.managerItem_managerEditor {
     font-size: 1rem;
 }
 
-button.managerItem_save{
+.managerItem_save{
     float: left;
     width: 10%;
     height: 30px;
     border: 0px solid #CCCCCC;
     color: #FFFFFF;
     font-size: 1rem;
+    text-align: center;
+    line-height: 28px;
     background-color: #169BD5;
     cursor: pointer;
 }

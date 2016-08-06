@@ -51,7 +51,8 @@ function onFrameMenuItemClick(dataId) {
     if (dataId == "manager") {
         managerIndex();
     } else if (dataId == "product") {
-        productSeries();
+        // productSeries();
+        productType();
     }
 
 }

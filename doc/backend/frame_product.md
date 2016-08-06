@@ -372,3 +372,390 @@
 }
 ```
 - 备注：无
+
+## 获取系列树
+#### 描述
+- 根据系列的ID获取系列树信息
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/retrieveSeries
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
+|02|1|seriesId      |      |String    |否| |描述|
+
+- GET请求链接示例：http://localhost:8080/foodslab/product/retrieveSeries?seriesId=40b67c21-edf2-417a-b82b-b63ca22273a9&managerId=xxx
+- 请求数据结构示例：
+```json
+{
+    "managerId": "managerId",
+    "seriesId": "seriesId"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|seriesId |data     |String |否	|    |系列ID|
+|05|2|label     |data     |String |否	|    |系列Label|
+|06|2|queue     |data     |int |否	|    |系列排序|
+|07|2|status     |data     |int |否	|    |系类装态|
+|08|2|description     |data     |String |是	|    |系列描述|
+|09|2|createTime     |data     |long |否	|    |创建时间|
+|10|2|updateTime     |data     |long |否	|    |更新时间|
+|11|2|children     |data     |jsonArray |是	|    |子节点-型号数据|
+|12|3|typeId     |children     |String |否	|    |型号ID|
+|13|3|seriesId     |children     |String |否	|    |系列ID|
+|14|3|label     |children     |String |否	|    |型号Label|
+|15|3|queue     |children     |int |是	|    |型号排序|
+|16|3|status     |children     |int |否	|    |型号状态|
+|17|3|description     |children     |String |是	|    |型号的描述|
+|18|3|detail     |children     |String |是	|    |型号的详情说明|
+|19|3|crafts     |children     |String |是	|    |型号的工艺链接|
+|20|3|createTime     |children     |long  |否	|    |型号创建时间|
+|21|3|updateTime     |children     |long  |否	|    |型号的更新时间|
+|22|3|children     |children     |String |是	|    |子节点-规格数据|
+|23|4|formatId     |children     |String |否	|    |规格ID|
+|24|4|label     |children     |String |否	|    |规格的量 比如 1，100，500，2，3，4|
+|25|4|meta     |children     |String |否	|    |规格的单位 比如 kg, mk，L，盒，包，瓶|
+|26|4|amount     |children     |int |否	|    |规格下的数量 通常是在，盒，包下的包含个数，比如每盒有4瓶|
+|27|4|amountMeta     |children     |String |否	|    |规格下的数量的单位|
+|28|4|pricing     |children     |float |否	|    |定价|
+|29|4|pricingMeta     |children     |String |否	|    |定价单位 通常是￥|
+|30|4|postage     |children     |float |否	|    |邮费|
+|31|4|postageMeta     |children     |String |否	|    |邮费单位 通常是￥|
+|32|4|price     |children     |float |是	|    |现价|
+|33|4|priceDiscount     |children     |float |是	|    |现价对比定价的折扣|
+|34|4|priceStart     |children     |long |是	|    |折扣活动开始时间|
+|35|4|priceEnd     |children     |long |是	|    |折扣活动结束时间|
+|36|4|priceStatus     |children     |int |是	|    |折扣活动所处于的状态，是否要显示|
+|37|4|expressCount     |children     |int |是	|    |包邮需要的数量|
+|38|4|expressName     |children     |String |是	|    |邮递公司名称|
+|39|4|expressStart     |children     |long |是	|    |包邮活动开始时间|
+|40|4|expressEnd     |children     |long |是	|    |包邮活动结束时间|
+|41|4|expressStatus     |children     |int |是	|    |包邮活动所处于的状态，是否要显示|
+|42|4|giftCount     |children     |int |是	|    |满赠需要的数量|
+|43|4|giftLabel     |children     |String |是	|    |满赠产品的名称|
+|44|4|giftId     |children     |String |是	|    |满赠产品规格的ID|
+|45|4|giftStart     |children     |long |是	|    |满赠活动开始时间|
+|46|4|giftEnd     |children     |long |是	|    |满赠活动结束时间|
+|47|4|giftStatus     |children     |int |是	|    |满赠活动所处于的状态|
+|48|4|queue     |children     |String |是	|    |该规格的顺序|
+|49|4|status     |children     |String |否	|    |该规格的状态|
+|50|4|typeId     |children     |String |否	|    |规格的类型ID|
+|51|4|createTime     |children     |long |是	|    |规格的创建时间|
+|52|4|updateTime     |children     |long |是	|    |规格的更新时间|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "createTime": 1470300000000,
+            "children": [
+                {
+                    "createTime": 1470386351000,
+                    "children": [],
+                    "typeId": "2c35987d-6107-45b8-84ee-ca4cbbadc855",
+                    "updateTime": 1470393649000,
+                    "label": "T礼盒装",
+                    "queue": 0,
+                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                    "status": 1
+                },
+                {
+                    "createTime": 1470394855000,
+                    "children": [],
+                    "typeId": "4ff46a0f-b261-4f49-9e71-a4f827056dab",
+                    "updateTime": 1470394855000,
+                    "label": "T2",
+                    "queue": 0,
+                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                    "status": 1
+                },
+                {
+                    "createTime": 1470394858000,
+                    "children": [],
+                    "typeId": "ba5952c0-1bed-48ab-b2c9-b118c2462695",
+                    "updateTime": 1470394858000,
+                    "label": "T3",
+                    "queue": 0,
+                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                    "status": 1
+                },
+                {
+                    "createTime": 1470394860000,
+                    "children": [],
+                    "typeId": "cb6f5e4f-d0e6-41ad-8b77-ac97a2133d47",
+                    "updateTime": 1470394860000,
+                    "label": "T4",
+                    "queue": 0,
+                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                    "status": 1
+                }
+            ],
+            "updateTime": 1470393700000,
+            "label": "S打磨香油",
+            "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+            "queue": 0,
+            "status": 1
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+- 备注：无
+
+
+## 获取类型树
+#### 描述
+- 根据类型的Id获取类型树信息
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/retrieveType?typeId=aba4d190-6874-426a-883f-a1e561a6f879&managerId=xxx
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
+|02|1|typeId      |      |String    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "managerId": "managerId",
+    "typeId": "typeId"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|typeId     |data     |String |否	|    |型号ID|
+|04|2|seriesId     |data     |String |否	|    |系列ID|
+|05|2|label     |data     |String |否	|    |型号Label|
+|07|2|queue     |data     |int |是	|    |型号排序|
+|08|2|status     |data     |int |否	|    |型号状态|
+|09|2|description     |data     |String |是	|    |型号的描述|
+|10|2|detail     |data     |String |是	|    |型号的详情说明|
+|11|2|crafts     |data     |String |是	|    |型号的工艺链接|
+|12|2|createTime     |data     |long  |否	|    |型号创建时间|
+|13|2|updateTime     |data     |long  |否	|    |型号的更新时间|
+|14|2|children     |children     |String |是	|    |子节点-规格数据|
+|15|3|formatId     |children     |String |否	|    |规格ID|
+|16|3|label     |children     |String |否	|    |规格的量 比如 1，100，500，2，3，4|
+|17|3|meta     |children     |String |否	|    |规格的单位 比如 kg, mk，L，盒，包，瓶|
+|18|3|amount     |children     |int |否	|    |规格下的数量 通常是在，盒，包下的包含个数，比如每盒有4瓶|
+|19|3|amountMeta     |children     |String |否	|    |规格下的数量的单位|
+|20|3|pricing     |children     |float |否	|    |定价|
+|21|3|pricingMeta     |children     |String |否	|    |定价单位 通常是￥|
+|22|3|postage     |children     |float |否	|    |邮费|
+|23|3|postageMeta     |children     |String |否	|    |邮费单位 通常是￥|
+|24|3|price     |children     |float |是	|    |现价|
+|25|3|priceDiscount     |children     |float |是	|    |现价对比定价的折扣|
+|26|3|priceStart     |children     |long |是	|    |折扣活动开始时间|
+|27|3|priceEnd     |children     |long |是	|    |折扣活动结束时间|
+|28|3|priceStatus     |children     |int |是	|    |折扣活动所处于的状态，是否要显示|
+|29|3|expressCount     |children     |int |是	|    |包邮需要的数量|
+|30|3|expressName     |children     |String |是	|    |邮递公司名称|
+|31|3|expressStart     |children     |long |是	|    |包邮活动开始时间|
+|32|3|expressEnd     |children     |long |是	|    |包邮活动结束时间|
+|33|3|expressStatus     |children     |int |是	|    |包邮活动所处于的状态，是否要显示|
+|34|3|giftCount     |children     |int |是	|    |满赠需要的数量|
+|35|3|giftLabel     |children     |String |是	|    |满赠产品的名称|
+|36|3|giftId     |children     |String |是	|    |满赠产品规格的ID|
+|37|3|giftStart     |children     |long |是	|    |满赠活动开始时间|
+|38|3|giftEnd     |children     |long |是	|    |满赠活动结束时间|
+|39|3|giftStatus     |children     |int |是	|    |满赠活动所处于的状态|
+|40|3|queue     |children     |String |是	|    |该规格的顺序|
+|41|3|status     |children     |String |否	|    |该规格的状态|
+|42|3|typeId     |children     |String |否	|    |规格的类型ID|
+|43|3|createTime     |children     |long |是	|    |规格的创建时间|
+|44|3|updateTime     |children     |long |是	|    |规格的更新时间|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "createTime": 1470394944000,
+            "children": [
+                {
+                    "giftCount": 0,
+                    "price": 0,
+                    "giftStatus": 0,
+                    "postageMeta": "￥",
+                    "amount": 1,
+                    "updateTime": 1470448496000,
+                    "label": "100",
+                    "priceStatus": 0,
+                    "priceDiscount": 0,
+                    "pricingMeta": "￥",
+                    "postage": 10,
+                    "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
+                    "amountMeta": "瓶",
+                    "createTime": 1470448496000,
+                    "meta": "ml",
+                    "expressCount": 0,
+                    "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+                    "expressStatus": 0,
+                    "pricing": 180,
+                    "queue": 0,
+                    "status": 0
+                },
+                {
+                    "giftCount": 0,
+                    "price": 0,
+                    "giftStatus": 0,
+                    "postageMeta": "￥",
+                    "amount": 1,
+                    "updateTime": 1470448503000,
+                    "label": "260",
+                    "priceStatus": 0,
+                    "priceDiscount": 0,
+                    "pricingMeta": "￥",
+                    "postage": 10,
+                    "formatId": "59362e63-7dd2-4166-94ba-b4ca9aa5c1ee",
+                    "amountMeta": "瓶",
+                    "createTime": 1470448503000,
+                    "meta": "ml",
+                    "expressCount": 0,
+                    "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+                    "expressStatus": 0,
+                    "pricing": 180,
+                    "queue": 0,
+                    "status": 0
+                }
+            ],
+            "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+            "updateTime": 1470394944000,
+            "label": "T1",
+            "queue": 0,
+            "seriesId": "a40e29d0-7015-4b12-8bc4-57391a0b22cf",
+            "status": 1
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+- 备注：无
+
+
+## 获取规格树
+#### 描述
+- 根据规格的ID获取规格树信息
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/retrieveFormat?formatId=36de2b3a-bd82-4087-9ac0-d14874c8f46f&managerId=xxx
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
+|02|1|formatId      |      |String    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "managerId": "managerId",
+    "format": "formatId"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|formatId     |data     |String |否	|    |规格ID|
+|04|2|label     |data     |String |否	|    |规格的量 比如 1，100，500，2，3，4|
+|04|2|meta     |data     |String |否	|    |规格的单位 比如 kg, mk，L，盒，包，瓶|
+|04|2|amount     |data     |int |否	|    |规格下的数量 通常是在，盒，包下的包含个数，比如每盒有4瓶|
+|04|2|amountMeta     |data     |String |否	|    |规格下的数量的单位|
+|04|2|pricing     |data     |float |否	|    |定价|
+|10|2|pricingMeta     |data     |String |否	|    |定价单位 通常是￥|
+|11|2|postage     |data     |float |否	|    |邮费|
+|12|2|postageMeta     |data     |String |否	|    |邮费单位 通常是￥|
+|13|2|price     |data     |float |是	|    |现价|
+|14|2|priceDiscount     |data     |float |是	|    |现价对比定价的折扣|
+|15|2|priceStart     |data     |long |是	|    |折扣活动开始时间|
+|16|2|priceEnd     |data     |long |是	|    |折扣活动结束时间|
+|17|2|priceStatus     |data     |int |是	|    |折扣活动所处于的状态，是否要显示|
+|18|2|expressCount     |data     |int |是	|    |包邮需要的数量|
+|19|2|expressName     |data     |String |是	|    |邮递公司名称|
+|20|2|expressStart     |data     |long |是	|    |包邮活动开始时间|
+|21|2|expressEnd     |data     |long |是	|    |包邮活动结束时间|
+|22|2|expressStatus     |data     |int |是	|    |包邮活动所处于的状态，是否要显示|
+|23|2|giftCount     |data     |int |是	|    |满赠需要的数量|
+|24|2|giftLabel     |data     |String |是	|    |满赠产品的名称|
+|25|2|giftId     |data     |String |是	|    |满赠产品规格的ID|
+|26|2|giftStart     |data     |long |是	|    |满赠活动开始时间|
+|27|2|giftEnd     |data     |long |是	|    |满赠活动结束时间|
+|28|2|giftStatus     |data     |int |是	|    |满赠活动所处于的状态|
+|29|2|queue     |data     |String |是	|    |该规格的顺序|
+|30|2|status     |data     |String |否	|    |该规格的状态|
+|31|2|typeId     |data     |String |否	|    |规格的类型ID|
+|32|2|createTime     |data     |long |是	|    |规格的创建时间|
+|33|2|updateTime     |data     |long |是	|    |规格的更新时间|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 0,
+    "data": [
+        {
+            "giftCount": 0,
+            "price": 0,
+            "giftStatus": 0,
+            "postageMeta": "￥",
+            "amount": 1,
+            "updateTime": 1470448496000,
+            "label": "100",
+            "priceStatus": 0,
+            "priceDiscount": 0,
+            "pricingMeta": "￥",
+            "postage": 10,
+            "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
+            "amountMeta": "瓶",
+            "createTime": 1470448496000,
+            "meta": "ml",
+            "expressCount": 0,
+            "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+            "expressStatus": 0,
+            "pricing": 180,
+            "queue": 0,
+            "status": 0
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+- 备注：无

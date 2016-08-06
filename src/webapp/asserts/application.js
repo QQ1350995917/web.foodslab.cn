@@ -9,6 +9,9 @@ const TOAST_CONTAINER_ID = "body";
 const APP_CONST_MENU = new Array();//全局变量,保存所有的菜单引用
 const APP_CONST_CLIENT_ID = "clientId";
 
+//标记元素是添加按钮
+const APP_CONST_ADD_NEW = "addNew";
+
 function resetView() {
     var main_title_view = document.getElementById(MAIN_TITLE_ID);
     main_title_view.innerHTML = null;
