@@ -62,8 +62,8 @@ function initSeriesListView(containerView, seriesEntities) {
 
 /**
  * 根据系列数据构建数据图形界面
- * @param seriesEntity 数据对象
- * @returns seriesItemViewContainer 数据图像对象
+ * @param containerView 系列对象父容器
+ * @param seriesEntity 系列数据对象
  */
 function initSeriesItemView(containerView, seriesEntity) {
     //系列容器对象
