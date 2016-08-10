@@ -42,17 +42,21 @@ function onMenuDataCallback(data) {
         }
     }
 
-    initHorizontalTabHostView("header_menu", horizontalTabItems, 100, true);
-    initVerticalTabHostView("leftMenu", verticalTabItems, true);
+    initHorizontalTabHostView(document.getElementById("header_menu"), horizontalTabItems, 100, true);
+    initVerticalTabHostView(document.getElementById("leftMenu"), verticalTabItems, true);
 }
 
 function onFrameMenuItemClick(dataId) {
-    resetView();
+
     if (dataId == "manager") {
+        resetView();
         managerIndex();
     } else if (dataId == "product") {
-        productSeries();
-        // productType();
+        resetView();
+        // productSeries();
+        productType();
+    } else{
+        console.log("点击判断值超出范围");
     }
 
 }

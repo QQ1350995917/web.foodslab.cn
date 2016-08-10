@@ -86,7 +86,7 @@ function onIndexDataCallback(data) {
     var result = checkResponsDataFormat(data);
     if (result) {
         var mainTitles = new Array(new TabItem("1", "管理员信息", "", "horizontalNormal", "horizontalSelected", "horizontalSelected"));
-        initHorizontalTabHostView(MAIN_TITLE_ID, mainTitles);
+        initHorizontalTabHostView(document.getElementById(MAIN_TITLE_ID), mainTitles);
         var parseData = JSON.parse(data);
         var dataJson = parseData.data;
         var managerEntities = new Array();

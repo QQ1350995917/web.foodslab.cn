@@ -1,4 +1,42 @@
-.fileInput{
+div.descriptionContainer {
+    width: 100%;
+    height: 450px;
+}
+
+div.imageContainer {
+    float: left;
+    width: 25%;
+    height: 100%;
+}
+
+canvas.imageCuter {
+    width: 100%;
+    height: 300px;
+    cursor: move;
+    background-color: #CCCCCC;
+    border: 0px solid #CCCCCC;
+    margin: 0px;
+}
+
+div.imageCuterSubmit {
+    cursor: pointer;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    background-color: #169BD5;
+    color: #FFFFFF;
+    border-width: 0px;
+    fontSize: 1rem;
+    margin: 0px;
+}
+
+div.imageChoseContainer{
+    width: 100%;
+    height: 105px;
+}
+
+.fileInput {
     width: 33%;
     height: 105px;
     font-size: 1rem;
@@ -6,3 +44,123 @@
     color: #ffffff;
     cursor: pointer;
 }
+
+div.textContainer{
+    float: left;
+    width: 75%;
+    height: 100%;
+}
+
+textarea.descriptionTextArea{
+    width : 785px;
+    height: 150px;
+    fontSize :1rem;
+    color:#666666;
+    resize: none;
+    margin-left: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+div.formatArea{
+    width : 790px;
+    height: 290px;
+    margin-left: 10px;
+    border: 1px solid #CCCCCC;
+}
+
+div.formatSubItemBar{
+    width : 790px;
+    height: 35px;
+    margin-top: 1px;
+    border: 0px solid #CCCCCC;
+}
+
+input.formatDisplayCheckBox{
+    float: left;
+    width: 20px;
+    height:33px;
+    margin: 0px;
+    padding: 0px;
+}
+
+
+div.formatDisplayDelete{
+    float: right;
+    width: 30px;
+    height:33px;
+    margin: 0px;
+    padding: 0px;
+    color: red;
+    border: 1px solid #CCCCCC;
+    line-height: 33px;
+    text-align: center;
+}
+
+
+div.formatSubItemBar_main_widget_label{
+    float: left;
+    width: 40px;
+    height: 30px;
+    border: 0px solid #CCCCCC;
+    line-height: 30px;
+    text-align: center;
+}
+
+input.formatSubItemBar_main_widget_number{
+    float: left;
+    width: 50px;
+    height: 28px;
+    border: 1px solid #CCCCCC;
+}
+
+select.formatSubItemBar_main_widget_meta{
+    float: left;
+    width: 50px;
+    height: 32px;
+    border: 1px solid #CCCCCC;
+    border-radius: 0px;
+}
+div.formatDisplayLeftBar{
+    float: left;
+    width : 680px;
+    height: 97px;
+    border: 0px solid;
+}
+
+div.formatDisplayRightBar{
+    float: right;
+    width : 105px;
+    height: 97px;
+    line-height: 105px;
+    text-align: center;
+    color: #FFFFFF;
+    border: 0px solid;
+    background-color: #FF0000;
+    cursor: pointer;
+}
+
+div.detailDescriptionContainer{
+    width: 100%;
+    height: 400px;
+    margin-top: 20px;
+    background-color: #169BD5;
+}
+
+div.craftsContainer{
+    width: 100%;
+    height: 50px;
+    margin-top: 20px;
+    background-color: #40a070;
+}
+
+div.submitContainer{
+    height: 100%;
+    height: 50px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: crimson;
+}
+
+
+
+

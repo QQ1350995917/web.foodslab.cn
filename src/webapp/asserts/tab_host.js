@@ -1,6 +1,47 @@
 /**
  * Created by dingpengwei on 7/17/16.
  */
+// class TabItem2 {
+//     /**
+//      *
+//      * @param id
+//      * @param label
+//      * @param normalClassName
+//      * @param selectedClassName
+//      * @param currentClassName
+//      */
+//     constructor(id, label,normalClassName,selectedClassName,currentClassName) {
+//         this.id = id;
+//         this.label = label;
+//         this.normalClassName = normalClassName;
+//         this.selectedClassName = selectedClassName;
+//         this.currentClassName = currentClassName;
+//         this.width = undefined;
+//         this.height = undefined;
+//     }
+//
+//     setWidth(width){
+//         this.width = width;
+//     }
+//
+//     setHeight(height){
+//         this.height = height;
+//     }
+//
+//     setVerticalTabHostArrowNormalClasssName(verticalNormalArrowClassName){
+//         this.verticalNormalArrowClassName = verticalNormalArrowClassName;
+//     }
+//
+//     setVerticalSelectedArrowClassName(verticalSelectedArrowClassName){
+//         this.verticalSelectedArrowClassName = verticalSelectedArrowClassName;
+//     }
+//
+//     setVerticalCurrentArrowClassName(verticalCurrentArrowClassName){
+//         this.verticalCurrentArrowClassName = verticalCurrentArrowClassName;
+//     }
+//
+// }
+
 /**
  * TabItem的基本数据对象
  * @param id 数据ID
@@ -10,7 +51,7 @@
  * @param currentClassName 当前状态下的样式名称
  * @constructor
  */
-function TabItem(id, displayName,method, normalClassName, selectedClassName, currentClassName, verticalNormalArrowClassName, verticalSelectedArrowClassName, verticalCurrentArrowClassName, width, height) {
+function TabItem(id, displayName, method, normalClassName, selectedClassName, currentClassName, verticalNormalArrowClassName, verticalSelectedArrowClassName, verticalCurrentArrowClassName, width, height) {
     this.id = id;
     this.displayName = displayName;
     this.method = method;
@@ -38,15 +79,14 @@ function addExclusiveId(exclusiveId) {
 }
 /**
  * 初始化横向的TabHost
- * @param id 容器ID
+ * @param container 容器
  * @param tabItems 数据集合
  * @param width 设定宽度
  * @param isExclusive 是否和其他的容器有互斥性
  */
-function initHorizontalTabHostView(id, tabItems, width,isExclusive) {
-    var tabHost = document.getElementById(id);
-    var tabWidth = parseInt(tabHost.clientWidth);
-    var tabHeight = parseInt(tabHost.clientHeight);
+function initHorizontalTabHostView(container, tabItems, width, isExclusive, callback) {
+    var tabWidth = parseInt(container.clientWidth);
+    var tabHeight = parseInt(container.clientHeight);
     var tabSize = tabItems.length;
     var tabItemWidth = (tabWidth - ((tabSize - 1) * 3)) / tabSize;
     if (width != null) {
@@ -57,11 +97,11 @@ function initHorizontalTabHostView(id, tabItems, width,isExclusive) {
         var tabItem = tabItems[index];
         tabItem.width = tabItemWidth;
         tabItem.height = tabHeight;
-        createTabItem(tabHost, tabItem, false);
+        createTabItem(container, tabItem, false, callback);
     }
 
-    if (isExclusive){
-        addExclusiveId(id);
+    if (isExclusive) {
+        addExclusiveId(container.id);
     }
 
 }
@@ -72,10 +112,9 @@ function initHorizontalTabHostView(id, tabItems, width,isExclusive) {
  * @param id 容器ID
  * @param tabItems 数据源集合
  */
-function initVerticalTabHostView(id, tabItems,isExclusive) {
-    var tabHost = document.getElementById(id);
-    var tabWidth = parseInt(tabHost.clientWidth);
-    var tabHeight = parseInt(tabHost.clientHeight);
+function initVerticalTabHostView(container, tabItems, isExclusive) {
+    var tabWidth = parseInt(container.clientWidth);
+    var tabHeight = parseInt(container.clientHeight);
     var tabSize = tabItems.length;
     var tabItemHeight = tabHeight / tabSize;
 
@@ -83,12 +122,12 @@ function initVerticalTabHostView(id, tabItems,isExclusive) {
         var tabItem = tabItems[index];
         tabItem.width = tabWidth;
         tabItem.height = tabItemHeight;
-        createTabItem(tabHost, tabItem, true);
+        createTabItem(container, tabItem, true);
     }
 
 
-    if (isExclusive){
-        addExclusiveId(id);
+    if (isExclusive) {
+        addExclusiveId(container.id);
     }
 
 }
@@ -98,7 +137,7 @@ function initVerticalTabHostView(id, tabItems,isExclusive) {
  * @param parent 容器
  * @param tabItemData 数据源
  */
-function createTabItem(parent, tabItemData, isVertical) {
+function createTabItem(container, tabItemData, isVertical, callback) {
     var tabItemView = document.createElement('div');
     tabItemView.innerHTML = tabItemData.displayName;
     tabItemView.style.width = tabItemData.width + "px";
@@ -106,7 +145,13 @@ function createTabItem(parent, tabItemData, isVertical) {
     tabItemView.normalClassName = tabItemData.normalClassName;
     tabItemView.selectedClassName = tabItemData.selectedClassName;
     tabItemView.method = tabItemData.method;
-    tabItemView.addEventListener("click", onTabItemClick);
+    tabItemView.dataId = tabItemData.id;
+    if (callback != undefined && (tabItemView.method == APP_CONST_ADD_NEW || tabItemView.id == APP_CONST_ADD_NEW )) {
+        tabItemView.addEventListener("click", callback);
+    } else {
+        tabItemView.addEventListener("click", onTabItemClick);
+    }
+
     if (isVertical) {
         var tabItemViewArrow = document.createElement('div');
         tabItemViewArrow.className = tabItemData.verticalCurrentArrowClassName;
@@ -114,21 +159,20 @@ function createTabItem(parent, tabItemData, isVertical) {
         tabItemViewArrow.selectedClassName = tabItemData.verticalSelectedArrowClassName;
         tabItemView.appendChild(tabItemViewArrow)
     }
-    parent.appendChild(tabItemView);
+    container.appendChild(tabItemView);
 }
 
 
 /**
  * 点击事件
  */
-function resetTabHost(id) {
-    var tabHost = document.getElementById(id);
-    var tabLength = tabHost.childElementCount;
+function resetTabHost(container) {
+    var tabLength = container.childElementCount;
     for (var index = 0; index < tabLength; index++) {
-        tabHost.childNodes[index].className = tabHost.childNodes[index].normalClassName;
-        if (tabHost.childNodes[index].childNodes.length > 1) {
-            tabHost.childNodes[index].childNodes[1].className = tabHost.childNodes[index].childNodes[1].normalClassName;
-            tabHost.childNodes[1].className = tabHost.childNodes[1].normalClassName;
+        container.childNodes[index].className = container.childNodes[index].normalClassName;
+        if (container.childNodes[index].childNodes.length > 1) {
+            container.childNodes[index].childNodes[1].className = container.childNodes[index].childNodes[1].normalClassName;
+            container.childNodes[1].className = container.childNodes[1].normalClassName;
         }
     }
 }
@@ -151,10 +195,10 @@ function onTabItemClick() {
         this.childNodes[1].className = this.childNodes[1].selectedClassName;
     }
 
-    if (exclusiveIds.indexOf(this.parentNode.id) >= 0){
+    if (exclusiveIds.indexOf(this.parentNode.id) >= 0) {
         for (var index = 0; index < exclusiveIds.length; index++) {
-            if (this.parentNode.id !== exclusiveIds[index]){
-                resetTabHost(exclusiveIds[index]);
+            if (this.parentNode.id !== exclusiveIds[index]) {
+                resetTabHost(document.getElementById(exclusiveIds[index]));
             }
         }
     }

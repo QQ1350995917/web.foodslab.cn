@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body id="body">
+<script type="text/javascript">
+    window.onload = function () {
+        let editor = document.createElement("div");
+        editor.id = "editor";
+        editor.style.width = "600px";
+        editor.style.height = "600px";
+        editor.style.borderWidth = "1px";
+        editor.style.borderColor = "#CCCCCC";
+        editor.style.borderStyle = "solid";
+        editor.contentEditable = true;
+        document.getElementById("body").appendChild(editor);
+    }
+</script>
+</body>
+</html>

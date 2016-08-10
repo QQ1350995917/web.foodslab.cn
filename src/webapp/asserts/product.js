@@ -11,6 +11,16 @@ class SeriesEntity {
         this.typeEntities = typeEntities;
     }
 }
+class FormatBaseViewInfo {
+    constructor(title, labelId, label, unitId, unitLabel, isSelector) {
+        this.title = title;
+        this.labelId = labelId;
+        this.label = label;
+        this.unitId = unitId;
+        this.unitLabel = unitLabel;
+        this.isSelector = isSelector;
+    }
+}
 let G_SERIES_ENTITIES;
 /**
  * 请求产品列表
@@ -24,7 +34,7 @@ function productSeries() {
  * 请求系列列表
  */
 function productType() {
-    var indexUrl = BASE_PATH + "/product/retrieveSeries?seriesId=40b67c21-edf2-417a-b82b-b63ca22273a9&managerId=xxx";
+    var indexUrl = BASE_PATH + "/product/retrieveType?typeId=aba4d190-6874-426a-883f-a1e561a6f879&managerId=xxx";
     asyncRequestByGet(indexUrl, onTypeDataCallBack, onRequestError(), onRequestTimeout());
 }
 
@@ -278,7 +288,7 @@ function initSeriesEditor() {
             currentSeriesEntity = G_SERIES_ENTITIES[index];
             let size = currentSeriesEntity.children == undefined ? 0 : currentSeriesEntity.children.length;
             for (let i = 0; i < size; i++) {
-                if (this.typeId == currentSeriesEntity.children[i].typeId){
+                if (this.typeId == currentSeriesEntity.children[i].typeId) {
                     currentTypeEntity = currentSeriesEntity.children[i];
                     break;
                 }
@@ -305,7 +315,11 @@ function initSeriesEditor() {
     initTypeEditorView();
 }
 
-function onTypeDataCallBack(data){
+function onTypeDataCallBack(data) {
+    var result = checkResponsDataFormat(data);
+    var parseData = JSON.parse(data);
+    var dataJson = parseData.data;
+
     resetView();
     let backView = document.createElement("div");
     backView.innerHTML = "返回";
@@ -320,41 +334,27 @@ function onTypeDataCallBack(data){
     titleView.className = "horizontalSelected";
     titleView.style.width = "95.6%";
     document.getElementById(MAIN_TITLE_ID).appendChild(titleView);
-    console.log(data);
 
-    initTypeEditorView();
+    initTypeEditorView(dataJson);
 }
 
 
-function initTypeEditorView() {
-    let topContainer = document.createElement("div")
-    topContainer.style.width = "100%";
-    topContainer.style.height = "450px";
-    let imageViewContainer = document.createElement("div")
-    imageViewContainer.style.float = "left";
-    imageViewContainer.style.width = "25%";
-    imageViewContainer.style.height = "100%";
-    let imageCanvas = document.createElement("canvas")
-    imageCanvas.style.cursor = "move";
-    imageCanvas.style.width = "100%";
-    imageCanvas.style.height = "300px";
-    imageCanvas.style.backgroundColor = "#CCCCCC";
-    imageViewContainer.appendChild(imageCanvas);
-    let imageCanvasOperator = document.createElement("button");
-    imageCanvasOperator.style.cursor = "pointer";
-    imageCanvasOperator.style.width = "100%";
-    imageCanvasOperator.style.height = "40px";
-    imageCanvasOperator.innerHTML = "保存修改";
-    imageCanvasOperator.style.backgroundColor = "#169BD5";
-    imageCanvasOperator.style.color = "#FFFFFF";
-    imageCanvasOperator.style.borderWidth = "0px";
-    imageCanvasOperator.style.fontSize = "1rem";
-    imageViewContainer.appendChild(imageCanvasOperator);
-    let imageCanvasFileContainer = document.createElement("div");
-    imageCanvasFileContainer.style.width = "100%";
-    imageCanvasFileContainer.style.height = "105px";
-    imageCanvasFileContainer.style.backgroundColor = "red";
+function initTypeEditorView(typeEntity) {
+    let descriptionContainer = document.createElement("div")
+    descriptionContainer.className = "descriptionContainer";
+    let imageContainer = document.createElement("div")
+    imageContainer.className = "imageContainer";
+    let imageCuter = document.createElement("canvas")
+    imageCuter.className = "imageCuter";
+    imageContainer.appendChild(imageCuter);
 
+    let imageCuterSubmit = document.createElement("div");
+    imageCuterSubmit.className = "imageCuterSubmit";
+    imageCuterSubmit.innerHTML = "保存修改";
+    imageContainer.appendChild(imageCuterSubmit);
+
+    let imageChoseContainer = document.createElement("div");
+    imageChoseContainer.className = "imageChoseContainer";
     let fileButton1 = document.createElement("button");
     fileButton1.className = "fileInput";
     fileButton1.innerHTML = "添加图片";
@@ -366,55 +366,325 @@ function initTypeEditorView() {
     fileButton3.style.width = "34%";
     fileButton3.innerHTML = "添加图片";
 
-    imageCanvasFileContainer.appendChild(fileButton1);
-    imageCanvasFileContainer.appendChild(fileButton2);
-    imageCanvasFileContainer.appendChild(fileButton3);
-    imageViewContainer.appendChild(imageCanvasFileContainer);
-    topContainer.appendChild(imageViewContainer);
+    imageChoseContainer.appendChild(fileButton1);
+    imageChoseContainer.appendChild(fileButton2);
+    imageChoseContainer.appendChild(fileButton3);
+    imageContainer.appendChild(imageChoseContainer);
+    descriptionContainer.appendChild(imageContainer);
+    let textContainer = document.createElement("div")
+    textContainer.className = "textContainer";
+    let descriptionTextArea = document.createElement("textarea")
+    descriptionTextArea.className = "descriptionTextArea";
+    textContainer.appendChild(descriptionTextArea);
 
-    let editorContainer = document.createElement("div")
-    editorContainer.style.float = "left";
-    editorContainer.style.width = "75%";
-    editorContainer.style.height = "100%";
-    let editorContainerTop = document.createElement("textarea")
-    editorContainerTop.style.width = "100%";
-    editorContainerTop.style.fontSize = "1rem";
-    editorContainerTop.style.color = "#666666";
-    editorContainerTop.style.resize = "none";
-    editorContainerTop.style.margin = "0px";
-    editorContainerTop.style.borderWidth = "1px";
-    editorContainerTop.style.height = "150px";
-    editorContainer.appendChild(editorContainerTop);
-    let editorContainerBottom = document.createElement("div")
-    editorContainerBottom.style.width = "100%";
-    editorContainerBottom.style.height = "290px";
-    editorContainerBottom.style.backgroundColor = "yellow";
-    editorContainer.appendChild(editorContainerBottom);
+    let formatArea = document.createElement("div")
+    formatArea.className = "formatArea";
+    textContainer.appendChild(formatArea);
+    descriptionContainer.appendChild(textContainer);
 
-    topContainer.appendChild(editorContainer);
-    document.getElementById(MAIN_CONTENT_ID).appendChild(topContainer);
+    initFormatView(formatArea, typeEntity.children);
+    document.getElementById(MAIN_CONTENT_ID).appendChild(descriptionContainer);
 
-    let bottomContainer = document.createElement("div")
-    bottomContainer.style.width = "100%";
-    bottomContainer.style.height = "400px";
-    bottomContainer.style.marginTop = "20px";
-    bottomContainer.style.backgroundColor = "blue";
-    document.getElementById(MAIN_CONTENT_ID).appendChild(bottomContainer);
+    let detailDescriptionContainer = document.createElement("div")
+    detailDescriptionContainer.className = "detailDescriptionContainer";
+    document.getElementById(MAIN_CONTENT_ID).appendChild(detailDescriptionContainer);
 
-    let linkContainer = document.createElement("div")
-    linkContainer.style.width = "100%";
-    linkContainer.style.height = "50px";
-    linkContainer.style.marginTop = "20px";
-    linkContainer.style.backgroundColor = "green";
-    document.getElementById(MAIN_CONTENT_ID).appendChild(linkContainer);
+    let craftsContainer = document.createElement("div")
+    craftsContainer.className = "craftsContainer";
+    document.getElementById(MAIN_CONTENT_ID).appendChild(craftsContainer);
 
     let submitContainer = document.createElement("div")
-    submitContainer.style.width = "100%";
-    submitContainer.style.height = "50px";
-    submitContainer.style.marginTop = "20px";
-    submitContainer.style.marginBottom = "20px";
-    submitContainer.style.backgroundColor = "red";
+    submitContainer.className = "submitContainer";
     document.getElementById(MAIN_CONTENT_ID).appendChild(submitContainer);
+}
+
+/**
+ * 规格显示区域
+ * @param containerView
+ * @param formatEntities
+ */
+function initFormatView(containerView, formatEntities) {
+    let formatTitleBar = document.createElement("div");
+    formatTitleBar.className = "formatSubItemBar";
+    formatTitleBar.style.height = "45px";
+    let formatMainBar = document.createElement("div");
+    formatMainBar.id = "formatMainBar";
+    formatMainBar.className = "formatSubItemBar";
+    let formatDiscountBar = document.createElement("div");
+    formatDiscountBar.id = "formatDiscountBar";
+    formatDiscountBar.className = "formatSubItemBar";
+    let formatPostBar = document.createElement("div");
+    formatPostBar.id = "formatPostBar";
+    formatPostBar.className = "formatSubItemBar";
+    let formatGiftBar = document.createElement("div");
+    formatGiftBar.id = "formatGiftBar";
+    formatGiftBar.className = "formatSubItemBar";
+    let formatDisplayBar = document.createElement("div");
+    formatDisplayBar.className = "formatSubItemBar";
+    formatDisplayBar.style.height = "97px";
+    let formatDisplayLeftBar = document.createElement("div");
+    formatDisplayLeftBar.className = "formatDisplayLeftBar";
+    let formatDisplayRightBar = document.createElement("div");
+    formatDisplayRightBar.className = "formatDisplayRightBar";
+    formatDisplayRightBar.innerHTML = "保存";
+    formatDisplayBar.appendChild(formatDisplayLeftBar);
+    formatDisplayBar.appendChild(formatDisplayRightBar);
+
+    let formatDisplayDiscountBar = document.createElement("div");
+    let formatDisplayPostBar = document.createElement("div");
+    let formatDisplayGiftBar = document.createElement("div");
+
+    formatDisplayLeftBar.appendChild(formatDisplayDiscountBar);
+    formatDisplayLeftBar.appendChild(formatDisplayPostBar);
+    formatDisplayLeftBar.appendChild(formatDisplayGiftBar);
+
+    containerView.appendChild(formatTitleBar);
+    containerView.appendChild(formatMainBar);
+    containerView.appendChild(formatDiscountBar);
+    containerView.appendChild(formatPostBar);
+    containerView.appendChild(formatGiftBar);
+    containerView.appendChild(formatDisplayBar);
 
 
+    var horizontalTabItems = new Array();
+    for (let index = 0; index < formatEntities.length; index++) {
+        let formatEntity = formatEntities[index];
+        if (index == 0) {
+            let tabItem = new TabItem(formatEntity.formatId, formatEntity.label + formatEntity.meta, APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalSelected");
+            tabItem.formatEntity = formatEntity;
+            horizontalTabItems.push(tabItem);
+        } else {
+            let tabItem = new TabItem(formatEntity.formatId, formatEntity.label + formatEntity.meta, APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalNormal");
+            tabItem.formatEntity = formatEntity;
+            horizontalTabItems.push(tabItem);
+        }
+    }
+
+    horizontalTabItems.push(new TabItem(APP_CONST_ADD_NEW, "+", APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalNormal"));
+
+    initFormatSubView_title(formatTitleBar, horizontalTabItems);
+    initFormatSubView_main(formatMainBar, formatEntities[0]);
+    initFormatSubView_discount(formatDiscountBar, formatEntities[0]);
+    initFormatSubView_post(formatPostBar, formatEntities[0]);
+    initFormatSubView_gift(formatGiftBar, formatEntities[0]);
+}
+
+/**
+ * 规格标题
+ * @param container
+ * @param tabItems
+ */
+function initFormatSubView_title(container, tabItems) {
+    container.innerHTML = null;
+    initHorizontalTabHostView(container, tabItems, (780 - tabItems.length * 2) / tabItems.length, false, function () {
+        let id = this.dataId;
+        let currentFormatEntity;
+        if (id == APP_CONST_ADD_NEW) {
+            let isHasAddNew = false;
+            for (let index = 0; index < tabItems.length; index++) {
+                if (tabItems[index].id == APP_CONST_CLIENT_ID) {
+                    isHasAddNew = true;
+                    tabItems[index].currentClassName = tabItems[index].selectedClassName;
+                    new Toast().show("请先保存新规格");
+                } else {
+                    tabItems[index].currentClassName = tabItems[index].normalClassName;
+                }
+            }
+            if (!isHasAddNew) {
+                tabItems.splice(tabItems.length - 1, 0, new TabItem(APP_CONST_CLIENT_ID, "新规格", APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalSelected"));
+            }
+        } else {
+            for (let index = 0; index < tabItems.length; index++) {
+                if (tabItems[index].id == id) {
+                    tabItems[index].currentClassName = tabItems[index].selectedClassName;
+                    currentFormatEntity = tabItems[index].formatEntity;
+                } else {
+                    tabItems[index].currentClassName = tabItems[index].normalClassName;
+                }
+            }
+        }
+
+        initFormatSubView_title(container, tabItems);
+
+        initFormatSubView_main(document.getElementById("formatMainBar"), currentFormatEntity);
+        initFormatSubView_discount(document.getElementById("formatDiscountBar"), currentFormatEntity);
+        initFormatSubView_post(document.getElementById("formatPostBar"), currentFormatEntity);
+        initFormatSubView_gift(document.getElementById("formatGiftBar"), currentFormatEntity);
+
+    });
+}
+
+/**
+ * 规格主要信息
+ * @param container
+ */
+function initFormatSubView_main(container, formatEntity) {
+    container.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "vid_format_status";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.status == 0) {
+            display.checked = false;
+        } else if (formatEntity.status == 1) {
+            display.checked = true;
+        }
+    }
+    container.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("规格", "vid_format_label", formatEntity == undefined ? "" : formatEntity.label, "vid_format_label_unit", formatEntity == undefined ? "" : formatEntity.meta, true);
+    let formatBaseViewInfo2 = new FormatBaseViewInfo("数量", "vid_format_mount", formatEntity == undefined ? "" : formatEntity.amount, "vid_format_mount_unit", formatEntity == undefined ? "" : formatEntity.amountMeta, true);
+    let formatBaseViewInfo3 = new FormatBaseViewInfo("定价", "vid_format_pricing", formatEntity == undefined ? "" : formatEntity.pricing, "vid_format_pricing_unit", formatEntity == undefined ? "" : formatEntity.pricingMeta, true);
+    let formatBaseViewInfo4 = new FormatBaseViewInfo("邮费", "vid_format_postage", formatEntity == undefined ? "" : formatEntity.postage, "vid_format_postage_unit", formatEntity == undefined ? "" : formatEntity.postageMeta, true);
+    let baseInfo = new Array();
+    baseInfo.push(formatBaseViewInfo1);
+    baseInfo.push(formatBaseViewInfo2);
+    baseInfo.push(formatBaseViewInfo3);
+    baseInfo.push(formatBaseViewInfo4);
+    for (let index = 0; index < 4; index++) {
+        createInputSelectWidget(container, baseInfo[index]);
+    }
+    let formatDelete = document.createElement("div");
+    formatDelete.className = "formatDisplayDelete";
+    formatDelete.innerHTML = "X";
+    container.appendChild(formatDelete);
+}
+
+/**
+ * 折扣信息
+ * @param container
+ */
+function initFormatSubView_discount(container, formatEntity) {
+    container.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "vid_format_priceStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.priceStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.priceStatus == 1) {
+            display.checked = true;
+        }
+    }
+    container.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("折扣", "vid_format_priceDiscount", formatEntity == undefined ? "" : formatEntity.priceDiscount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    let formatBaseViewInfo2 = new FormatBaseViewInfo("现价", "vid_format_price", formatEntity == undefined ? "" : formatEntity.price, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    let baseInfo = new Array();
+    baseInfo.push(formatBaseViewInfo1);
+    baseInfo.push(formatBaseViewInfo2);
+    for (let index = 0; index < 2; index++) {
+        createInputSelectWidget(container, baseInfo[index]);
+    }
+    createFormatDatePickerWidget(container, "vid_format_discount_startTime");
+    createFormatDatePickerWidget(container, "vid_format_discount_endTime");
+}
+
+
+/**
+ * 邮寄信息
+ * @param container
+ */
+function initFormatSubView_post(container, formatEntity) {
+    container.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "vid_format_expressStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.expressStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.expressStatus == 1) {
+            display.checked = true;
+        }
+    }
+    container.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("包邮", "vid_format_expressCount", formatEntity == undefined ? "" : formatEntity.expressCount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    createInputSelectWidget(container, formatBaseViewInfo1);
+    createFormatSelectWidget(container, "vid_format_express");
+    createFormatDatePickerWidget(container, "vid_format_express_startTime");
+    createFormatDatePickerWidget(container, "vid_format_express_endTime");
+}
+
+/**
+ * 满赠信息
+ * @param container
+ */
+function initFormatSubView_gift(container, formatEntity) {
+    container.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "vid_format_giftStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.giftStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.giftStatus == 1) {
+            display.checked = true;
+        }
+    }
+    container.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("满赠", "vid_format_giftCount", formatEntity == undefined ? "" : formatEntity.giftCount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    createInputSelectWidget(container, formatBaseViewInfo1);
+    createFormatSelectWidget(container, "vid_format_gift");
+    createFormatDatePickerWidget(container, "vid_format_gift_startTime");
+    createFormatDatePickerWidget(container, "vid_format_gift_endTime");
+}
+
+
+function createInputSelectWidget(container, formatBaseViewInfo) {
+    let labelView = document.createElement("div");
+    labelView.innerHTML = formatBaseViewInfo.title;
+    labelView.className = "formatSubItemBar_main_widget_label";
+    labelView.style.marginLeft = "5px";
+    container.appendChild(labelView);
+    let inputView = document.createElement("input");
+    inputView.className = "formatSubItemBar_main_widget_number";
+    inputView.value = formatBaseViewInfo.label;
+    inputView.id = formatBaseViewInfo.labelId;
+    container.appendChild(inputView);
+    if (formatBaseViewInfo.isSelector) {
+        let metaView = document.createElement("select");
+        metaView.value = formatBaseViewInfo.unit;
+        metaView.id = formatBaseViewInfo.unitId;
+        metaView.className = "formatSubItemBar_main_widget_meta";
+        container.appendChild(metaView);
+    }
+}
+
+
+function createFormatSelectWidget(container) {
+    let metaView = document.createElement("select");
+    metaView.className = "formatSubItemBar_main_widget_meta";
+    metaView.style.width = "200px";
+    metaView.style.marginLeft = "10px";
+    container.appendChild(metaView);
+}
+
+function createFormatDatePickerWidget(container, id) {
+    let inputView = document.createElement("input");
+    inputView.type = "text";
+    inputView.value = "请选择时间";
+    inputView.readOnly = true;
+    inputView.className = "formatSubItemBar_main_widget_number";
+    inputView.style.width = "200px";
+    inputView.style.marginLeft = "10px";
+    inputView.id = id;
+    container.appendChild(inputView);
+
+    new Pikaday({
+        field: inputView,
+        firstDay: 1,
+        minDate: new Date('2015-01-01'),
+        maxDate: new Date('2020-12-31'),
+        yearRange: [2015, 2020]
+    });
 }
