@@ -3,20 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <style>
+        div, input:focus {
+            outline: none;
+        }
+
+        .button {
+            float: left;
+            width: 50px;
+            height: 30px;
+            text-align: center;
+            border: 1px solid #CCCCCC;
+            background-color: transparent;
+            cursor: pointer;
+            margin: 10px 10px 10px 0px;
+        }
+
+        .editor {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #CCCCCC;
+            overflow: scroll;
+        }
+    </style>
 </head>
-<body id="body">
+<body id="body" onload="initDoc()">
+<div class="button" onclick="format('formatblock', 'H1')">DIVH1</div>
+<input class="button" type="button" value="H1" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="H2" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="H3" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="H4" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="H5" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="H6" onclick="format('formatblock', this.value)"/>
+<input class="button" type="button" value="居左" onclick="format('justifyleft', this.value)"/>
+<input class="button" type="button" value="居中" onclick="format('justifycenter', this.value)"/>
+<input class="button" type="button" value="居右" onclick="format('justifyright', this.value)"/>
+<div class="button" style="height: 28px" onclick="openFileSystem()">图片
+
+</div>
+<input id="insertImage" type="file" accept="image/*" onchange="insertImage();" />
+<input class="button" type="button" value="输出" onclick="consoleLog()"/>
+<div id="editor" contenteditable="true" class="editor"></div>
 <script type="text/javascript">
-    window.onload = function () {
-        let editor = document.createElement("div");
-        editor.id = "editor";
-        editor.style.width = "600px";
-        editor.style.height = "600px";
-        editor.style.borderWidth = "1px";
-        editor.style.borderColor = "#CCCCCC";
-        editor.style.borderStyle = "solid";
-        editor.contentEditable = true;
-        document.getElementById("body").appendChild(editor);
+    function initDoc() {
+        document.getElementById("editor").focus();
+    }
+
+    function openFileSystem() {
+        document.getElementById("insertImage").click();
+    }
+
+    function insertImage() {
+        var file = window.URL.createObjectURL(document.getElementById("insertImage").files.item(0));
+        console.log(file);
+        document.execCommand('insertImage', false, file);
+        document.getElementById("editor").focus();
+    }
+
+    function format(cmd, value) {
+        console.log(cmd + " , " + value);
+        document.execCommand(cmd, false, value);
+        document.getElementById("editor").focus();
+    }
+
+    function consoleLog() {
+        let text = document.createTextNode(document.getElementById("editor").innerHTML);
+        console.log(text);
     }
 </script>
 </body>
 </html>
+
