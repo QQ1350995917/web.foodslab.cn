@@ -460,58 +460,56 @@
 ```json
 {
     "code": 0,
-    "data": [
-        {
-            "createTime": 1470300000000,
-            "children": [
-                {
-                    "createTime": 1470386351000,
-                    "children": [],
-                    "typeId": "2c35987d-6107-45b8-84ee-ca4cbbadc855",
-                    "updateTime": 1470393649000,
-                    "label": "T礼盒装",
-                    "queue": 0,
-                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
-                    "status": 1
-                },
-                {
-                    "createTime": 1470394855000,
-                    "children": [],
-                    "typeId": "4ff46a0f-b261-4f49-9e71-a4f827056dab",
-                    "updateTime": 1470394855000,
-                    "label": "T2",
-                    "queue": 0,
-                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
-                    "status": 1
-                },
-                {
-                    "createTime": 1470394858000,
-                    "children": [],
-                    "typeId": "ba5952c0-1bed-48ab-b2c9-b118c2462695",
-                    "updateTime": 1470394858000,
-                    "label": "T3",
-                    "queue": 0,
-                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
-                    "status": 1
-                },
-                {
-                    "createTime": 1470394860000,
-                    "children": [],
-                    "typeId": "cb6f5e4f-d0e6-41ad-8b77-ac97a2133d47",
-                    "updateTime": 1470394860000,
-                    "label": "T4",
-                    "queue": 0,
-                    "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
-                    "status": 1
-                }
-            ],
-            "updateTime": 1470393700000,
-            "label": "S打磨香油",
-            "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
-            "queue": 0,
-            "status": 1
-        }
-    ],
+    "data": {
+        "createTime": 1470300000000,
+        "children": [
+            {
+                "createTime": 1470386351000,
+                "children": [],
+                "typeId": "2c35987d-6107-45b8-84ee-ca4cbbadc855",
+                "updateTime": 1470393649000,
+                "label": "T礼盒装",
+                "queue": 0,
+                "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                "status": 1
+            },
+            {
+                "createTime": 1470394855000,
+                "children": [],
+                "typeId": "4ff46a0f-b261-4f49-9e71-a4f827056dab",
+                "updateTime": 1470394855000,
+                "label": "T2",
+                "queue": 0,
+                "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                "status": 1
+            },
+            {
+                "createTime": 1470394858000,
+                "children": [],
+                "typeId": "ba5952c0-1bed-48ab-b2c9-b118c2462695",
+                "updateTime": 1470394858000,
+                "label": "T3",
+                "queue": 0,
+                "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                "status": 1
+            },
+            {
+                "createTime": 1470394860000,
+                "children": [],
+                "typeId": "cb6f5e4f-d0e6-41ad-8b77-ac97a2133d47",
+                "updateTime": 1470394860000,
+                "label": "T4",
+                "queue": 0,
+                "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+                "status": 1
+            }
+        ],
+        "updateTime": 1470393700000,
+        "label": "S打磨香油",
+        "seriesId": "40b67c21-edf2-417a-b82b-b63ca22273a9",
+        "queue": 0,
+        "status": 1
+    },
     "message": "this is tip message!"
 }
 ```
@@ -597,65 +595,63 @@
 ```json
 {
     "code": 0,
-    "data": [
-        {
-            "createTime": 1470394944000,
-            "children": [
-                {
-                    "giftCount": 0,
-                    "price": 0,
-                    "giftStatus": 0,
-                    "postageMeta": "￥",
-                    "amount": 1,
-                    "updateTime": 1470448496000,
-                    "label": "100",
-                    "priceStatus": 0,
-                    "priceDiscount": 0,
-                    "pricingMeta": "￥",
-                    "postage": 10,
-                    "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
-                    "amountMeta": "瓶",
-                    "createTime": 1470448496000,
-                    "meta": "ml",
-                    "expressCount": 0,
-                    "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
-                    "expressStatus": 0,
-                    "pricing": 180,
-                    "queue": 0,
-                    "status": 0
-                },
-                {
-                    "giftCount": 0,
-                    "price": 0,
-                    "giftStatus": 0,
-                    "postageMeta": "￥",
-                    "amount": 1,
-                    "updateTime": 1470448503000,
-                    "label": "260",
-                    "priceStatus": 0,
-                    "priceDiscount": 0,
-                    "pricingMeta": "￥",
-                    "postage": 10,
-                    "formatId": "59362e63-7dd2-4166-94ba-b4ca9aa5c1ee",
-                    "amountMeta": "瓶",
-                    "createTime": 1470448503000,
-                    "meta": "ml",
-                    "expressCount": 0,
-                    "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
-                    "expressStatus": 0,
-                    "pricing": 180,
-                    "queue": 0,
-                    "status": 0
-                }
-            ],
-            "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
-            "updateTime": 1470394944000,
-            "label": "T1",
-            "queue": 0,
-            "seriesId": "a40e29d0-7015-4b12-8bc4-57391a0b22cf",
-            "status": 1
-        }
-    ],
+    "data": {
+        "createTime": 1470394944000,
+        "children": [
+            {
+                "giftCount": 0,
+                "price": 0,
+                "giftStatus": 0,
+                "postageMeta": "￥",
+                "amount": 1,
+                "updateTime": 1470448496000,
+                "label": "100",
+                "priceStatus": 0,
+                "priceDiscount": 0,
+                "pricingMeta": "￥",
+                "postage": 10,
+                "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
+                "amountMeta": "瓶",
+                "createTime": 1470448496000,
+                "meta": "ml",
+                "expressCount": 0,
+                "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+                "expressStatus": 0,
+                "pricing": 180,
+                "queue": 0,
+                "status": 0
+            },
+            {
+                "giftCount": 0,
+                "price": 0,
+                "giftStatus": 0,
+                "postageMeta": "￥",
+                "amount": 1,
+                "updateTime": 1470448503000,
+                "label": "260",
+                "priceStatus": 0,
+                "priceDiscount": 0,
+                "pricingMeta": "￥",
+                "postage": 10,
+                "formatId": "59362e63-7dd2-4166-94ba-b4ca9aa5c1ee",
+                "amountMeta": "瓶",
+                "createTime": 1470448503000,
+                "meta": "ml",
+                "expressCount": 0,
+                "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+                "expressStatus": 0,
+                "pricing": 180,
+                "queue": 0,
+                "status": 0
+            }
+        ],
+        "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+        "updateTime": 1470394944000,
+        "label": "T1",
+        "queue": 0,
+        "seriesId": "a40e29d0-7015-4b12-8bc4-57391a0b22cf",
+        "status": 1
+    },
     "message": "this is tip message!"
 }
 ```
@@ -730,31 +726,29 @@
 ```json
 {
     "code": 0,
-    "data": [
-        {
-            "giftCount": 0,
-            "price": 0,
-            "giftStatus": 0,
-            "postageMeta": "￥",
-            "amount": 1,
-            "updateTime": 1470448496000,
-            "label": "100",
-            "priceStatus": 0,
-            "priceDiscount": 0,
-            "pricingMeta": "￥",
-            "postage": 10,
-            "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
-            "amountMeta": "瓶",
-            "createTime": 1470448496000,
-            "meta": "ml",
-            "expressCount": 0,
-            "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
-            "expressStatus": 0,
-            "pricing": 180,
-            "queue": 0,
-            "status": 0
-        }
-    ],
+    "data": {
+        "giftCount": 0,
+        "price": 0,
+        "giftStatus": 0,
+        "postageMeta": "￥",
+        "amount": 1,
+        "updateTime": 1470448496000,
+        "label": "100",
+        "priceStatus": 0,
+        "priceDiscount": 0,
+        "pricingMeta": "￥",
+        "postage": 10,
+        "formatId": "36de2b3a-bd82-4087-9ac0-d14874c8f46f",
+        "amountMeta": "瓶",
+        "createTime": 1470448496000,
+        "meta": "ml",
+        "expressCount": 0,
+        "typeId": "aba4d190-6874-426a-883f-a1e561a6f879",
+        "expressStatus": 0,
+        "pricing": 180,
+        "queue": 0,
+        "status": 0
+    },
     "message": "this is tip message!"
 }
 ```

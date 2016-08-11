@@ -17,7 +17,20 @@ function onRequestTimeout() {}
 
 
 function requestMenus(managerId) {
+    requestMeta();
     asyncRequestByGet(menuUrl, onMenuDataCallback, onRequestError, onRequestTimeout);
+}
+
+
+function requestMeta() {
+    asyncRequestByGet(BASE_PATH + "/meta", onMetaCallback, onRequestError, onRequestTimeout);
+}
+let UNITS;
+let EXPRESS = ["顺丰快递","圆通快递","中通快递","邮政快递"];
+
+function onMetaCallback(data) {
+    var json = JSON.parse(data);
+    UNITS = json.data;
 }
 
 

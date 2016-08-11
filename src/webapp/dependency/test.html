@@ -28,7 +28,6 @@
     </style>
 </head>
 <body id="body" onload="initDoc()">
-<div class="button" onclick="format('formatblock', 'H1')">DIVH1</div>
 <input class="button" type="button" value="H1" onclick="format('formatblock', this.value)"/>
 <input class="button" type="button" value="H2" onclick="format('formatblock', this.value)"/>
 <input class="button" type="button" value="H3" onclick="format('formatblock', this.value)"/>
@@ -38,13 +37,18 @@
 <input class="button" type="button" value="居左" onclick="format('justifyleft', this.value)"/>
 <input class="button" type="button" value="居中" onclick="format('justifycenter', this.value)"/>
 <input class="button" type="button" value="居右" onclick="format('justifyright', this.value)"/>
-<div class="button" style="height: 28px" onclick="openFileSystem()">图片
+<div id="divButton" class="button" style="height: 28px">图片</div>
 
-</div>
 <input id="insertImage" type="file" accept="image/*" onchange="insertImage();" />
 <input class="button" type="button" value="输出" onclick="consoleLog()"/>
 <div id="editor" contenteditable="true" class="editor"></div>
 <script type="text/javascript">
+    window.onload = function () {
+        let elementById = document.getElementById("divButton");
+        elementById.addEventListener("mousedown",function () {
+            document.getElementById("insertImage").click();
+        })
+    }
     function initDoc() {
         document.getElementById("editor").focus();
     }
