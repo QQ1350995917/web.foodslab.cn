@@ -56,7 +56,8 @@
     function insertImage() {
         var file = window.URL.createObjectURL(document.getElementById("insertImage").files.item(0));
         console.log(file);
-        document.execCommand('insertImage', false, file);
+//        document.execCommand('insertImage', false, file);
+        document.execCommand('insertHTML', false, "<img src='" + file + "'/>");
         document.getElementById("editor").focus();
     }
 
