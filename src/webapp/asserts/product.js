@@ -374,6 +374,8 @@ function initTypeEditorView(typeEntity) {
     let textContainer = document.createElement("div")
     textContainer.className = "textContainer";
     let descriptionTextArea = document.createElement("textarea")
+    descriptionTextArea.id = "descriptionTextArea";
+    descriptionTextArea.value = typeEntity.description;
     descriptionTextArea.className = "descriptionTextArea";
     textContainer.appendChild(descriptionTextArea);
 
@@ -394,7 +396,11 @@ function initTypeEditorView(typeEntity) {
     submitContainer.className = "submitContainer";
     submitContainer.innerHTML = "提交";
     submitContainer.onclick = function () {
-        let text = document.createTextNode(document.getElementById("hyperEditor").innerHTML);
+        let description = document.getElementById("descriptionTextArea").value;
+        let detail = document.getElementById("hyperEditor").innerHTML;
+        asyncRequestByGet(BASE_PATH + "/product/updateTypeDetail?typeId=" + typeEntity.typeId + "&description=" + description + "&detail=" + detail, function (data) {
+            console.log(data);
+        }, onRequestError(), onRequestTimeout());
     };
     document.getElementById(MAIN_CONTENT_ID).appendChild(submitContainer);
 }
@@ -853,6 +859,8 @@ function initDetailEditor(container, typeEntity) {
     hyperEditor.className = "hyperEditor";
     hyperEditor.id = "hyperEditor";
     hyperEditor.contentEditable = true;
+    console.log(typeEntity.detail);
+    hyperEditor.innerHTML = typeEntity.detail;
     container.appendChild(toolsBar);
     container.appendChild(hyperEditor);
 }
