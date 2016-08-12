@@ -2,6 +2,7 @@ body, html {
     padding: 0;
     margin: 0;
 }
+
 input:focus, textarea:focus,select:focus {
     outline: none;
 }
@@ -92,4 +93,74 @@ div.main_content_container{
     height: 100%;
     margin: 0px auto;
     padding-top: 10px;
+}
+
+
+/*
+悬挂风格样式
+每个数据单元的样式
+SS是suspension style的缩写
+IC是item container的缩写
+*/
+div.SS_IC {
+    float: left;
+    width: 90%;
+    height: 100px;
+    border: 0px solid #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+}
+
+
+/*
+悬挂风格样式
+数据单元的横向连接线样式
+H是horizontal的缩写
+L是line的缩写
+*/
+hr.SS_IC_HL {
+    float: left;
+    width: 20px;
+    height: 1px;
+    border: 0px;
+    margin-top: 15px;
+    background-color: #CCCCCC;
+}
+/*
+悬挂风格样式
+显示标签名称的样式
+显示标签编辑框的样式
+*/
+.SS_IC_LABEL {
+    float: left;
+    width: 80px;
+    height: 30px;
+    margin: 0px auto;
+    line-height: 30px;
+    font-size: 1rem;
+    text-align: center;
+    border: 1px solid #CCCCCC;
+    border-left: 0px solid #CCCCCC;
+    cursor: pointer;
+}
+
+/*
+悬挂风格样式
+数据操作按钮样式
+B_B_D button block delete
+*/
+div.B_B_D{
+    float: left;
+    width: 60px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    border: 0px solid #CCCCCC;
+    margin-left: 10px;
+    cursor: pointer;
+    background-color: #169BD5;
+    color: #FFFFFF;
+}
+
+div.clearFloat{
+    clear: both;
 }

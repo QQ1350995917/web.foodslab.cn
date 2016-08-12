@@ -41,7 +41,7 @@ function showSeries(seriesEntity) {
 
     let lastTypeEntities = seriesEntity.children;
     if (lastTypeEntities == undefined || lastTypeEntities.length == 0) {
-        seriesEntity.children.push(JSON.parse("{\"typeId\":\"" + APP_CONST_ADD_NEW + "\",\"label\":\"添加新类型\"}"));
+        // seriesEntity.children.push(JSON.parse("{\"typeId\":\"" + APP_CONST_ADD_NEW + "\",\"label\":\"添加新类型\"}"));
     } else {
         if (lastTypeEntities[lastTypeEntities.length - 1].typeId != APP_CONST_ADD_NEW) {
             seriesEntity.children.push(JSON.parse("{\"typeId\":\"" + APP_CONST_ADD_NEW + "\",\"label\":\"添加新类型\"}"));
@@ -66,135 +66,112 @@ function backToProduct() {
  * @param seriesEntity
  */
 function initSeriesView(containerView, seriesEntity) {
-    //系列容器对象
-    let seriesItemViewContainer = document.createElement("div");
-    seriesItemViewContainer.className = "SS_IC_SUB";
+    // 显示系列容器的根对象
+    let seriesRootView = document.createElement("div");
+    seriesRootView.className = "SS_IC";
     //系列连接线横线
-    let seriesItemViewConnectorLine_H = document.createElement("hr");
-    seriesItemViewConnectorLine_H.className = "SS_IC_HL";
-    seriesItemViewContainer.appendChild(seriesItemViewConnectorLine_H);
-    //系列连接线纵线
-    let seriesItemViewConnectorLine_V = document.createElement("hr");
-    seriesItemViewConnectorLine_V.className = "SS_IC_VL";
-    seriesItemViewContainer.appendChild(seriesItemViewConnectorLine_V);
+    let line_H_level1 = document.createElement("hr");
+    line_H_level1.className = "SS_IC_HL";
+    seriesRootView.appendChild(line_H_level1);
 
-    //系列显示框
-    let seriesItemLabelView = document.createElement("div");
-    seriesItemLabelView.className = "SS_IC_R";
-    seriesItemLabelView.innerHTML = seriesEntity.label;
-    seriesItemLabelView.ondblclick = function () {
+    // 系类显示容器(二级根容器对象)
+    let seriesSubRootViewContainer = document.createElement("div");
+    seriesSubRootViewContainer.className = "SS_IC";
+    seriesSubRootViewContainer.style.height = "90%";
+
+    // 显示和编辑转化容器对象
+    let converterViewContainer = document.createElement("div");
+    // 显示系列名称的容器对象
+    let seriesLabel = document.createElement("div");
+    seriesLabel.className = "SS_IC_LABEL";
+    seriesLabel.innerHTML = seriesEntity.label;
+    seriesLabel.onclick = function () {
         backToProduct();
     };
-    seriesItemViewContainer.appendChild(seriesItemLabelView);
-    containerView.appendChild(seriesItemViewContainer);
+    converterViewContainer.appendChild(seriesLabel);
+    seriesSubRootViewContainer.appendChild(converterViewContainer);
+    let clearFloat = document.createElement("div");
+    clearFloat.className = "clearFloat";
+    seriesSubRootViewContainer.appendChild(clearFloat);
 
     //判断是否是有类型
-    let typeEntitiesSize = seriesEntity.children.length;
-    for (let i = 0; i < typeEntitiesSize; i++) {
-        let typeEntity = seriesEntity.children[i];
-        //类型-规格容器对象
-        let typeFormatViewContainer = document.createElement("div");
-        typeFormatViewContainer.className = "SS_IC_SUB";
-        //类型连接线纵线
-        let typeItemViewConnectorLine_V = document.createElement("hr");
-        typeItemViewConnectorLine_V.className = "SS_IC_VL";
-        typeItemViewConnectorLine_V.style.marginLeft = "20px";
-        typeFormatViewContainer.appendChild(typeItemViewConnectorLine_V);
+    let typeEntitiesSize = (seriesEntity == undefined || seriesEntity.children == undefined) ? 0 : seriesEntity.children.length;
+    if (typeEntitiesSize < 1) {
+        // 显示类型和规格的根对象
+        let typeRootViewContainer = document.createElement("div");
+        typeRootViewContainer.className = "SS_IC";
+        typeRootViewContainer.style.height = "30px";
+        typeRootViewContainer.style.borderLeftWidth = "0px";
+        typeRootViewContainer.style.marginTop = "10px";
         //类型连接线横线
-        let typeItemViewConnectorLine_H = document.createElement("hr");
-        typeItemViewConnectorLine_H.className = "SS_IC_HL";
-        typeFormatViewContainer.appendChild(typeItemViewConnectorLine_H);
-
-        //类型显示框
+        let line_H_level2 = document.createElement("hr");
+        line_H_level2.className = "SS_IC_HL";
+        typeRootViewContainer.appendChild(line_H_level2);
+        // 添加型号显示框
         let typeItemLabelView = document.createElement("div");
-        typeItemLabelView.className = "SS_IC_R";
-        typeItemLabelView.style.borderLeftWidth = "1px";
-        typeItemLabelView.innerHTML = typeEntity.label;
-        typeItemLabelView.ondblclick = function () {
-            onTypeNameClick(typeEntity.typeId);
+        typeItemLabelView.className = "B_B_D";
+        typeItemLabelView.style.width = "100px";
+        typeItemLabelView.style.marginLeft = "0px";
+        typeItemLabelView.innerHTML = "添加类型";
+        typeItemLabelView.onclick = function () {
+            
         };
-
-        if (typeEntity.typeId == APP_CONST_ADD_NEW) {
-            // 添加新类型
-            typeItemLabelView.className = "managerItem_save"
-            typeItemLabelView.seriesId = seriesEntity.seriesId;
-            typeItemLabelView.typeId = typeEntity.typeId;
-            containerView.appendChild(typeItemLabelView);
-        } else {
-            containerView.appendChild(typeFormatViewContainer);
-            //类型连接线纵线
-            let formatItemViewConnectorLine_V = document.createElement("hr");
-            formatItemViewConnectorLine_V.className = "SS_IC_VL";
-            typeFormatViewContainer.appendChild(formatItemViewConnectorLine_V);
-            typeItemLabelView.style.borderLeftWidth = "0px";
-            typeFormatViewContainer.appendChild(typeItemLabelView);
-
-            let formatViewContainer = document.createElement("div");
-            formatViewContainer.className = "SS_IC_SUB";
-            //规格连接线纵线
-            let formatItemViewConnectorLine_V1 = document.createElement("hr");
-            formatItemViewConnectorLine_V1.className = "SS_IC_VL";
-            formatItemViewConnectorLine_V1.style.marginLeft = "20px";
-            formatViewContainer.appendChild(formatItemViewConnectorLine_V1);
-
-            let formatItemViewConnectorLine_V2 = document.createElement("hr");
-            formatItemViewConnectorLine_V2.className = "SS_IC_VL";
-            formatItemViewConnectorLine_V2.style.marginLeft = "20px";
-            formatViewContainer.appendChild(formatItemViewConnectorLine_V2);
-
-            //规格连接线横线
-            let formatItemViewConnectorLine_H = document.createElement("hr");
-            formatItemViewConnectorLine_H.className = "SS_IC_HL";
-            formatItemViewConnectorLine_H.style.marginLeft = "0px";
-            formatViewContainer.appendChild(formatItemViewConnectorLine_H);
-
-            //规格框
-            let formatContainer = document.createElement("div");
-            formatContainer.className = "SS_IC_R";
-            formatContainer.style.borderLeftWidth = "1px";
-            formatViewContainer.appendChild(formatContainer);
-            formatViewContainer.ondblclick = function () {
-
+        typeRootViewContainer.appendChild(typeItemLabelView);
+        seriesSubRootViewContainer.appendChild(typeRootViewContainer);
+    } else {
+        for (let i = 0; i < typeEntitiesSize; i++) {
+            let typeEntity = productEntity.children[i];
+            // 显示类型和规格的根对象
+            let typeRootViewContainer = document.createElement("div");
+            typeRootViewContainer.className = "SS_IC";
+            typeRootViewContainer.style.height = "30px";
+            typeRootViewContainer.style.borderLeftWidth = "0px";
+            typeRootViewContainer.style.marginTop = "10px";
+            //类型连接线横线
+            let line_H_level2 = document.createElement("hr");
+            line_H_level2.className = "SS_IC_HL";
+            typeRootViewContainer.appendChild(line_H_level2);
+            // 类型-规格容器对象
+            let typeLabelView = document.createElement("div");
+            typeLabelView.className = "SS_IC_LABEL";
+            typeLabelView.style.borderLeftWidth = "1px";
+            typeLabelView.innerHTML = typeEntity.label;
+            typeLabelView.ondblclick = function () {
+                onSeriesItemClick(productEntity.seriesId);
             };
-            formatViewContainer.typeId = typeEntity.typeId;
-            formatViewContainer.seriesId = seriesEntity.seriesId;
+            typeRootViewContainer.appendChild(typeLabelView);
             let formatEntitiesSize = (typeEntity.children == undefined ? 0 : typeEntity.children.length);
-
             if (formatEntitiesSize > 0) {
+                //规格显示框的横向连接线
+                let line_H_level3 = document.createElement("hr");
+                line_H_level3.className = "SS_IC_HL";
+                typeRootViewContainer.appendChild(line_H_level3);
+
+                //类型规格框
+                let formatContainer = document.createElement("div");
+                formatContainer.className = "SS_IC_LABEL";
                 formatContainer.style.width = 50 * formatEntitiesSize + "px";
+                formatContainer.style.textAlign = "left";
+                formatContainer.style.borderLeftWidth = "1px";
+                typeRootViewContainer.appendChild(formatContainer);
                 for (let j = 0; j < formatEntitiesSize; j++) {
                     let formatLabel = document.createElement("label");
                     formatLabel.style.width = "50px";
                     formatLabel.style.display = "inline-block";
                     let formatEntity = typeEntity.children[j];
                     formatLabel.innerHTML = formatEntity.label + formatEntity.meta;
-                    formatLabel.seriesId = seriesEntity.seriesId;
                     formatLabel.ondblclick = function () {
-                        onTypeItemClick(typeEntity);
+                        onSeriesItemClick(productEntity.seriesId);
                     };
                     formatContainer.appendChild(formatLabel);
                 }
-            } else {
-                formatContainer.innerHTML = "编辑规格";
-                formatContainer.className = "managerItem_save";
-                formatContainer.onclick = function () {
-
-                };
             }
-            containerView.appendChild(formatViewContainer);
-
-            //系列分割匡
-            let seriesItemSpaceView1 = document.createElement("div");
-            seriesItemSpaceView1.className = "SS_IC_SUB";
-            seriesItemSpaceView1.style.height = "20px";
-            //类型连接线纵线
-            let formatItemViewConnectorLine_V5 = document.createElement("hr");
-            formatItemViewConnectorLine_V5.className = "SS_IC_VL";
-            formatItemViewConnectorLine_V5.style.marginLeft = "20px";
-            seriesItemSpaceView1.appendChild(formatItemViewConnectorLine_V5);
-            containerView.appendChild(seriesItemSpaceView1);
+            seriesSubRootViewContainer.appendChild(typeRootViewContainer);
         }
+        seriesRootView.style.height = typeEntitiesSize * 60 + "px";
     }
+    seriesRootView.appendChild(seriesSubRootViewContainer);
+    containerView.appendChild(seriesRootView);
 }
 
 /**
