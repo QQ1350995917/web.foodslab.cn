@@ -60,14 +60,17 @@ function onMenuDataCallback(data) {
 }
 
 function onFrameMenuItemClick(dataId) {
-
+    console.log(dataId);
     if (dataId == "manager") {
         resetView();
         managerIndex();
     } else if (dataId == "product") {
         resetView();
-        // productSeries();
-        productType();
+        productSeries();
+    } else if (dataId == "product") {
+        // resetView();
+        // productType();
+        console.log(dataId);
     } else{
         console.log("点击判断值超出范围");
     }
