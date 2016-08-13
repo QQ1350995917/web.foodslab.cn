@@ -1,7 +1,6 @@
 /**
  * Created by dingpengwei on 8/12/16.
  */
-
 class FormatBaseViewInfo {
     constructor(title, labelId, label, unitId, unitLabel, isSelector) {
         this.title = title;
@@ -18,7 +17,7 @@ class FormatBaseViewInfo {
  * @param containerView
  * @param formatEntities
  */
-function initFormatView(containerView, formatEntities) {
+function initFormatView(containerView,typeEntity) {
     let formatTitleBar = document.createElement("div");
     formatTitleBar.className = "formatSubItemBar";
     formatTitleBar.style.height = "45px";
@@ -43,7 +42,7 @@ function initFormatView(containerView, formatEntities) {
     formatDisplayRightBar.className = "formatDisplayRightBar";
     formatDisplayRightBar.innerHTML = "保存";
     formatDisplayRightBar.onclick = function () {
-        saveFormat();
+        saveFormat(typeEntity);
     }
     formatDisplayBar.appendChild(formatDisplayLeftBar);
     formatDisplayBar.appendChild(formatDisplayRightBar);
@@ -65,8 +64,8 @@ function initFormatView(containerView, formatEntities) {
 
 
     var horizontalTabItems = new Array();
-    for (let index = 0; index < formatEntities.length; index++) {
-        let formatEntity = formatEntities[index];
+    for (let index = 0; index < typeEntity.children.length; index++) {
+        let formatEntity = typeEntity.children[index];
         if (index == 0) {
             let tabItem = new TabItem(formatEntity.formatId, formatEntity.label + formatEntity.meta, APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalSelected");
             tabItem.formatEntity = formatEntity;
@@ -81,10 +80,10 @@ function initFormatView(containerView, formatEntities) {
     horizontalTabItems.push(new TabItem(APP_CONST_ADD_NEW, "+", APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalNormal"));
 
     initFormatSubView_title(formatTitleBar, horizontalTabItems);
-    initFormatSubView_main(formatMainBar, formatEntities[0]);
-    initFormatSubView_discount(formatDiscountBar, formatEntities[0]);
-    initFormatSubView_post(formatPostBar, formatEntities[0]);
-    initFormatSubView_gift(formatGiftBar, formatEntities[0]);
+    initFormatSubView_main(formatMainBar, typeEntity.children[0]);
+    initFormatSubView_discount(formatDiscountBar, typeEntity.children[0]);
+    initFormatSubView_post(formatPostBar, typeEntity.children[0]);
+    initFormatSubView_gift(formatGiftBar, typeEntity.children[0]);
 }
 
 /**
@@ -263,11 +262,6 @@ function initFormatSubView_gift(container, formatEntity) {
     createFormatDatePickerWidget(container, "vid_format_gift_endTime", formatEntity == undefined ? "请选择时间" :formatEntity.giftEnd);
 }
 
-
-
-
-
-
 function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
     let labelView = document.createElement("div");
     labelView.innerHTML = formatBaseViewInfo.title;
@@ -344,8 +338,7 @@ function createFormatDatePickerWidget(container, id, defaultValue) {
     });
 }
 
-function saveFormat() {
-
+function saveFormat(typeEntity) {
     let formatStatus = document.getElementById("vid_format_status");
     let formatLabel = document.getElementById("vid_format_label");
     let formatLabel_unit = document.getElementById("vid_format_label_unit");
@@ -375,7 +368,7 @@ function saveFormat() {
     let formatGiftEnd = document.getElementById("vid_format_gift_endTime");
 
 
-    let indexUrl = "http://localhost:8080/foodslab/product/createFormat?typeId=aba4d190-6874-426a-883f-a1e561a6f879"
+    let indexUrl = "http://localhost:8080/foodslab/product/createFormat?typeId=" + typeEntity.typeId;
     indexUrl = indexUrl + "&status=" + (formatStatus.checked == true ? 1 : 0);
     indexUrl = indexUrl + "&label=" + formatLabel.value;
     indexUrl = indexUrl + "&meta=" + formatLabel_unit.options[formatLabel_unit.selectedIndex].text;
@@ -404,6 +397,8 @@ function saveFormat() {
     ;
     indexUrl = indexUrl + "&giftStart=" + formatGiftStart.value;
     indexUrl = indexUrl + "&giftEnd=" + formatGiftEnd.value;
+
+    console.log(indexUrl);
 
     asyncRequestByGet(indexUrl, saveFormatCallback, onRequestError(), onRequestTimeout());
 }

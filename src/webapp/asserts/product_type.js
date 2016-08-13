@@ -5,10 +5,10 @@
 function showType(typeEntity) {
     // 重置界面
     resetView();
-
     // 获取根元素对象
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    titleViewContainer.ondblclick = function () {
+    titleViewContainer.style.cursor = "pointer";
+    titleViewContainer.onclick = function () {
         backToSeries();
     };
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
@@ -18,8 +18,7 @@ function showType(typeEntity) {
     titleView.style.width = "100%";
     titleView.style.cursor = "pointer";
     titleViewContainer.appendChild(titleView);
-
-    initTypeView(contentViewContainer,typeEntity);
+    initTypeDetailView(contentViewContainer, typeEntity);
 }
 
 /**
@@ -35,7 +34,7 @@ function backToSeries() {
  * @param containerView 容器对象
  * @param typeEntity 类型数据
  */
-function initTypeView(containerView, typeEntity) {
+function initTypeDetailView(containerView, typeEntity) {
     let descriptionContainer = document.createElement("div")
     descriptionContainer.className = "descriptionContainer";
     let imageContainer = document.createElement("div")
@@ -71,7 +70,7 @@ function initTypeView(containerView, typeEntity) {
     textContainer.className = "textContainer";
     let descriptionTextArea = document.createElement("textarea")
     descriptionTextArea.id = "descriptionTextArea";
-    descriptionTextArea.value = typeEntity.description;
+    descriptionTextArea.value = typeEntity.description == undefined ? "" : typeEntity.description;
     descriptionTextArea.className = "descriptionTextArea";
     textContainer.appendChild(descriptionTextArea);
 
@@ -80,7 +79,7 @@ function initTypeView(containerView, typeEntity) {
     textContainer.appendChild(formatArea);
     descriptionContainer.appendChild(textContainer);
 
-    initFormatView(formatArea, typeEntity.children);
+    initFormatView(formatArea, typeEntity);
     containerView.appendChild(descriptionContainer);
 
     let detailDescriptionContainer = document.createElement("div")
@@ -135,7 +134,7 @@ function initDetailEditorView(container, typeEntity) {
     let hyperEditorTool15 = new HyperEditorTool("图片", null, null, "button");
     let hyperEditorTool16 = new HyperEditorTool("图片", "formatblock", null, "file");
     let tools = new Array();
-    
+
     tools.push(hyperEditorTool1);
     tools.push(hyperEditorTool2);
     tools.push(hyperEditorTool3);
@@ -162,7 +161,7 @@ function initDetailEditorView(container, typeEntity) {
     hyperEditor.id = "hyperEditor";
     hyperEditor.contentEditable = true;
     console.log(typeEntity.detail);
-    hyperEditor.innerHTML = typeEntity.detail;
+    hyperEditor.innerHTML = typeEntity.detail == undefined ? "" : typeEntity.detail;
     container.appendChild(toolsBar);
     container.appendChild(hyperEditor);
 }

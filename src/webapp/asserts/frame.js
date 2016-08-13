@@ -60,7 +60,6 @@ function onMenuDataCallback(data) {
 }
 
 function onFrameMenuItemClick(dataId) {
-    console.log(dataId);
     if (dataId == "manager") {
         resetView();
         managerIndex();
@@ -70,7 +69,6 @@ function onFrameMenuItemClick(dataId) {
     } else if (dataId == "product") {
         // resetView();
         // productType();
-        console.log(dataId);
     } else{
         console.log("点击判断值超出范围");
     }

@@ -20,8 +20,8 @@ function productSeries() {
  * @param containerView 所在的容器对象
  * @param seriesName 名称
  */
-function createSeries(containerView, seriesName) {
-    var indexUrl = BASE_PATH + "/product/createSeries?label=" + seriesName;
+function createSeries(containerView, label) {
+    var indexUrl = BASE_PATH + "/product/createSeries?label=" + label;
     asyncRequestByGet(indexUrl, function (data) {
         onSeriesCreateDataCallback(containerView, data);
     }, onRequestError(), onRequestTimeout());
@@ -32,7 +32,7 @@ function createSeries(containerView, seriesName) {
  * @param seriesId 系列的ID
  * @param label 系列的名称
  */
-function renameSeries(seriesId,label) {
+function renameSeries(seriesId, label) {
     var indexUrl = BASE_PATH + "/product/updateSeries?label=" + label + "&seriesId=" + seriesId + "&status=1";
     asyncRequestByGet(indexUrl, onSeriesRenameDataCallback, onRequestError(), onRequestTimeout());
 }
@@ -48,10 +48,10 @@ function blockSeries() {
  * @param seriesRootView 系列根对象
  * @param seriesId 数据ID
  */
-function deleteSeries(rootView,seriesRootView,seriesId,label) {
+function deleteSeries(rootView, seriesRootView, seriesId, label) {
     var indexUrl = BASE_PATH + "/product/updateSeries?label=" + label + "&seriesId=" + seriesId + "&status=-1";
     asyncRequestByGet(indexUrl, function (data) {
-        onSeriesDeleteDataCallback(rootView,seriesRootView,data);
+        onSeriesDeleteDataCallback(rootView, seriesRootView, data);
     }, onRequestError(), onRequestTimeout());
 }
 
@@ -92,8 +92,10 @@ function onSeriesRenameDataCallback(data) {
     var result = checkResponsDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
-        if (parseData.code == 200){
+        if (parseData.code == 200) {
             new Toast().show("更新成功");
+        } else {
+            new Toast().show("更新失败");
         }
     }
 }
@@ -104,13 +106,15 @@ function onSeriesRenameDataCallback(data) {
  * @param seriesRootView 系列根对象
  * @param data 数据
  */
-function onSeriesDeleteDataCallback(rootView,seriesRootView,data) {
+function onSeriesDeleteDataCallback(rootView, seriesRootView, data) {
     var result = checkResponsDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
-        if (parseData.code == 200){
+        if (parseData.code == 200) {
             rootView.removeChild(seriesRootView);
             new Toast().show("删除成功");
+        } else {
+            new Toast().show("删除失败");
         }
     }
 }
@@ -166,7 +170,7 @@ function initProductItemView(containerView, productEntity) {
     seriesLabel.className = "SS_IC_LABEL";
     seriesLabel.innerHTML = productEntity.label;
     seriesLabel.ondblclick = function () {
-        onSeriesNameClick(containerView,seriesRootView,converterViewContainer, productEntity);
+        onSeriesNameClick(containerView, seriesRootView, converterViewContainer, productEntity);
     };
     converterViewContainer.appendChild(seriesLabel);
     seriesSubRootViewContainer.appendChild(converterViewContainer);
@@ -199,7 +203,9 @@ function initProductItemView(containerView, productEntity) {
         typeRootViewContainer.appendChild(typeItemLabelView);
         seriesSubRootViewContainer.appendChild(typeRootViewContainer);
     } else {
+        let lineCounter = 1;
         for (let i = 0; i < typeEntitiesSize; i++) {
+            lineCounter++;
             let typeEntity = productEntity.children[i];
             // 显示类型和规格的根对象
             let typeRootViewContainer = document.createElement("div");
@@ -216,11 +222,11 @@ function initProductItemView(containerView, productEntity) {
             typeLabelView.className = "SS_IC_LABEL";
             typeLabelView.style.borderLeftWidth = "1px";
             typeLabelView.innerHTML = typeEntity.label;
-            typeLabelView.ondblclick = function () {
+            typeLabelView.onclick = function () {
                 onSeriesItemClick(productEntity.seriesId);
             };
             typeRootViewContainer.appendChild(typeLabelView);
-            let formatEntitiesSize = (typeEntity.children == undefined ? 0 : typeEntity.children.length);
+            let formatEntitiesSize = typeEntity.children == undefined ? 0 : typeEntity.children.length;
             if (formatEntitiesSize > 0) {
                 //规格显示框的横向连接线
                 let line_H_level3 = document.createElement("hr");
@@ -230,25 +236,25 @@ function initProductItemView(containerView, productEntity) {
                 //类型规格框
                 let formatContainer = document.createElement("div");
                 formatContainer.className = "SS_IC_LABEL";
-                formatContainer.style.width = 50 * formatEntitiesSize + "px";
+                formatContainer.style.width = 60 * formatEntitiesSize + "px";
                 formatContainer.style.textAlign = "left";
                 formatContainer.style.borderLeftWidth = "1px";
+                formatContainer.onclick = function () {
+                    onSeriesItemClick(productEntity.seriesId);
+                };
                 typeRootViewContainer.appendChild(formatContainer);
                 for (let j = 0; j < formatEntitiesSize; j++) {
                     let formatLabel = document.createElement("label");
-                    formatLabel.style.width = "50px";
-                    formatLabel.style.display = "inline-block";
+                    formatLabel.style.margin = "10px";
                     let formatEntity = typeEntity.children[j];
                     formatLabel.innerHTML = formatEntity.label + formatEntity.meta;
-                    formatLabel.ondblclick = function () {
-                        onSeriesItemClick(productEntity.seriesId);
-                    };
                     formatContainer.appendChild(formatLabel);
                 }
             }
             seriesSubRootViewContainer.appendChild(typeRootViewContainer);
         }
-        seriesRootView.style.height = typeEntitiesSize * 60 + "px";
+
+        seriesRootView.style.height = lineCounter * 40 + "px";
     }
     seriesRootView.appendChild(seriesSubRootViewContainer);
     containerView.appendChild(seriesRootView);
@@ -351,16 +357,34 @@ function onSeriesItemClick(seriesId) {
  * @param containerView 编辑框跟对象
  * @param seriesEntity 数据体
  */
-function onSeriesNameClick(rootView,seriesRootView,containerView, seriesEntity) {
+function onSeriesNameClick(rootView, seriesRootView, containerView, seriesEntity) {
     containerView.innerHTML = null;
     let seriesNameInputView = document.createElement("input");
     seriesNameInputView.value = seriesEntity.label;
     seriesNameInputView.className = "SS_IC_LABEL";
     seriesNameInputView.style.height = "28px";
+
     seriesNameInputView.onblur = function () {
-        onSeriesNameBlur(containerView, seriesEntity,seriesNameInputView.value);
+        // onSeriesNameBlur(rootView, seriesRootView, containerView, seriesEntity, seriesNameInputView.value);
     };
+
     containerView.appendChild(seriesNameInputView);
+    seriesNameInputView.focus();
+
+    let seriesNameBackView = document.createElement("div");
+    seriesNameBackView.innerHTML = "取消";
+    seriesNameBackView.className = "B_B_D";
+    containerView.appendChild(seriesNameBackView);
+    seriesNameBackView.onclick = function () {
+        onSeriesNameBlur(rootView, seriesRootView, containerView, seriesEntity, seriesEntity.label);
+    };
+    let seriesNameSaveView = document.createElement("div");
+    seriesNameSaveView.innerHTML = "保存";
+    seriesNameSaveView.className = "B_B_D";
+    containerView.appendChild(seriesNameSaveView);
+    seriesNameSaveView.onclick = function () {
+        onSeriesNameBlur(rootView, seriesRootView, containerView, seriesEntity, seriesNameInputView.value);
+    };
 
     let seriesNameBlockView = document.createElement("div");
     seriesNameBlockView.innerHTML = "禁用";
@@ -374,23 +398,23 @@ function onSeriesNameClick(rootView,seriesRootView,containerView, seriesEntity) 
     seriesNameDeleteView.innerHTML = "删除";
     seriesNameDeleteView.className = "B_B_D";
     seriesNameDeleteView.onclick = function () {
-        deleteSeries(rootView,seriesRootView,seriesEntity.seriesId);
+        deleteSeries(rootView, seriesRootView, seriesEntity.seriesId);
     };
     containerView.appendChild(seriesNameDeleteView);
 }
 
-function onSeriesNameBlur(containerView, seriesEntity,newValue) {
+function onSeriesNameBlur(rootView, seriesRootView, containerView, seriesEntity, newValue) {
     containerView.innerHTML = null;
     //系列显示框
     let seriesItemLabelView = document.createElement("div");
     seriesItemLabelView.className = "SS_IC_LABEL";
     seriesItemLabelView.innerHTML = newValue;
     seriesItemLabelView.ondblclick = function () {
-        onSeriesNameClick(containerView, seriesEntity);
+        onSeriesNameClick(rootView, seriesRootView, containerView, seriesEntity);
     };
     containerView.appendChild(seriesItemLabelView);
 
-    if (newValue != undefined && newValue != null && newValue.trim() != "" && seriesEntity.label != newValue){
-        renameSeries(seriesEntity.seriesId,newValue);
+    if (newValue != undefined && newValue != null && newValue.trim() != "" && seriesEntity.label != newValue) {
+        renameSeries(seriesEntity.seriesId, newValue);
     }
 }
