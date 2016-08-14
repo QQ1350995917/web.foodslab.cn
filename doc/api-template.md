@@ -3,7 +3,7 @@
 - 接口描述
 
 #### 请求地址
-- http://localhost:8080/
+- http://localhost:8080/foodslab
 
 #### 请求方式
 - post
@@ -12,6 +12,7 @@
 
 | No.|level|key|Pkey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
 |01|1|key      |Pkey      |String    |否| |描述|
 
 - GET请求链接示例：无

@@ -23,6 +23,7 @@
 ### [链接接口](backend/frame_link.md)
 - 新建链接
 - 读取链接
+- 更新链接
 ### [用户接口](backend/frame_user.md)
 - 新建用户
 - 读取用户简介
