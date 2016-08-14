@@ -69,8 +69,8 @@ function onFrameMenuItemClick(dataId) {
         productSeries();
     } else if (dataId == "recommend") {
         recommend();
-    } else if (dataId == "xx") {
-
+    } else if (dataId == "link") {
+        link();
     } else {
         console.log(dataId);
         console.log("点击判断值超出范围");
