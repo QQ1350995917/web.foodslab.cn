@@ -71,6 +71,8 @@ function onFrameMenuItemClick(dataId) {
         recommend();
     } else if (dataId == "link") {
         link();
+    } else if (dataId == "poster") {
+        posterInit();
     } else {
         console.log(dataId);
         console.log("点击判断值超出范围");
