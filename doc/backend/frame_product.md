@@ -753,3 +753,199 @@
 }
 ```
 - 备注：无
+
+## 获取反转树
+#### 描述
+- 以规格为主获取产品数信息
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/convert
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "managerId": "xxxx"
+}
+```
+
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|formatId |data     |String |否	|    |规格ID|
+|05|2|label    |data     |String |否	|    |规格标签|
+|06|2|meta     |data     |String |否	|    |规格单位|
+|07|2|weight   |data     |int |否	|    |规格权重|
+|08|2|typeId   |data     |String |否	|    |类型ID|
+|09|2|parent   |data     |jsonObject|否	|    |类型对象|
+|10|3|typeId   |parent   |parent |否	|    |类型的ID|
+|11|3|label    |parent   |parent |否	|    |类型的标签|
+|12|3|seriesId |parent   |parent |否	|    |系列的ID|
+|13|3|parent   |parent   |jsonObject |否	|    |系列对象|
+|14|4|seriesId |parent   |parent |否	|    |系列的ID|
+|15|4|label    |parent   |parent |否	|    |系列的标签|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 200,
+    "data": [
+        {
+            "parent": {
+                "parent": {
+                    "label": "石磨香油",
+                    "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677"
+                },
+                "typeId": "113df3d5-bfbe-4350-aa6f-d20064bc25af",
+                "label": "家庭装",
+                "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677"
+            },
+            "formatId": "92bbc817-89d1-470e-8c4d-1ed8e4e865f6",
+            "meta": "ml",
+            "weight": 0,
+            "typeId": "113df3d5-bfbe-4350-aa6f-d20064bc25af",
+            "label": "3"
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+- 备注：无
+
+
+## 交换权重
+#### 描述
+- 交换规格的权重值,修改所在推荐位位置
+
+#### 请求地址
+- http://localhost:8080/foodslab/swapWeight
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId      |      |String    |否| |描述|
+|02|1|formatId1      |      |String    |否| |描述|
+|03|1|weight1      |      |int    |否| |描述|
+|04|1|formatId2      |      |String    |否| |描述|
+|05|1|weight2      |      |int    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "managerId": "xxxx",
+    "formatId1": "xxxx",
+    "weight1": 0,
+    "formatId2": "xxxx",
+    "weight2": 3
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 200,
+    "message": "更新成功"
+}
+```
+
+```json
+{
+    "code": 500,
+    "message": "更新失败"
+}
+```
+- 备注：无
+
+## 更新权重
+#### 描述
+- 更新规格的权重,使全部权重加一,当前权重为0
+
+#### 请求地址
+- http://localhost:8080/foodslab/updateWeight
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|managerId     |      |String    |否| |描述|
+|02|1|formatId      |      |String    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "managerId": "xxxx"",
+    "formatId": "xxxx""
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 200,
+    "data": [
+        {
+            "parent": {
+                "parent": {
+                    "label": "石磨香油",
+                    "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677"
+                },
+                "typeId": "113df3d5-bfbe-4350-aa6f-d20064bc25af",
+                "label": "家庭装",
+                "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677"
+            },
+            "formatId": "92bbc817-89d1-470e-8c4d-1ed8e4e865f6",
+            "meta": "ml",
+            "weight": 0,
+            "typeId": "113df3d5-bfbe-4350-aa6f-d20064bc25af",
+            "label": "3"
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+
+```json
+{
+    "code": 500,
+    "message": "更新失败"
+}
+```
+- 备注：无
