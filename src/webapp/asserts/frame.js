@@ -77,7 +77,9 @@ function onFrameMenuItemClick(dataId) {
         initSkinView();
     } else if (dataId == "user") {
         showUsers();
-    } else {
+    } else if (dataId == "order"){
+        showOrderView();
+    }else {
         console.log(dataId);
         console.log("点击判断值超出范围");
     }

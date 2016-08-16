@@ -28,7 +28,7 @@ function initUserList(userEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     // 添加标题
     let titleView = document.createElement("div");
-    titleView.innerHTML = "用户管理";
+    titleView.innerHTML = "用户列表";
     titleView.className = "horizontalSelected";
     titleView.style.width = "100%";
     titleViewContainer.appendChild(titleView);
@@ -79,7 +79,6 @@ function createSearchViewWidget() {
 }
 
 function createUserItemViewWidget(userEntity) {
-    console.log(userEntity);
     let accountEntity = userEntity.children[0];
     let listViewContainer = document.createElement("div")
     listViewContainer.className = "SS_IC";
@@ -123,6 +122,9 @@ function createUserItemViewWidget(userEntity) {
     userDetailView.style.height = "30px";
     userDetailView.style.marginLeft = "0px";
     userDetailView.innerHTML = "详情";
+    userDetailView.onclick = function () {
+        showUserDetail(userEntity);
+    };
     listViewContainer.appendChild(userDetailView);
 
     return listViewContainer;

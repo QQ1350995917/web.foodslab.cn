@@ -42,6 +42,19 @@
 //
 // }
 
+class Tab {
+    constructor(id, label, className,callback) {
+        this.id = id;
+        this.label = label;
+        this.className = className;
+        this.callback = callback;
+    }
+
+    onTabClick(){
+        this.callback();
+    }
+}
+
 /**
  * TabItem的基本数据对象
  * @param id 数据ID
