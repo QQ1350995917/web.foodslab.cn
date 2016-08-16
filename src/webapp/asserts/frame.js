@@ -75,6 +75,8 @@ function onFrameMenuItemClick(dataId) {
         posterInit();
     } else if (dataId == "skin") {
         initSkinView();
+    } else if (dataId == "user") {
+        showUsers();
     } else {
         console.log(dataId);
         console.log("点击判断值超出范围");
