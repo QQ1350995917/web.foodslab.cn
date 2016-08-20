@@ -49,9 +49,9 @@ function onMenuDataCallback(data) {
             menu.menuLabel = menu.label;
             APP_CONST_MENU.push(menu);
         }
-        if (menu.positionId == "51bf4162-5270-11e6-8311-1cae145b8cab") {
+        if (menu.position == "top") {
             horizontalTabItems.push(new TabItem(menu.menuId, menu.label, menu.method, "horizontalIndexNormal", "horizontalIndexSelect", "horizontalIndexNormal"));
-        } else if (menu.positionId == "8e2e3fc7-1968-4f1b-bd4c-07794c5855b5") {
+        } else if (menu.position == "left") {
             verticalTabItems.push(new TabItem(menu.menuId, menu.label, menu.method, "verticalNormal", "verticalSelected", "verticalNormal", "verticalNormalArrow", "verticalSelectedArrow", "verticalNormalArrow"));
         }
     }
@@ -79,10 +79,47 @@ function onFrameMenuItemClick(dataId) {
         showUsers();
     } else if (dataId == "order"){
         showOrderView();
-    }else {
+    } else if (dataId == "message"){
+        showMessageView();
+    } else {
         console.log(dataId);
         console.log("点击判断值超出范围");
     }
+}
 
+/**
+ * 创建搜索框
+ * @param callback
+ * @returns {Element}
+ */
+function createSearchWidget(callback) {
+    let searchContainer = document.createElement("div");
+    searchContainer.className = "SS_IC";
+    searchContainer.style.width = "100%";
+    searchContainer.style.height = "30px";
+    searchContainer.style.marginTop = "5px";
+    searchContainer.style.marginBottom = "10px";
+    searchContainer.style.borderWidth = "0px";
+
+    let searchEditor = document.createElement("input");
+    searchEditor.className = "SS_IC_LABEL";
+    searchEditor.style.width = "952px";
+    searchEditor.style.height = "30px";
+    searchEditor.style.lineHeight = "30px";
+    searchEditor.style.borderWidth = "1px";
+    searchContainer.appendChild(searchEditor);
+
+    let searchActionView = document.createElement("div");
+    searchActionView.className = "B_B_D";
+    searchActionView.style.width = "100px";
+    searchActionView.style.height = "34px";
+    searchActionView.style.lineHeight = "30px";
+    searchActionView.innerHTML = "搜索";
+    searchActionView.onclick = function () {
+      callback(searchEditor.value);
+    };
+    searchContainer.appendChild(searchActionView);
+    
+    return searchContainer;
 }
 

@@ -4,6 +4,7 @@ div.selector_container{
     height: 32px;
     padding: 0px 10px 0px 10px;
     border: 1px solid #CCCCCC;
+    margin: 30px;
 }
 .selector_selected{
     float: left;

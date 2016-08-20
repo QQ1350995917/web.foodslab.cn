@@ -226,25 +226,10 @@ function createAllView() {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
-    let searchEditor = document.createElement("input");
-    searchEditor.className = "SS_IC_LABEL";
-    searchEditor.style.width = "952px";
-    searchEditor.style.height = "30px";
-    searchEditor.style.lineHeight = "30px";
-    searchEditor.style.borderWidth = "1px";
-    searchEditor.style.marginTop = "10px";
-    searchEditor.style.marginBottom = "10px";
-    contentViewContainer.appendChild(searchEditor);
-
-    let searchActionView = document.createElement("div");
-    searchActionView.className = "B_B_D";
-    searchActionView.style.width = "100px";
-    searchActionView.style.height = "34px";
-    searchActionView.style.lineHeight = "30px";
-    searchActionView.style.marginTop = "10px";
-    searchActionView.style.marginBottom = "10px";
-    searchActionView.innerHTML = "搜索";
-    contentViewContainer.appendChild(searchActionView);
+    let searchView = createSearchWidget(function (data) {
+        console.log(data);
+    });
+    contentViewContainer.appendChild(searchView);
 
     let size = 3;
     for (let index =0;index<size;index++){

@@ -221,7 +221,7 @@
 - 请求所有产品体系的属性树结构
 
 #### 请求地址
-- http://localhost:8080/foodslab/product
+- http://localhost:8080/foodslab/product/retrieve
 
 #### 请求方式
 - post
