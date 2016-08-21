@@ -101,6 +101,7 @@ div.tabItem_normal {
     border-bottom-wdith: 5px;
     border-left-width: 5px;
     cursor: pointer;
+
 }
 
 div.tabItem_selected {
@@ -142,6 +143,7 @@ img.productItem_img {
     width: 244px;
     height: 280px;
     border: none;
+    padding: 0px;
     margin: 0px 1px;
     cursor: pointer;
 }

@@ -109,7 +109,7 @@ function createRecommendView(formatEntities) {
         formatEntitiesView.appendChild(formatEntityView);
     }
     let mainView = document.getElementById(MAIN);
-    let rowNum = (formatEntities.length / 4) + (formatEntities.length % 4 == 0 ? 0 : 1);
+    let rowNum = Math.floor(formatEntities.length / 4) + (formatEntities.length % 4 == 0 ? 0 : 1);
     mainView.style.height = rowNum * 400 + rowNum * 2 + "px";
-    document.getElementById(MAIN).appendChild(formatEntitiesView);
+    mainView.appendChild(formatEntitiesView);
 }
