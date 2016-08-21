@@ -11,7 +11,7 @@ let GLOBAL_PRODUCT_ENTITIES;
  * 请求产品列表
  */
 function productSeries() {
-    var indexUrl = BASE_PATH + "/product";
+    var indexUrl = BASE_PATH + "/product/retrieve";
     asyncRequestByGet(indexUrl, onProductDataCallBack, onRequestError(), onRequestTimeout());
 }
 
