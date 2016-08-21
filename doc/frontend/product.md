@@ -14,12 +14,13 @@
 
 | No.|level|key|Pkey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|seriesId  |      |String    |是| |如果不为空则额外返回指定的系列的产品树|
+|01|1|flag      |      |String  |是| |非空表示请求数据含有产品树|
+|01|1|seriesId  |      |String  |是| |在第一个条件成立的情况下,不指定该条件则表示请求第一个系列下的产品树,指定无效则不包含产品树|
 
 - GET请求链接示例：
 1. http://localhost:8080/foodslab/product/series
-2. http://localhost:8080/foodslab/product/series?seriesId=seriesId
-- 请求数据结构示例：seriesId=eaf77fd7-de68-4587-a3e5-3b7b340cfe2e
+2. http://localhost:8080/foodslab/product/series?flag=1&seriesId=seriesId
+- 请求数据结构示例：flag=1&seriesId=eaf77fd7-de68-4587-a3e5-3b7b340cfe2e
 - 备注：无
 
 #### 响应参数
@@ -31,15 +32,15 @@
 |04|2|seriesId |data     |String    |否	|    |系列ID|
 |05|2|label    |data     |String    |否	|    |系列label|
 |06|2|children |data     |jsonArray |是	|    |类型数据集合|
-|07|3|typeId   |children |String    |否	|    |类型ID|
-|08|3|seriesId |children |String    |否	|    |类型所属的系列ID|
-|09|3|label    |children |String    |否	|    |类型label|
-|10|3|children |children |jsonArray |否	|    |规格数据集合|
-|11|4|formatId |children |String    |否	|    |规格ID|
-|12|4|label    |children |String    |否	|    |规格label|
-|13|4|meta     |children |String    |否	|    |规格单位|
-|14|4|price    |children |int       |否	|    |价格|
-|15|4|pricingMeta|children |String  |否	|    |价格单位|
+|07|3|typeId   |children |String    |是	|    |类型ID|
+|08|3|seriesId |children |String    |是	|    |类型所属的系列ID|
+|09|3|label    |children |String    |是	|    |类型label|
+|10|3|children |children |jsonArray |是	|    |规格数据集合|
+|11|4|formatId |children |String    |是	|    |规格ID|
+|12|4|label    |children |String    |是	|    |规格label|
+|13|4|meta     |children |String    |是	|    |规格单位|
+|14|4|price    |children |int       |是	|    |价格|
+|15|4|pricingMeta|children |String  |是	|    |价格单位|
 
 - 响应数据结构示例：
 ```json
