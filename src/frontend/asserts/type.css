@@ -1,0 +1,67 @@
+div.typeMainTopView{
+    width: 1000px;
+    height: 400px;
+    margin: 0px;
+    border: 0px solid #CCCCCC;
+    border-bottom: 10px;
+}
+
+div.typeMainTopLeft{
+    float: left;
+    width: 248px;
+    height: 394px;
+    border: 1px solid #CCCCCC;
+}
+
+div.typeMainTopRight{
+    float: right;
+    width: 745px;
+    height: 396px;
+    border: 0px solid #CCCCCC;
+}
+
+hr.typeMainLine{
+    width: 1000px;
+    height: 1px;
+    border: 0px;
+    margin: 0px;
+    background-color: #CCCCCC;
+}
+
+div.typeMainDownView{
+    width: 1000px;
+    margin: 0px;
+    border: 0px solid #CCCCCC;
+    color: #000000;
+}
+
+div.formatItem{
+    width: 745px;
+    height: 40px;
+    color: #000000;
+    border: 0px solid #CCCCCC;
+}
+
+div.formatLabel{
+    float: left;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #000000;
+    border: 1px solid #CCCCCC;
+}
+
+div.formatLabelSelected{
+    float: left;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #000000;
+    border: 1px solid #FF0000;
+}
