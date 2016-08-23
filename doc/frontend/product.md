@@ -165,7 +165,7 @@
 
 ## 获取类型数据
 #### 描述
-- 获取产品规格的详情以及规格子集数据
+- 根据类型的ID获取产品规格的详情以及规格子集数据
 
 #### 请求地址
 - http://localhost:8080/foodslab/product/type
@@ -177,9 +177,10 @@
 
 | No.|level|key|Pkey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|typeId    |      |String    |否| |描述|
+|01|1|typeId    |      |String    |是| |如果不存在则跳转404|
+|01|1|formatId  |      |String    |是| |如果不存在则默认为第一个规格数据是选中的|
 
-- GET请求链接示例：http://localhost:8080/foodslab/product/type?typeId=113df3d5-bfbe-4350-aa6f-d20064bc25af
+- GET请求链接示例：http://localhost:8080/foodslab/product/type?typeId=113df3d5-bfbe-4350-aa6f-d20064bc25af&formatId=761f3cb4-130b-4fe0-8ef5-08fc748fda0b
 - 请求数据结构示例：无
 - 备注：无
 
@@ -191,16 +192,38 @@
 |03|1|data     |         |jsonArray |否	|    |数据集合体|
 |04|2|seriesId |data     |String    |否	|    |系列ID|
 |05|2|label    |data     |String    |否	|    |系列label|
-|06|2|children |data     |jsonArray |是	|    |类型数据集合|
-|07|3|typeId   |children |String    |是	|    |类型ID|
-|08|3|seriesId |children |String    |是	|    |类型所属的系列ID|
-|09|3|label    |children |String    |是	|    |类型label|
-|10|3|children |children |jsonArray |是	|    |规格数据集合|
+|06|2|child    |data     |jsonObject|是	|    |类型数据集合|
+|07|3|typeId   |child    |String    |是	|    |类型ID|
+|08|3|seriesId |child    |String    |是	|    |类型所属的系列ID|
+|09|3|label    |child    |String    |是	|    |类型label|
+|09|3|description |child |String    |是	|    |类型label|
+|09|3|detail   |child |String    |是	|    |类型label|
+|10|3|children |child |jsonArray |是	|    |规格数据集合|
 |11|4|formatId |children |String    |是	|    |规格ID|
 |12|4|label    |children |String    |是	|    |规格label|
 |13|4|meta     |children |String    |是	|    |规格单位|
 |14|4|price    |children |int       |是	|    |价格|
-|15|4|pricingMeta|children |String  |是	|    |价格单位|
+|15|4|priceMeta|children |String  |是	|    |价格单位|
+|16|4|amount     |children |int       |是	|    |数量|
+|17|4|amountMeta |children |String  |是	|    |数量单位|
+|18|4|postage    |children |int       |是	|    |邮费|
+|19|4|postageMeta|children |String  |是	|    |邮费单位|
+|20|4|pricingStatus|children |int       |是	|    |现价状态|
+|21|4|priceDiscount|children |float  |是	|    |现价折扣|
+|22|4|pricing      |children |float  |是	|    |现价|
+|23|4|pricingStart    |children |long  |是	|    |现价开始时间|
+|24|4|pricingEnd      |children   |long  |是	|    |现价结束时间|
+|25|4|expressStatus|children |int       |是	|    |包邮状态|
+|26|4|expressName  |children |String  |是	|    |包邮名称|
+|27|4|expressCount |children |int  |是	|    |包邮数量|
+|28|4|expressStart |children |long  |是	|    |包邮开始时间|
+|29|4|expressEnd   |children |long  |是	|    |包邮结束时间|
+|30|4|giftStatus   |children |int       |是	|    |满赠状态|
+|31|4|giftLabel  |children |String    |是	|    |满赠产品|
+|32|4|giftCount |children |int   |是	|    |满赠数量|
+|33|4|giftStart |children |long  |是	|    |满赠开始时间|
+|34|4|giftEnd   |children |long  |是	|    |满赠结束时间|
+|35|4|typeId    |children |long  |是	|    |满赠结束时间|
 
 - 响应数据结构示例：
 

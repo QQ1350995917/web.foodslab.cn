@@ -91,7 +91,7 @@ function createRecommendView(formatEntities) {
         formatEntityLinkView.appendChild(formatEntityFormatLabel);
         let formatEntityPriceLabel = document.createElement("div")
         formatEntityPriceLabel.className = "productItem_link_label";
-        formatEntityPriceLabel.innerHTML = formatEntities[i].price + formatEntities[i].pricingMeta;
+        formatEntityPriceLabel.innerHTML = formatEntities[i].price + formatEntities[i].priceMeta;
         formatEntityLinkView.appendChild(formatEntityPriceLabel);
         formatEntityView.appendChild(formatEntityLinkView);
         formatEntityLinkView.onclick = function () {

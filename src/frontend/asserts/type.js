@@ -3,12 +3,21 @@
  */
 window.onload = function () {
     initTitleView();
-    requestType(document.getElementById("seriesId") == undefined ? null : document.getElementById("seriesId").content);
+    let typeId = document.getElementById("typeId") == undefined ? null : document.getElementById("typeId").content;
+    let formatId = document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content;
+    requestType(typeId,formatId);
     requestLinker();
 };
 
-function requestType(seriesId) {
-    let url = BASE_PATH + "product/type?typeId=113df3d5-bfbe-4350-aa6f-d20064bc25af";
+function requestType(typeId,formatId) {
+    let url = BASE_PATH + "product/type?";
+    if (typeId != undefined){
+        url = url + "typeId=" + typeId;
+    }
+    if (formatId != undefined){
+        url = url + "&formatId=" + formatId;
+    }
+    
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -80,7 +89,7 @@ function createTypeMainView(data) {
 
     let formatEntitiesView = document.createElement("div");
     formatEntitiesView.style.height = "251px";
-    createFormatView(formatEntitiesView, data.child.children, undefined);
+    createFormatView(formatEntitiesView, data.child.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
     typeMainTopRight.appendChild(formatEntitiesView);
 
     typeMainTopView.appendChild(typeMainTopRight);
@@ -126,18 +135,123 @@ function createFormatView(containerView, formatEntity, selectedFormatId) {
         currentFormat = formatEntity[0];
         formatLabelView.childNodes[0].className = "formatLabelSelected";
     }
+    containerView.appendChild(formatLabelView);
+    containerView.appendChild(createFormatGiftItemView(currentFormat));
+    containerView.appendChild(createFormatExpressItemView(currentFormat));
+    containerView.appendChild(createFormatDiscountItemView(currentFormat));
+}
 
+function createFormatGiftItemView(formatEntity) {
     let formatGiftView = document.createElement("div");
     formatGiftView.className = "formatItem";
-    formatGiftView.innerHTML = "满 " + currentFormat.giftCount + " 赠送 " + currentFormat.giftLabel;
+    let formatGiftLabel = document.createElement("div");
+    formatGiftLabel.className = "formatLabel formatExpendLabel";
+    formatGiftLabel.innerHTML = "满 " + formatEntity.giftCount + " 赠送 " + formatEntity.giftLabel;
+    formatGiftView.appendChild(formatGiftLabel);
+    return formatGiftView;
+}
+
+function createFormatExpressItemView(formatEntity) {
     let formatExpressView = document.createElement("div");
     formatExpressView.className = "formatItem";
-    formatExpressView.innerHTML = "满 " + currentFormat.expressCount + " 包邮 " + currentFormat.expressName;
+    let formatExpressLabel = document.createElement("div");
+    formatExpressLabel.className = "formatLabel formatExpendLabel";
+    formatExpressLabel.innerHTML = "满 " + formatEntity.expressCount + " 包邮 " + formatEntity.expressName;
+    formatExpressView.appendChild(formatExpressLabel);
+    return formatExpressView;
+}
+
+function createFormatDiscountItemView(formatEntity) {
     let formatDiscountView = document.createElement("div");
     formatDiscountView.className = "formatItem";
 
-    containerView.appendChild(formatLabelView);
-    containerView.appendChild(formatGiftView);
-    containerView.appendChild(formatExpressView);
-    containerView.appendChild(formatDiscountView);
+    if (formatEntity.price != formatEntity.pricing){
+        /**
+         * 定价
+         */
+        let formatPriceLabel = document.createElement("div");
+        formatPriceLabel.className = "formatLabel";
+        formatPriceLabel.style.cursor = "default";
+        let formatPriceContent = document.createElement("div");
+        formatPriceContent.className = "formatLabel";
+        formatPriceContent.style.cursor = "default";
+        formatPriceContent.innerHTML = formatEntity.price + formatEntity.priceMeta;
+        formatPriceLabel.appendChild(formatPriceContent);
+        formatPriceContent.style.borderWidth = "0px";
+        let formatPriceLine = document.createElement("hr");
+        formatPriceLine.className = "diagonal";
+        formatPriceLabel.appendChild(formatPriceLine);
+        formatDiscountView.appendChild(formatPriceLabel);
+    }
+    /**
+     * 现价
+     */
+    let formatPricingLabel = document.createElement("div");
+    formatPricingLabel.className = "formatLabel";
+    formatPricingLabel.style.cursor = "default";
+    formatPricingLabel.innerHTML = formatEntity.pricing + formatEntity.priceMeta;
+    formatDiscountView.appendChild(formatPricingLabel);
+
+    /**
+     * 计数器
+     */
+    let formatCounterView = document.createElement("div");
+    formatCounterView.className = "formatLabel";
+    /**
+     * 数值区
+     */
+    let formatCounterEdit = document.createElement("input");
+    formatCounterEdit.style.width = "48px";
+    formatCounterEdit.style.height = "26px";
+    formatCounterEdit.style.borderWidth = "0px";
+    formatCounterEdit.style.marginRight = "0px";
+    formatCounterEdit.style.textAlign = "center";
+    formatCounterEdit.style.fontSize = "1rem";
+    formatCounterEdit.readOnly = "true";
+    formatCounterEdit.value = 1;
+    formatCounterView.appendChild(formatCounterEdit);
+    /**
+     * 操作区
+     */
+    let formatCounterOperator = document.createElement("div");
+    formatCounterOperator.className = "formatLabel";
+    formatCounterOperator.style.width = "30px";
+    formatCounterOperator.style.borderWidth = "0px";
+    formatCounterOperator.style.marginRight = "0px";
+    formatCounterOperator.style.float = "right";
+    let formatCounterAdd = document.createElement("div");
+    formatCounterAdd.className = "counter";
+    formatCounterAdd.style.borderTopWidth = "0px";
+    formatCounterAdd.style.borderRightWidth = "0px";
+    formatCounterAdd.innerHTML = "+";
+    formatCounterAdd.onclick = function () {
+        formatCounterEdit.value = parseInt(formatCounterEdit.value) + 1;
+    };
+    formatCounterOperator.appendChild(formatCounterAdd);
+    let formatCounterMinus = document.createElement("div");
+    formatCounterMinus.className = "counter";
+    formatCounterMinus.style.borderRightWidth = "0px";
+    formatCounterMinus.style.borderBottomWidth = "0px";
+    formatCounterMinus.innerHTML = "-";
+    formatCounterMinus.onclick = function () {
+        if (parseInt(formatCounterEdit.value) > 1){
+            formatCounterEdit.value = parseInt(formatCounterEdit.value) - 1;
+        }
+    };
+    formatCounterOperator.appendChild(formatCounterMinus);
+    formatCounterView.appendChild(formatCounterOperator);
+    formatDiscountView.appendChild(formatCounterView);
+
+    let buyNow = document.createElement("div");
+    buyNow.className = "formatLabel button";
+    buyNow.innerHTML = "立即购买";
+    formatDiscountView.appendChild(buyNow);
+
+    let putInCart = document.createElement("div");
+    putInCart.className = "formatLabel button";
+    putInCart.innerHTML = "加入购物车";
+
+    formatDiscountView.appendChild(putInCart);
+
+    return formatDiscountView;
 }
