@@ -33,21 +33,12 @@ function createSeriesView(seriesEntities) {
             seriesEntityView.className = "tabItem_normal";
         }
         seriesEntityView.onclick = function () {
-            // for (let j = 0; j < seriesEntitiesView.childNodes.length; j++) {
-            //     seriesEntitiesView.childNodes[j].className = "tabItem_normal";
-            //     if (i == j) {
-            //         seriesEntitiesView.childNodes[j].className = "tabItem_selected";
-            //     }
-            // }
             requestSeries(seriesEntities[i].seriesId);
         };
         seriesEntityView.innerHTML = seriesEntities[i].label;
         seriesEntitiesView.appendChild(seriesEntityView);
     }
-
-
 }
-
 
 function createProductView(typeEntities) {
     let formatEntitiesView = document.createElement("div")
@@ -69,13 +60,15 @@ function createProductView(typeEntities) {
             formatEntityTitleView.style.backgroundColor = COLORS[Math.floor(Math.random() * 10)];
             formatEntityTitleView.innerHTML = typeEntities[i].label;
             formatEntityTitleView.onclick = function () {
-
+                let url = BASE_PATH + "pd?typeId=" + formatEntity.typeId + "&formatId=" + formatEntity.formatId;
+                window.open(url);
             };
             formatEntityView.appendChild(formatEntityTitleView);
             let formatEntityImageView = document.createElement("img")
             formatEntityImageView.className = "productItem_img";
             formatEntityImageView.onclick = function () {
-
+                let url = BASE_PATH + "pd?typeId=" + formatEntity.typeId + "&formatId=" + formatEntity.formatId;
+                window.open(url);
             };
             formatEntityView.appendChild(formatEntityImageView);
             let formatEntityLinkView = document.createElement("div")
@@ -94,14 +87,14 @@ function createProductView(typeEntities) {
             formatEntityLinkView.appendChild(formatEntityPriceLabel);
             formatEntityView.appendChild(formatEntityLinkView);
             formatEntityLinkView.onclick = function () {
-
+                let url = BASE_PATH + "pd?typeId=" + formatEntity.typeId + "&formatId=" + formatEntity.formatId;
+                window.open(url);
             };
             let formatEntityBuyView = document.createElement("div")
             formatEntityBuyView.className = "productItem_buy";
             formatEntityBuyView.innerHTML = "立即购买";
             formatEntityBuyView.onclick = function () {
-                let url = BASE_PATH + "pb?formatId=" + formatEntity.formatId;
-                window.open(url);
+                
             };
             formatEntityView.appendChild(formatEntityBuyView);
             formatEntitiesView.appendChild(formatEntityView);
@@ -110,7 +103,6 @@ function createProductView(typeEntities) {
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
     let rowNum = Math.floor(counter / 4) + (counter % 4 == 0 ? 0 : 1);
-    console.log(rowNum);
     mainView.style.height = rowNum * 400 + rowNum * 2 + "px";
     mainView.appendChild(formatEntitiesView);
 }

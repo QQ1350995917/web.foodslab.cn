@@ -63,6 +63,9 @@ function createRecommendView(formatEntities) {
         }
         let formatEntityView = document.createElement("div")
         formatEntityView.className = "productItem";
+        /**
+         * 产品的标题
+         */
         let formatEntityTitleView = document.createElement("div")
         formatEntityTitleView.className = "productItem_title";
         formatEntityTitleView.style.backgroundColor = COLORS[Math.floor(Math.random()*10)];
@@ -72,13 +75,19 @@ function createRecommendView(formatEntities) {
             window.open(url);
         };
         formatEntityView.appendChild(formatEntityTitleView);
+        /**
+         * 产品的图片
+         */
         let formatEntityImageView = document.createElement("img")
         formatEntityImageView.className = "productItem_img";
         formatEntityImageView.onclick = function () {
-            let url = BASE_PATH + "pd?formatId=" + formatEntities[i].formatId;
+            let url = BASE_PATH + "pd?typeId=" + formatEntities[i].typeId + "&formatId=" + formatEntities[i].formatId;
             window.open(url);
         };
         formatEntityView.appendChild(formatEntityImageView);
+        /**
+         * 产品的类型规格价格
+         */
         let formatEntityLinkView = document.createElement("div")
         formatEntityLinkView.className = "productItem_link";
         let formatEntityTypeLabel = document.createElement("div")
@@ -95,15 +104,15 @@ function createRecommendView(formatEntities) {
         formatEntityLinkView.appendChild(formatEntityPriceLabel);
         formatEntityView.appendChild(formatEntityLinkView);
         formatEntityLinkView.onclick = function () {
-            let url = BASE_PATH + "pd?formatId=" + formatEntities[i].formatId;
+            let url = BASE_PATH + "pd?typeId=" + formatEntities[i].typeId + "&formatId=" + formatEntities[i].formatId;
             window.open(url);
         };
         let formatEntityBuyView = document.createElement("div")
         formatEntityBuyView.className = "productItem_buy";
         formatEntityBuyView.innerHTML = "立即购买";
         formatEntityBuyView.onclick = function () {
-            let url = BASE_PATH + "pb?formatId=" + formatEntities[i].formatId;
-            window.open(url);
+            // let url = BASE_PATH + "pb?formatId=" + formatEntities[i].formatId;
+            // window.open(url);
         };
         formatEntityView.appendChild(formatEntityBuyView);
         formatEntitiesView.appendChild(formatEntityView);
