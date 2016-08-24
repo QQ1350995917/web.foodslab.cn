@@ -4,6 +4,10 @@ body, html {
     color: #FFFFFF;
 }
 
+input:focus, textarea:focus,select:focus {
+    outline: none;
+}
+
 a {
     color: #CCCCCC;
     text-decoration: none;

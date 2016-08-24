@@ -1,14 +1,33 @@
-input:focus, textarea:focus,select:focus {
-    outline: none;
-}
 
-input{
+input {
     width: 120px;
     height: 24px;
     font-size: 1rem;
 }
 
-div.messageLabel{
+input.editor {
+    border: 1px solid #FF0000;
+}
+
+img.payStyleNormal{
+    height: 124px;
+    cursor: pointer;
+}
+
+img.payStyleSelect{
+    height: 120px;
+    border: 2px solid #FF0000;
+}
+
+div.blockView {
+    width: 1000px;
+    height: 120px;
+    margin-top: 10px;
+    border: 0px solid #CCCCCC;
+    border-top: 1px solid #CCCCCC;
+}
+
+div.messageLabel {
     width: 998px;
     height: 30px;
     line-height: 30px;
@@ -16,8 +35,25 @@ div.messageLabel{
     border: 0px solid #CCCCCC;
 }
 
-div.messageLabelInline{
+div.messageLabelInline {
     float: left;
     width: 40px;
     height: 30px;
+}
+
+div.productListItem{
+    width: 998px;
+    height: 120px;
+    border: 1px solid #CCCCCC;
+    color: #000000;
+    background-color: #F5FBFE;
+}
+
+div.payBarItem{
+    float: right;
+    width: 150px;
+    height: 40px;
+    line-height: 40px;
+    color: #000000;
+
 }
