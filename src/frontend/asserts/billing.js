@@ -5,6 +5,8 @@ window.onload = function () {
     initTitleView();
     createBillingView();
     requestLinker();
+
+    requestAddress(undefined);
 };
 
 function createBillingView() {
@@ -41,6 +43,7 @@ function createExpressView() {
     buyerInfoMessageLine.className = "messageLabel";
     let buyerNameLabel = document.createElement("div");
     buyerNameLabel.className = "messageLabelInline";
+    buyerNameLabel.style.marginLeft = "0px";
     buyerNameLabel.innerHTML = "姓名:";
     buyerInfoMessageLine.appendChild(buyerNameLabel);
     let buyerNameEditor = document.createElement("input");
@@ -71,7 +74,68 @@ function createExpressView() {
     receiverInfoMessageLine.style.borderColor = "#FF0000";
     receiverInfoMessageLine.innerHTML = "点击编辑收货人信息";
     receiverInfoMessageLine.onclick = function () {
-        showReceiverEditorView();        
+        showReceiverEditorView(
+            document.getElementById("RName") == undefined ? undefined : document.getElementById("RName").innerHTML,
+            document.getElementById("RProvince") == undefined ? undefined : document.getElementById("RProvince").innerHTML,
+            document.getElementById("RCity") == undefined ? undefined : document.getElementById("RCity").innerHTML,
+            document.getElementById("RCounty") == undefined ? undefined : document.getElementById("RCounty").innerHTML,
+            document.getElementById("RTown") == undefined ? undefined : document.getElementById("RTown").innerHTML,
+            document.getElementById("RVillage") == undefined ? undefined : document.getElementById("RVillage").innerHTML,
+            document.getElementById("RAppend") == undefined ? undefined : document.getElementById("RAppend").innerHTML,
+            document.getElementById("RPhone") == undefined ? undefined : document.getElementById("RPhone").innerHTML,
+            document.getElementById("RPhoneBak") == undefined ? undefined : document.getElementById("RPhoneBak").innerHTML,
+            function (name, province, city, county, town, village, append, phone, phoneBak) {
+                console.log(name + " ; " + province + " ; " + city + " ; " + county + " ; " + town + " ; " + village + " ; " + append + " ; " + phone + " ; " + phoneBak);
+                receiverInfoMessageLine.innerHTML = null;
+                receiverInfoMessageLine.style.fontSize = "1rem";
+                let nameLabel = document.createElement("div");
+                nameLabel.id = "RName";
+                nameLabel.className = "messageLabelInline";
+                nameLabel.style.borderWidth = "1px";
+                nameLabel.innerHTML = name;
+                let provinceLabel = document.createElement("div");
+                provinceLabel.id = "RProvince";
+                provinceLabel.className = "messageLabelInline";
+                provinceLabel.innerHTML = province;
+                let cityLabel = document.createElement("div");
+                cityLabel.id = "RCity";
+                cityLabel.className = "messageLabelInline";
+                cityLabel.innerHTML = city;
+                let countyLabel = document.createElement("div");
+                countyLabel.id = "RCounty";
+                countyLabel.className = "messageLabelInline";
+                countyLabel.innerHTML = county;
+                let townLabel = document.createElement("div");
+                townLabel.id = "RTown";
+                townLabel.className = "messageLabelInline";
+                townLabel.innerHTML = town;
+                let villageLabel = document.createElement("div");
+                villageLabel.id = "RVillage";
+                villageLabel.className = "messageLabelInline";
+                villageLabel.innerHTML = village;
+                let appendLabel = document.createElement("div");
+                appendLabel.id = "RAppend";
+                appendLabel.className = "messageLabelInline";
+                appendLabel.innerHTML = append;
+                let phoneLabel = document.createElement("div");
+                phoneLabel.id = "RPhone";
+                phoneLabel.className = "messageLabelInline";
+                phoneLabel.innerHTML = phone;
+                let phoneBakLabel = document.createElement("div");
+                phoneBakLabel.id = "RPhoneBak";
+                phoneBakLabel.className = "messageLabelInline";
+                phoneBakLabel.innerHTML = phoneBak;
+                receiverInfoMessageLine.appendChild(nameLabel);
+                receiverInfoMessageLine.appendChild(phoneLabel);
+                receiverInfoMessageLine.appendChild(phoneBakLabel);
+                receiverInfoMessageLine.appendChild(provinceLabel);
+                receiverInfoMessageLine.appendChild(cityLabel);
+                receiverInfoMessageLine.appendChild(countyLabel);
+                receiverInfoMessageLine.appendChild(townLabel);
+                receiverInfoMessageLine.appendChild(villageLabel);
+                receiverInfoMessageLine.appendChild(appendLabel);
+
+            });
     };
     expressContainer.appendChild(receiverInfoMessageLine);
 
@@ -175,4 +239,17 @@ function createPaymentBarView() {
 
     return payingContainer;
 }
+
+// let ADDRESS_LEVEL1 = undefined;
+// function requestAddress() {
+//     let url = BASE_PATH + "meta/address";
+//     asyncRequestByGet(url, function (data) {
+//         var result = checkResponseDataFormat(data);
+//         if (result) {
+//             var jsonData = JSON.parse(data);
+//             ADDRESS_LEVEL1 = jsonData.data;
+//             console.log(ADDRESS_LEVEL1);
+//         }
+//     }, onErrorCallback, onTimeoutCallback);
+// }
 

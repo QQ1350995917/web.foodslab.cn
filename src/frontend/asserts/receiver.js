@@ -1,7 +1,41 @@
 /**
  * Created by dingpengwei on 8/24/16.
  */
-function showReceiverEditorView() {
+
+// function requestSubAddress(pcode, selectView, level) {
+//     let url = BASE_PATH + "meta/address?pcode=" + pcode;
+//     asyncRequestByGet(url, function (data) {
+//         var result = checkResponseDataFormat(data);
+//         if (result) {
+//             var jsonData = JSON.parse(data);
+//             let subAddress = jsonData.data;
+//             selectView.options.length = 0;
+//             console.log(subAddress.length);
+//             if (subAddress.length > 0) {
+//                 let optionTip = new Option("请选择", "selectTip");
+//                 selectView.options.add(optionTip);
+//                 for (let index = 0; index < subAddress.length; index++) {
+//                     let option = new Option(subAddress[index].label, subAddress[index].code);
+//                     selectView.options.add(option);
+//                 }
+//                 selectView.style.visibility = "visible";
+//                 if (level == 5) {
+//                     let appendAddress = document.getElementById("appendAddressContainer");
+//                     appendAddress.style.visibility = "visible";
+//                 }
+//             } else {
+//                 let appendAddress = document.getElementById("appendAddressContainer");
+//                 appendAddress.style.visibility = "visible";
+//             }
+//         }
+//     }, onErrorCallback, onTimeoutCallback);
+// }
+
+
+function showReceiverEditorView(name, province, city, county, town, village, append, phone, phoneBak, callback) {
+    // if (ADDRESS_LEVEL1 == undefined || ADDRESS_LEVEL1.length < 1) {
+    //     requestAddress();
+    // }
     document.documentElement.style.overflow = 'hidden';
     document.oncontextmenu = new Function("event.returnValue=false;");
     document.onselectstart = new Function("event.returnValue=false;");
@@ -16,11 +50,11 @@ function showReceiverEditorView() {
     let receiverEditor = createReceiverEditor();
     document.body.appendChild(receiverEditor);
     receiverEditor.appendChild(createReceiverEditorTitle());
-    receiverEditor.appendChild(createReceiverEditorName());
-    receiverEditor.appendChild(createReceiverEditorAddress());
-    receiverEditor.appendChild(createReceiverEditorAddressAppend());
-    receiverEditor.appendChild(createReceiverEditorPhone());
-    receiverEditor.appendChild(createReceiverEditorSave());
+    receiverEditor.appendChild(createReceiverEditorName(name));
+    receiverEditor.appendChild(createReceiverEditorAddress(province, city, county, town, village));
+    receiverEditor.appendChild(createReceiverEditorAddressAppend(append));
+    receiverEditor.appendChild(createReceiverEditorPhone(phone, phoneBak));
+    receiverEditor.appendChild(createReceiverEditorSave(callback));
 }
 
 function dismissReceiverEditorView() {
@@ -96,7 +130,7 @@ function createReceiverEditorTitle() {
     return receiverEditorTitleLine;
 }
 
-function createReceiverEditorName() {
+function createReceiverEditorName(name) {
     let receiverEditorNameLine = document.createElement("div");
     receiverEditorNameLine.className = "receiverItem";
     let receiverNameLabel = document.createElement("div");
@@ -109,11 +143,13 @@ function createReceiverEditorName() {
     let receiverEditorName = document.createElement("input");
     receiverEditorName.id = "receiverEditorName";
     receiverEditorName.className = "editor input";
+    receiverEditorName.style.width = "150px";
+    receiverEditorName.value = name == undefined ? "" : name;
     receiverEditorNameLine.appendChild(receiverEditorName);
     return receiverEditorNameLine;
 }
 
-function createReceiverEditorAddress() {
+function createReceiverEditorAddress(province, city, county, town, village) {
     let receiverEditorAddressLine = document.createElement("div");
     receiverEditorAddressLine.className = "receiverItem";
     let receiverAddressLabel = document.createElement("div");
@@ -123,54 +159,93 @@ function createReceiverEditorAddress() {
     receiverAddressLabel.innerHTML = "<span style='color: #FF0000;'>*</span>地址:";
     receiverEditorAddressLine.appendChild(receiverAddressLabel);
 
-    let province = document.createElement("select");
-    province.id = "addressEditorProvince";
-    province.className = "addressSelector";
-    receiverEditorAddressLine.appendChild(province);
+    let provinceSelect = document.createElement("select");
+    provinceSelect.id = "addressEditorProvince";
+    provinceSelect.className = "addressSelector";
+    provinceSelect.style.visibility = "visible";
+    provinceSelect.options.add(new Option("北京市", "北京市"));
+    // for (let index = 0; index < ADDRESS_LEVEL1.length; index++) {
+    //     let option = new Option(ADDRESS_LEVEL1[index].label, ADDRESS_LEVEL1[index].code);
+    //     province.options.add(option);
+    // }
+    receiverEditorAddressLine.appendChild(provinceSelect);
 
-    let city = document.createElement("select");
-    province.id = "addressEditorProvince";
-    city.className = "addressSelector";
-    receiverEditorAddressLine.appendChild(city);
+    let citySelect = document.createElement("select");
+    citySelect.id = "addressEditorCity";
+    citySelect.className = "addressSelector";
+    citySelect.options.add(new Option("海淀区", "海淀区"));
+    receiverEditorAddressLine.appendChild(citySelect);
 
-    let county = document.createElement("select");
-    county.id = "addressEditorCounty";
-    county.className = "addressSelector";
-    receiverEditorAddressLine.appendChild(county);
+    let countySelect = document.createElement("select");
+    countySelect.id = "addressEditorCounty";
+    countySelect.className = "addressSelector";
+    countySelect.options.add(new Option("中关村", "中关村"));
+    receiverEditorAddressLine.appendChild(countySelect);
 
-    let town = document.createElement("select");
-    town.id = "addressEditorTown";
-    town.className = "addressSelector";
-    receiverEditorAddressLine.appendChild(town);
+    let townSelect = document.createElement("select");
+    townSelect.id = "addressEditorTown";
+    townSelect.className = "addressSelector";
+    townSelect.options.add(new Option("三环到四环", "三环到四环"));
+    receiverEditorAddressLine.appendChild(townSelect);
 
-    let village = document.createElement("select");
-    village.id = "addressEditorVillage";
-    village.className = "addressSelector";
-    receiverEditorAddressLine.appendChild(village);
+    let villageSelect = document.createElement("select");
+    villageSelect.id = "addressEditorVillage";
+    villageSelect.className = "addressSelector";
+    villageSelect.options.add(new Option("鼎好大厦", "鼎好大厦"));
+    receiverEditorAddressLine.appendChild(villageSelect);
+
+    // province.onchange = function () {
+    //     city.style.visibility = "hidden";
+    //     county.style.visibility = "hidden";
+    //     town.style.visibility = "hidden";
+    //     village.style.visibility = "hidden";
+    //     requestSubAddress(province.options[province.selectedIndex].value, city, 2);
+    // };
+    //
+    // city.onchange = function () {
+    //     county.style.visibility = "hidden";
+    //     town.style.visibility = "hidden";
+    //     village.style.visibility = "hidden";
+    //     requestSubAddress(city.options[city.selectedIndex].value, county, 3);
+    // };
+    //
+    // county.onchange = function () {
+    //     town.style.visibility = "hidden";
+    //     village.style.visibility = "hidden";
+    //     requestSubAddress(county.options[county.selectedIndex].value, town, 4);
+    // };
+    //
+    // town.onchange = function () {
+    //     village.style.visibility = "hidden";
+    //     requestSubAddress(town.options[town.selectedIndex].value, village, 5);
+    // };
 
     return receiverEditorAddressLine;
 }
 
-function createReceiverEditorAddressAppend() {
+function createReceiverEditorAddressAppend(append) {
     let receiverEditorAddressAppendLine = document.createElement("div");
+    receiverEditorAddressAppendLine.id = "appendAddressContainer";
     receiverEditorAddressAppendLine.className = "receiverItem";
+    // receiverEditorAddressAppendLine.style.visibility = "hidden";
     let receiverAddressAppendLabel = document.createElement("div");
     receiverAddressAppendLabel.className = "receiverItemLabel";
     receiverAddressAppendLabel.style.float = "left";
     receiverAddressAppendLabel.style.textAlign = "right";
-    receiverAddressAppendLabel.innerHTML = "<span style='color: #FF0000;'>*</span>补充地址:";
+    receiverAddressAppendLabel.innerHTML = "补充地址:";
     receiverEditorAddressAppendLine.appendChild(receiverAddressAppendLabel);
 
     let receiverEditorAddressAppend = document.createElement("input");
     receiverEditorAddressAppend.id = "receiverEditorAddressAppend";
     receiverEditorAddressAppend.className = "editor input";
+    receiverEditorAddressAppend.value = append == undefined ? "" : append;
     receiverEditorAddressAppendLine.appendChild(receiverEditorAddressAppend);
     return receiverEditorAddressAppendLine;
 
 }
 
 
-function createReceiverEditorPhone() {
+function createReceiverEditorPhone(phone,phoneBak) {
     let receiverEditorPhoneContainer = document.createElement("div");
     receiverEditorPhoneContainer.className = "receiverItem";
     let receiverPhoneLabel = document.createElement("div");
@@ -185,8 +260,8 @@ function createReceiverEditorPhone() {
     receiverEditorPhone.className = "editor input";
     receiverEditorPhone.style.width = "150px";
     receiverEditorPhone.style.float = "left";
+    receiverEditorPhone.value = phone == undefined ? "":phone;
     receiverEditorPhoneContainer.appendChild(receiverEditorPhone);
-
 
     let receiverPhoneBackupLabel = document.createElement("div");
     receiverPhoneBackupLabel.className = "receiverItemLabel";
@@ -200,13 +275,13 @@ function createReceiverEditorPhone() {
     receiverEditorPhoneBackup.className = "editor input";
     receiverEditorPhoneBackup.style.width = "150px";
     receiverEditorPhoneBackup.style.float = "left";
+    receiverEditorPhoneBackup.value = phoneBak == undefined ? "":phoneBak;
     receiverEditorPhoneContainer.appendChild(receiverEditorPhoneBackup);
 
     return receiverEditorPhoneContainer;
 }
 
-
-function createReceiverEditorSave() {
+function createReceiverEditorSave(callback) {
     let receiverEditorSave = document.createElement("div");
     receiverEditorSave.className = "receiverItem";
     receiverEditorSave.style.marginTop = "20px";
@@ -221,10 +296,22 @@ function createReceiverEditorSave() {
     receiverSave.style.cursor = "pointer";
     receiverSave.innerHTML = "确定";
     receiverSave.onclick = function () {
-        let receiverEditorName = document.getElementById("receiverEditorName").value;
-        let receiverEditorAddressAppend = document.getElementById("receiverEditorAddressAppend").value;
-        let receiverEditorPhone = document.getElementById("receiverEditorPhone").value;
-        let receiverEditorPhoneBackup = document.getElementById("receiverEditorPhoneBackup").value;
+        let receiverName = document.getElementById("receiverEditorName").value;
+        let provinceSelector = document.getElementById("addressEditorProvince");
+        let provinceName = provinceSelector.options[provinceSelector.selectedIndex].value;
+        let citySelector = document.getElementById("addressEditorCity");
+        let cityName = citySelector.options[citySelector.selectedIndex].value;
+        let countySelector = document.getElementById("addressEditorCounty");
+        let countyName = countySelector.options[countySelector.selectedIndex].value;
+        let townSelector = document.getElementById("addressEditorTown");
+        let townName = townSelector.options[townSelector.selectedIndex].value;
+        let villageSelector = document.getElementById("addressEditorVillage");
+        let villageName = villageSelector.options[townSelector.selectedIndex].value;
+        let receiverAddressAppend = document.getElementById("receiverEditorAddressAppend").value;
+        let receiverPhone = document.getElementById("receiverEditorPhone").value;
+        let receiverPhoneBackup = document.getElementById("receiverEditorPhoneBackup").value;
+        callback(receiverName, provinceName, cityName, countyName, townName, villageName, receiverAddressAppend, receiverPhone, receiverPhoneBackup);
+        dismissReceiverEditorView();
     };
     receiverEditorSave.appendChild(receiverSave);
     return receiverEditorSave;
