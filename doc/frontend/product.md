@@ -312,3 +312,119 @@
 }
 ```
 - 备注：无
+
+
+## 获取产品规格
+#### 描述
+- 接口描述
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/format?formatIds=a8002cbe-60bc-4f7d-abef-a36e46b23f49
+
+#### 请求方式
+- get
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|formatId  |      |String    |否| |描述|
+
+- GET请求链接示例：无
+- 请求数据结构示例： 无
+
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|04|2|formatId |data |String    |是	|    |规格ID|
+|05|2|label    |data |String    |是	|    |规格label|
+|06|2|meta     |data |String    |是	|    |规格单位|
+|07|2|price    |data |int       |是	|    |价格|
+|08|2|priceMeta|data |String  |是	|    |价格单位|
+|09|2|amount     |data |int       |是	|    |数量|
+|10|2|amountMeta |data |String  |是	|    |数量单位|
+|11|2|postage    |data |int       |是	|    |邮费|
+|12|2|postageMeta|data |String  |是	|    |邮费单位|
+|13|2|pricingStatus|data |int       |是	|    |现价状态|
+|14|2|priceDiscount|data |float  |是	|    |现价折扣|
+|15|2|pricing      |data |float  |是	|    |现价|
+|16|2|pricingStart    |data |long  |是	|    |现价开始时间|
+|17|2|pricingEnd      |data   |long  |是	|    |现价结束时间|
+|18|2|expressStatus|data |int       |是	|    |包邮状态|
+|19|2|expressName  |data |String  |是	|    |包邮名称|
+|20|2|expressCount |data |int  |是	|    |包邮数量|
+|21|2|expressStart |data |long  |是	|    |包邮开始时间|
+|22|2|expressEnd   |data |long  |是	|    |包邮结束时间|
+|23|2|giftStatus   |data |int       |是	|    |满赠状态|
+|24|2|giftLabel  |data |String    |是	|    |满赠产品|
+|25|2|giftCount |data |int   |是	|    |满赠数量|
+|26|2|giftStart |data |long  |是	|    |满赠开始时间|
+|27|2|giftEnd   |data |long  |是	|    |满赠结束时间|
+|28|2|parent   |data |jsonObject  |是	|    ||
+|29|3|seriesId |parent    |String    |是	|    |类型所属的系列ID|
+|30|3|label    |parent    |String    |是	|    |类型label|
+|31|3|description |parent |String    |是	|    |类型label|
+|32|3|detail   |parent |String    |是	|    |类型label|
+|33|3|parent   |parent |String    |是	|    |类型label|
+|34|4|seriesId |parent     |String    |否	|    |系列ID|
+|35|4|label    |parent     |String    |否	|    |系列label|
+|36|4|child    |parent     |jsonObject|是	|    |类型数据集合|
+|37|4|typeId   |parent    |String    |是	|    |类型ID|
+
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 200,
+    "data": [
+        {
+            "parent": {
+                "parent": {
+                    "label": "白芝麻",
+                    "seriesId": "3cd62990-0683-4e0f-b051-93ef363e8c39"
+                },
+                "typeId": "b3c3ad2e-f013-4f1b-951c-d94cf2a06053",
+                "label": "散装",
+                "seriesId": "3cd62990-0683-4e0f-b051-93ef363e8c39"
+            },
+            "pricingStart": 1471996800000,
+            "giftCount": 11,
+            "giftLabel": "gift_product1",
+            "giftStart": 1470268800000,
+            "pricingStatus": 1,
+            "price": 11,
+            "giftStatus": 1,
+            "postageMeta": "g",
+            "pricingEnd": 1471910400000,
+            "amount": 11,
+            "priceMeta": "L",
+            "weight": 0,
+            "giftEnd": 1470873600000,
+            "updateTime": 1471701375000,
+            "label": "11",
+            "priceDiscount": 11,
+            "expressEnd": 1471910400000,
+            "postage": 11,
+            "expressName": "顺丰快递",
+            "formatId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+            "amountMeta": "ml",
+            "createTime": 1471082940000,
+            "meta": "ml",
+            "expressCount": 11,
+            "typeId": "b3c3ad2e-f013-4f1b-951c-d94cf2a06053",
+            "expressStatus": 1,
+            "pricing": 11,
+            "queue": 0,
+            "expressStart": 1471996800000,
+            "status": 1
+        }
+    ],
+    "message": "this is tip message!"
+}
+```
+- 备注：无

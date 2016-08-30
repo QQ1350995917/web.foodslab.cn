@@ -5,9 +5,63 @@ window.onload = function () {
     initTitleView();
     createBillingView();
     requestLinker();
-
-    requestAddress(undefined);
+    let formatIds = document.getElementById("formatIds") == undefined ? null : document.getElementById("formatIds").content;
+    requestFormat(formatIds);
 };
+
+function requestFormat(formatIds) {
+    let url = "http://localhost:8080/foodslab/product/format?formatIds=" + formatIds;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createBillingList(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function createBillingList(data) {
+    let billingList = document.getElementById("billingListContainer");
+    let size = data.length;
+    for (let i = 0; i < size; i++) {
+        let formatEntity = data[i];
+        let listMessage = document.createElement("div");
+        listMessage.className = "productListItem";
+        if (i == 0) {
+            listMessage.style.borderTopWidth = "0px";
+            listMessage.style.borderBottomWidth = "0px";
+        } else {
+            listMessage.style.borderBottomWidth = "0px";
+        }
+
+        let snap = document.createElement("img");
+        snap.style.width = "99px";
+        snap.style.height = "119px";
+        snap.style.float = "left";
+        let label = document.createElement("div");
+        label.className = "messageLabelInline";
+        label.style.width = "500px";
+        label.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label  + " " + formatEntity.label + formatEntity.meta;
+        let price = document.createElement("div");
+        price.className = "messageLabelInline";
+        price.style.width = "170px";
+        price.innerHTML = formatEntity.pricing + "" + formatEntity.priceMeta;
+        let counter = document.createElement("div");
+        counter.className = "messageLabelInline";
+        counter.style.width = "170px";
+        counter.innerHTML = " X" + formatEntity.amount;
+
+        listMessage.appendChild(snap);
+        listMessage.appendChild(label);
+        listMessage.appendChild(price);
+        listMessage.appendChild(counter);
+        billingList.appendChild(listMessage);
+    }
+
+    billingList.style.height = 120 * size + 30 + "px";
+    let mainView = document.getElementById(MAIN);
+    mainView.style.height = mainView.clientHeight + 120 * (size - 1) + 30 + "px";
+}
 
 function createBillingView() {
     let mainView = document.getElementById(MAIN);
@@ -183,25 +237,12 @@ function createPayStyleView() {
 
 function createProductView() {
     let productContainer = document.createElement("div");
+    productContainer.id = "billingListContainer";
     productContainer.className = "blockView";
     let listMessage = document.createElement("div");
     listMessage.className = "messageLabel";
     listMessage.innerHTML = "送货清单";
     productContainer.appendChild(listMessage);
-    let size = 1;
-    for (let i = 0; i < size; i++) {
-        let listMessage = document.createElement("div");
-        listMessage.className = "productListItem";
-        if (i == 0) {
-            listMessage.style.borderTopWidth = "0px";
-            listMessage.style.borderBottomWidth = "0px";
-        } else {
-            listMessage.style.borderBottomWidth = "0px";
-        }
-        productContainer.appendChild(listMessage);
-    }
-
-    productContainer.style.height = 120 * size + 30 + "px";
 
     return productContainer;
 }
