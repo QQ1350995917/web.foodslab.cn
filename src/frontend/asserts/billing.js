@@ -10,7 +10,7 @@ window.onload = function () {
 };
 
 function requestFormat(formatIds) {
-    let url = "http://localhost:8080/foodslab/product/format?formatIds=" + formatIds;
+    let url = BASE_PATH + "product/format?formatIds=" + formatIds;
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -18,6 +18,37 @@ function requestFormat(formatIds) {
             createBillingList(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
+    let url = BASE_PATH + "order/create?senderName=" + senderName
+        + "&senderPhone=" + senderPhone
+        + "&cost=1234&postage=123"
+        + "&formatId=" + formatId
+        + "&name=" + name
+        + "&phone0=" + phone0
+        + "&phone1=" + phone1
+        + "&province=" + province
+        + "&city=" + city
+        + "&county=" + county
+        + "&town=" + town
+        + "&village=" + village
+        + "&append=" + append;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            onRequestCreateOrderCallback(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+let orderId = undefined;
+function onRequestCreateOrderCallback(data) {
+    orderId = data.orderId;
+    showPaymentView(function () {
+        let url = BASE_PATH + "pq?orderId=" + data.orderId;
+        window.open(url,"_self");
+    });
 }
 
 function createBillingList(data) {
@@ -33,7 +64,10 @@ function createBillingList(data) {
         } else {
             listMessage.style.borderBottomWidth = "0px";
         }
-
+        let formatId = document.createElement("input");
+        formatId.id = "formatId";
+        formatId.style.visibility = "hidden";
+        formatId.value = formatEntity.formatId;
         let snap = document.createElement("img");
         snap.style.width = "99px";
         snap.style.height = "119px";
@@ -41,7 +75,7 @@ function createBillingList(data) {
         let label = document.createElement("div");
         label.className = "messageLabelInline";
         label.style.width = "500px";
-        label.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label  + " " + formatEntity.label + formatEntity.meta;
+        label.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
         let price = document.createElement("div");
         price.className = "messageLabelInline";
         price.style.width = "170px";
@@ -51,6 +85,7 @@ function createBillingList(data) {
         counter.style.width = "170px";
         counter.innerHTML = " X" + formatEntity.amount;
 
+        listMessage.appendChild(formatId);
         listMessage.appendChild(snap);
         listMessage.appendChild(label);
         listMessage.appendChild(price);
@@ -101,6 +136,7 @@ function createExpressView() {
     buyerNameLabel.innerHTML = "姓名:";
     buyerInfoMessageLine.appendChild(buyerNameLabel);
     let buyerNameEditor = document.createElement("input");
+    buyerNameEditor.id = "senderName";
     buyerNameEditor.className = "editor";
     buyerNameEditor.style.float = "left";
     buyerNameEditor.style.marginRight = "20px";
@@ -110,6 +146,7 @@ function createExpressView() {
     buyerPhoneLabel.innerHTML = "电话:";
     buyerInfoMessageLine.appendChild(buyerPhoneLabel);
     let buyerPhoneEditor = document.createElement("input");
+    buyerPhoneEditor.id = "senderPhone";
     buyerPhoneEditor.className = "editor";
     buyerPhoneEditor.style.float = "left";
     buyerInfoMessageLine.appendChild(buyerPhoneEditor);
@@ -262,7 +299,56 @@ function createPaymentBarView() {
     payActionView.style.cursor = "pointer";
     payActionView.innerHTML = "结算";
     payActionView.onclick = function () {
-        showPaymentView();  
+        let name = document.getElementById("RName") == undefined ? undefined : document.getElementById("RName").innerHTML;
+        let province = document.getElementById("RProvince") == undefined ? undefined : document.getElementById("RProvince").innerHTML;
+        let city = document.getElementById("RCity") == undefined ? undefined : document.getElementById("RCity").innerHTML;
+        let county = document.getElementById("RCounty") == undefined ? undefined : document.getElementById("RCounty").innerHTML;
+        let town = document.getElementById("RTown") == undefined ? undefined : document.getElementById("RTown").innerHTML;
+        let village = document.getElementById("RVillage") == undefined ? undefined : document.getElementById("RVillage").innerHTML;
+        let append = document.getElementById("RAppend") == undefined ? undefined : document.getElementById("RAppend").innerHTML;
+        let phone0 = document.getElementById("RPhone") == undefined ? undefined : document.getElementById("RPhone").innerHTML;
+        let phone1 = document.getElementById("RPhoneBak") == undefined ? undefined : document.getElementById("RPhoneBak").innerHTML;
+
+        if (isNullValue(name)) {
+            new Toast().show("请输入收货人姓名");
+            return;
+        }
+
+        if (isNullValue(phone0)) {
+            new Toast().show("请输入收货人电话");
+            return;
+        }
+
+        if (isNullValue(province)) {
+            new Toast().show("请完善收货人地址");
+            return;
+        }
+
+        if (isNullValue(city)) {
+            new Toast().show("请完善收货人地址");
+            return;
+        }
+
+        if (isNullValue(county)) {
+            new Toast().show("请完善收货人地址");
+            return;
+        }
+
+        if (isNullValue(town)) {
+            new Toast().show("请完善收货人地址");
+            return;
+        }
+
+        if (isNullValue(village)) {
+            new Toast().show("请完善收货人地址");
+            return;
+        }
+
+        let senderName = document.getElementById("senderName");
+        let senderPhone = document.getElementById("senderPhone");
+        let formatId = document.getElementById("formatId");
+
+        requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
     };
     payingContainer.appendChild(payActionView);
 
@@ -283,17 +369,3 @@ function createPaymentBarView() {
 
     return payingContainer;
 }
-
-// let ADDRESS_LEVEL1 = undefined;
-// function requestAddress() {
-//     let url = BASE_PATH + "meta/address";
-//     asyncRequestByGet(url, function (data) {
-//         var result = checkResponseDataFormat(data);
-//         if (result) {
-//             var jsonData = JSON.parse(data);
-//             ADDRESS_LEVEL1 = jsonData.data;
-//             console.log(ADDRESS_LEVEL1);
-//         }
-//     }, onErrorCallback, onTimeoutCallback);
-// }
-

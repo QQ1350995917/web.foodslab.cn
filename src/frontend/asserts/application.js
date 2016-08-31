@@ -124,3 +124,10 @@ function getScrollTop() {
     }
     return scrollPos;
 }
+
+function isNullValue(value) {
+    if (value == undefined || value == null || value == ""){
+        return true;
+    }
+    return false;
+}

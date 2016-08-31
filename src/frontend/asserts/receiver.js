@@ -89,7 +89,7 @@ function createReceiverEditor() {
     receiverEditorContainer.style.position = "absolute";
     receiverEditorContainer.style.width = "600px";
     receiverEditorContainer.style.height = "300px";
-    receiverEditorContainer.style.top = "15%";
+    receiverEditorContainer.style.top = getScrollTop() + 100 + "px";
     receiverEditorContainer.style.left = "50%";
     receiverEditorContainer.style.marginLeft = "-300px";
     receiverEditorContainer.style.zIndex = "10";

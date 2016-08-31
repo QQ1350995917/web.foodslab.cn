@@ -1,7 +1,7 @@
 /**
  * Created by dingpengwei on 8/30/16.
  */
-function showPaymentView() {
+function showPaymentView(callback) {
     document.documentElement.style.overflow = 'hidden';
     document.oncontextmenu = new Function("event.returnValue=false;");
     document.onselectstart = new Function("event.returnValue=false;");
@@ -15,7 +15,7 @@ function showPaymentView() {
     let paymentContainer = createPaymentContainer();
     document.body.appendChild(paymentContainer);
     paymentContainer.appendChild(createTitleView());
-    paymentContainer.appendChild(createImageView());
+    paymentContainer.appendChild(createImageView(callback));
 }
 
 function dismissPaymentView() {
@@ -50,7 +50,7 @@ function createPaymentContainer() {
     paymentContainer.style.position = "absolute";
     paymentContainer.style.width = "400px";
     paymentContainer.style.height = "400px";
-    paymentContainer.style.top = "15%";
+    paymentContainer.style.top = getScrollTop() + 100 + "px";
     paymentContainer.style.left = "50%";
     paymentContainer.style.marginLeft = "-200px";
     paymentContainer.style.zIndex = "10";
@@ -104,8 +104,7 @@ function createImageView() {
     paymentImageView.style.height = "400px";
     paymentImageView.src = "http://localhost:8080/foodslab/webapp/asserts/images/paymentholder.png";
     paymentImageView.onclick = function () {
-        let url = BASE_PATH + "pq";
-        window.open(url,"_self");
+        callback();
     };
     return paymentImageView;
 }
