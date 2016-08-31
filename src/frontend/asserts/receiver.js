@@ -51,9 +51,9 @@ function showReceiverEditorView(name, province, city, county, town, village, app
     document.body.appendChild(receiverEditor);
     receiverEditor.appendChild(createReceiverEditorTitle());
     receiverEditor.appendChild(createReceiverEditorName(name));
+    receiverEditor.appendChild(createReceiverEditorPhone(phone, phoneBak));
     receiverEditor.appendChild(createReceiverEditorAddress(province, city, county, town, village));
     receiverEditor.appendChild(createReceiverEditorAddressAppend(append));
-    receiverEditor.appendChild(createReceiverEditorPhone(phone, phoneBak));
     receiverEditor.appendChild(createReceiverEditorSave(callback));
 }
 

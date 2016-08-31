@@ -261,6 +261,9 @@ function createPaymentBarView() {
     payActionView.style.textAlign = "center";
     payActionView.style.cursor = "pointer";
     payActionView.innerHTML = "结算";
+    payActionView.onclick = function () {
+        showPaymentView();  
+    };
     payingContainer.appendChild(payActionView);
 
     let payPostageView = document.createElement("div");
