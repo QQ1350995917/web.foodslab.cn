@@ -44,6 +44,7 @@ function requestCreateOrder(formatId, senderName, senderPhone, name, phone0, pho
 }
 let orderId = undefined;
 function onRequestCreateOrderCallback(data) {
+    console.log(data);
     orderId = data.orderId;
     showPaymentView(function () {
         let url = BASE_PATH + "pq?orderId=" + data.orderId;
@@ -344,9 +345,9 @@ function createPaymentBarView() {
             return;
         }
 
-        let senderName = document.getElementById("senderName");
-        let senderPhone = document.getElementById("senderPhone");
-        let formatId = document.getElementById("formatId");
+        let senderName = document.getElementById("senderName").value;
+        let senderPhone = document.getElementById("senderPhone").value;
+        let formatId = document.getElementById("formatId").value;
 
         requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
     };

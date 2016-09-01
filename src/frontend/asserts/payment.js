@@ -97,7 +97,7 @@ function createTitleView() {
     return paymentTitleView;
 }
 
-function createImageView() {
+function createImageView(callback) {
     let paymentImageView = document.createElement("img");
     paymentImageView.className = "payStyleNormal";
     paymentImageView.style.width = "400px";
