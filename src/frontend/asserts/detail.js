@@ -27,6 +27,22 @@ function requestType(typeId,formatId) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
+function requestPutInCart(accountId, formatId, amount) {
+    let url = BASE_PATH + "cart/create?accountId=test&formatId=" + formatId + "&amount=" + amount;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            onRequestPutInCartCallback(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function onRequestPutInCartCallback(data) {
+    showMaskView("#CCCCCC");
+    createPutInCartResultView(data);
+}
+
 function createTypeView(data) {
     createTypeTitle(data);
     createTypeMainView(data);
@@ -245,13 +261,72 @@ function createFormatDiscountItemView(formatEntity) {
     let buyNow = document.createElement("div");
     buyNow.className = "formatLabel button";
     buyNow.innerHTML = "立即购买";
+    buyNow.onclick = function () {
+        let url = BASE_PATH + "pb?formatId=" + formatEntity.formatId;
+        window.open(url);
+    };
     formatDiscountView.appendChild(buyNow);
 
     let putInCart = document.createElement("div");
     putInCart.className = "formatLabel button";
     putInCart.innerHTML = "加入购物车";
-
+    putInCart.onclick = function () {
+        requestPutInCart(undefined,formatEntity.formatId,formatCounterEdit.value);
+    };
     formatDiscountView.appendChild(putInCart);
-
     return formatDiscountView;
+}
+
+
+function createPutInCartResultView(data) {
+    let resultView = document.createElement("div");
+    resultView.id = "receiverEditorView";
+    resultView.className = "receiverEditor";
+    resultView.style.position = "absolute";
+    resultView.style.width = "600px";
+    resultView.style.height = "100px";
+    resultView.style.top = getScrollTop() + 100 + "px";
+    resultView.style.left = "50%";
+    resultView.style.marginLeft = "-300px";
+    resultView.style.zIndex = "10";
+    resultView.style.opacity = "1";
+    resultView.style.borderWidth = "1px";
+    resultView.style.borderColor = "#CCCCCC";
+    resultView.style.borderStyle = "solid";
+    resultView.style.backgroundColor = "#FFFFFF";
+
+    let keepGoon = document.createElement("div");
+    keepGoon.style.float = "left";
+    keepGoon.style.width = "299px";
+    keepGoon.style.height = "40px";
+    keepGoon.style.lineHeight = "40px";
+    keepGoon.style.textAlign = "center";
+    keepGoon.style.marginTop = "30px";
+    keepGoon.style.backgroundColor = "red";
+    keepGoon.style.cursor = "pointer";
+    keepGoon.innerHTML = "继续购物";
+    keepGoon.onclick = function () {
+        dismissMaskView();
+        document.body.removeChild(keepGoon.parentNode);
+    };
+    let goToCart = document.createElement("div");
+    goToCart.style.float = "right";
+    goToCart.style.width = "299px";
+    goToCart.style.height = "40px";
+    goToCart.style.lineHeight = "40px";
+    goToCart.style.textAlign = "center";
+    goToCart.style.marginTop = "30px";
+    goToCart.style.backgroundColor = "red";
+    goToCart.style.cursor = "pointer";
+    goToCart.innerHTML = "去购物车结算";
+    goToCart.onclick = function () {
+        dismissMaskView();
+        document.body.removeChild(keepGoon.parentNode);
+        let url = BASE_PATH + "pc?accountId=test";
+        window.open(url,"_self");
+    };
+    resultView.appendChild(keepGoon);
+    resultView.appendChild(goToCart);
+
+    document.body.appendChild(resultView);
 }
