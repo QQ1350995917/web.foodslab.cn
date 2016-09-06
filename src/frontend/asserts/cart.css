@@ -23,6 +23,7 @@ img.itemIcon{
     width: 80px;
     height: 98px;
     color: #000000;
+    cursor: pointer;
     border: 1px solid #CCCCCC;
 }
 

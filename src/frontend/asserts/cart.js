@@ -12,7 +12,6 @@ function requestCart(accountId) {
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
-
             var jsonData = JSON.parse(data);
             onRequestCartCallback(jsonData.data);
         }
@@ -78,8 +77,6 @@ function createMainTitleView() {
     mainView.appendChild(titleView);
 }
 
-let margintop = 0;
-
 function createMainContentView(data) {
     let mainView = document.getElementById(MAIN);
     let itemEntity;
@@ -94,13 +91,23 @@ function createMainContentView(data) {
 
         let itemIcon = document.createElement("img");
         itemIcon.className = "itemIcon";
+        itemIcon.onclick = function () {
+            let url = BASE_PATH + "pd?typeId=" + itemEntity.product.parent.typeId + "&formatId=" + itemEntity.product.formatId;
+            window.open(url);
+        }
         itemView.appendChild(itemIcon);
+
 
         let productName = document.createElement("div");
         productName.className = "label";
         productName.style.width = "450px";
         productName.style.textAlign = "left";
         productName.innerHTML = " " + itemEntity.product.parent.label + " " + itemEntity.product.label + itemEntity.product.meta;
+        productName.style.cursor = "pointer";
+        productName.onclick = function () {
+            let url = BASE_PATH + "pd?typeId=" + itemEntity.product.parent.typeId + "&formatId=" + itemEntity.product.formatId;
+            window.open(url);
+        };
         itemView.appendChild(productName);
 
         let price = document.createElement("div");
@@ -123,6 +130,9 @@ function createMainContentView(data) {
         deleteAction.style.color = "#666666";
         deleteAction.style.cursor = "pointer";
         deleteAction.innerHTML = "删除";
+        deleteAction.onclick = function () {
+
+        };
         itemView.appendChild(deleteAction);
 
         mainView.appendChild(itemView);
