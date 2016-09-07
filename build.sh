@@ -1,3 +1,3 @@
-babel src/webapp/asserts --out-dir lib/webapp/asserts
+babel src/backend/webapp/asserts --out-dir lib/webapp/asserts
 grunt
 
