@@ -5,7 +5,7 @@
 - 接口描述
 
 #### 请求地址
-- http://localhost:8080/foodslab/users
+- http://localhost:8080/foodslab/user/retrieve
 
 #### 请求方式
 - post

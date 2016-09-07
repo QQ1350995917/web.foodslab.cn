@@ -15,10 +15,10 @@ module.exports = function (grunt) {
             options: {jshintrc:'.jshintrc'},
             uses_defaults: ['dir1/**/*.js', 'dir2/**/*.js'],
             with_overrides: {
-                options: {
-                    curly: false,
-                    undef: true,
-                },
+                // options: {
+                //     curly: false,
+                //     undef: true,
+                // },
                 files: {
                     src: ['dir3/**/*.js', 'dir4/**/*.js']
                 },
