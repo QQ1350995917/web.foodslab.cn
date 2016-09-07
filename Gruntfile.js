@@ -64,7 +64,7 @@ module.exports = function (grunt) {
             },
             compress: {
                 files: {
-                    "release/webapp/asserts/frame-all-release.css": ["src/webapp/asserts/*.css"]
+                    "release/webapp/asserts/frame-all-release.css": ["src/backend/webapp/asserts/*.css"]
                 }
             }
         }
