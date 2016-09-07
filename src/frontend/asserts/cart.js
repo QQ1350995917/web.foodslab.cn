@@ -18,6 +18,32 @@ function requestCart(accountId) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
+function requestUpdateNumber(accountId, mapping, amount) {
+    let url = BASE_PATH + "cart/update?accountId=" + accountId + "&mapping=" + mapping + "&amount=" + amount;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+        } else {
+            new Toast().show("修改失败");
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestDelete(accountId, mapping,parentView,currentView) {
+    let url = BASE_PATH + "cart/delete?accountId=" + accountId + "&mapping=" + mapping;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            parentView.removeChild(currentView);
+            console.log(parentView.clientHeight);
+            parentView.style.height = (parentView.clientHeight - 100) + "px";
+            console.log(parentView.clientHeight);
+        } else {
+            new Toast().show("删除失败");
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
 function onRequestCartCallback(data) {
     if (data == undefined || data.length == 0) {
         createEmptyCartView();
@@ -79,9 +105,9 @@ function createMainTitleView() {
 
 function createMainContentView(data) {
     let mainView = document.getElementById(MAIN);
-    let itemEntity;
+
     for (let i = 0; i < data.length; i++) {
-        itemEntity = data[i];
+        let itemEntity = data[i];
         let itemView = document.createElement("div");
         itemView.className = "itemView";
         let selector = document.createElement("input");
@@ -115,10 +141,43 @@ function createMainContentView(data) {
         price.innerHTML = itemEntity.product.pricing + itemEntity.product.priceMeta;
         itemView.appendChild(price);
 
-        let totalNumber = document.createElement("div");
-        totalNumber.className = "label";
-        totalNumber.innerHTML = itemEntity.amount;
-        itemView.appendChild(totalNumber);
+        let totalNumberContainer = document.createElement("div");
+        totalNumberContainer.className = "label";
+        totalNumberContainer.style.width = "108px";
+        totalNumberContainer.style.height = "28px";
+        totalNumberContainer.style.borderWidth = "1px";
+        totalNumberContainer.style.marginTop = "5px";
+
+        let totalNumberMinus = document.createElement("div");
+        totalNumberMinus.className = "label";
+        totalNumberMinus.style.width = "30px";
+        totalNumberMinus.style.height = "28px";
+        totalNumberMinus.style.lineHeight = "28px";
+        totalNumberMinus.style.borderRightWidth = "1px";
+        totalNumberMinus.innerHTML = "-";
+        totalNumberMinus.style.cursor = "pointer";
+        totalNumberContainer.appendChild(totalNumberMinus);
+
+        let totalNumber = document.createElement("input");
+        totalNumber.readOnly = "true";
+        totalNumber.style.float = "left";
+        totalNumber.style.width = "44px";
+        totalNumber.style.height = "26px";
+        totalNumber.style.textAlign = "center";
+        totalNumber.style.borderWidth = "0px";
+        totalNumber.value = itemEntity.amount;
+        totalNumberContainer.appendChild(totalNumber);
+
+        let totalNumberAdd = document.createElement("div");
+        totalNumberAdd.className = "label";
+        totalNumberAdd.style.width = "30px";
+        totalNumberAdd.style.height = "28px";
+        totalNumberAdd.style.lineHeight = "28px";
+        totalNumberAdd.style.borderLeftWidth = "1px";
+        totalNumberAdd.innerHTML = "+";
+        totalNumberAdd.style.cursor = "pointer";
+        totalNumberContainer.appendChild(totalNumberAdd);
+        itemView.appendChild(totalNumberContainer);
 
         let totalPrice = document.createElement("div");
         totalPrice.className = "label";
@@ -130,20 +189,36 @@ function createMainContentView(data) {
         deleteAction.style.color = "#666666";
         deleteAction.style.cursor = "pointer";
         deleteAction.innerHTML = "删除";
-        deleteAction.onclick = function () {
-
-        };
         itemView.appendChild(deleteAction);
 
         mainView.appendChild(itemView);
 
+        let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+
+        totalNumberMinus.onclick = function () {
+            if (totalNumber.value > 1) {
+                totalNumber.value = parseInt(totalNumber.value) - 1;
+                totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
+                requestUpdateNumber(accountId,itemEntity.mappingId,totalNumber.value);
+            }
+        };
+        totalNumberAdd.onclick = function () {
+            if (totalNumber.value < 10000) {
+                totalNumber.value = parseInt(totalNumber.value) + 1;
+                totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
+                requestUpdateNumber(accountId,itemEntity.mappingId,totalNumber.value);
+            }
+        }
+
+        deleteAction.onclick = function () {
+            requestDelete(accountId,itemEntity.mappingId,mainView,itemView);
+        };
     }
 
     mainView.style.height = 50 + data.length * 100 + "px";
 }
 
 function createMainFloatView() {
-    console.log(margintop);
     let mainView = document.getElementById(MAIN);
 
     let titleView = document.createElement("div");
