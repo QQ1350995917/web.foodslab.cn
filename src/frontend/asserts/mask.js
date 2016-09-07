@@ -1,7 +1,14 @@
 /**
  * Created by dingpengwei on 9/6/16.
  */
-function showMaskView(color) {
+const MASK_VIEW_ID = "maskView";
+function showMaskView(id, color) {
+    if (color == undefined || color == null || color == "") {
+        color = "#CCCCCC";
+    }
+    if (id == undefined || id == null || id == "") {
+        id = MASK_VIEW_ID;
+    }
     document.documentElement.style.overflow = 'hidden';
     document.oncontextmenu = new Function("event.returnValue=false;");
     document.onselectstart = new Function("event.returnValue=false;");
@@ -11,21 +18,24 @@ function showMaskView(color) {
             window.event.returnValue = false;
         }
     }
-    document.body.appendChild(createMaskView(color));
+    document.body.appendChild(createMaskView(id, color));
 }
 
-function dismissMaskView() {
+function dismissMaskView(id) {
+    if (id == undefined || id == null || id == "") {
+        id = MASK_VIEW_ID;
+    }
     document.documentElement.style.overflow = 'scroll';
     document.oncontextmenu = new Function("event.returnValue=true;");
     document.onselectstart = new Function("event.returnValue=true;");
     window.onhelp = new Function("event.returnValue=true;");
     document.onkeydown = null;
-    document.body.removeChild(document.getElementById("maskView"));
+    document.body.removeChild(document.getElementById(id));
 }
 
-function createMaskView(color) {
+function createMaskView(id, color) {
     let markView = document.createElement("div");
-    markView.id = "maskView";
+    markView.id = id;
     markView.style.position = "absolute";
     markView.style.top = getScrolledTop() + "px";
     markView.style.backgroundColor = color;
@@ -42,11 +52,9 @@ function getScrolledTop() {
     var scrollPos;
     if (window.pageYOffset) {
         scrollPos = window.pageYOffset;
-    }
-    else if (document.compatMode && document.compatMode != 'BackCompat') {
+    } else if (document.compatMode && document.compatMode != 'BackCompat') {
         scrollPos = document.documentElement.scrollTop;
-    }
-    else if (document.body) {
+    } else if (document.body) {
         scrollPos = document.body.scrollTop;
     }
     return scrollPos;
