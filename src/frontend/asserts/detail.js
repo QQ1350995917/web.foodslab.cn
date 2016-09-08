@@ -39,7 +39,7 @@ function requestPutInCart(accountId, formatId, amount) {
 }
 
 function onRequestPutInCartCallback(data) {
-    showMaskView("#CCCCCC");
+    showMaskView(undefined,"#CCCCCC");
     createPutInCartResultView(data);
 }
 
