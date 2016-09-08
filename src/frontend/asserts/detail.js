@@ -322,7 +322,7 @@ function createPutInCartResultView(data) {
     goToCart.onclick = function () {
         dismissMaskView();
         document.body.removeChild(keepGoon.parentNode);
-        let url = BASE_PATH + "pc?accountId=test";
+        let url = BASE_PATH + "pm?accountId=test&dir=cart";
         window.open(url,"_self");
     };
     resultView.appendChild(keepGoon);

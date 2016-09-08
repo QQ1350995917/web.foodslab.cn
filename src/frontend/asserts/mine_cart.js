@@ -1,13 +1,9 @@
 /**
  * Created by dingpengwei on 9/6/16.
  */
-window.onload = function () {
-    initTitleView();
-    requestCart(document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content);
-    requestLinker();
-};
-
 function requestCart(accountId) {
+    let mainView = document.getElementById(MAIN);
+    mainView.innerHTML = null;
     let url = BASE_PATH + "cart/retrieve?accountId=" + accountId;
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -48,9 +44,10 @@ function onRequestCartCallback(data) {
     if (data == undefined || data.length == 0) {
         createEmptyCartView();
     } else {
-        createMainTitleView();
-        createMainContentView(data);
-        createMainFloatView();
+        let mainView = document.getElementById(MAIN);
+        mainView.appendChild(createMainTitleView());
+        createMainContentView(mainView,data);
+        createMainFloatView(mainView);
     }
 }
 
@@ -99,13 +96,10 @@ function createMainTitleView() {
     action.innerHTML = "操作";
     titleView.appendChild(action);
 
-    let mainView = document.getElementById(MAIN);
-    mainView.appendChild(titleView);
+    return titleView;
 }
 
-function createMainContentView(data) {
-    let mainView = document.getElementById(MAIN);
-
+function createMainContentView(mainView,data) {
     for (let i = 0; i < data.length; i++) {
         let itemEntity = data[i];
         let itemView = document.createElement("div");
@@ -218,9 +212,7 @@ function createMainContentView(data) {
     mainView.style.height = 50 + data.length * 100 + "px";
 }
 
-function createMainFloatView() {
-    let mainView = document.getElementById(MAIN);
-
+function createMainFloatView(mainView) {
     let titleView = document.createElement("div");
     titleView.className = "billingBarFloat";
     let selectAll = document.createElement("input");
