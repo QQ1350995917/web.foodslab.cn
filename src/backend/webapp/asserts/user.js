@@ -2,7 +2,7 @@
  * Created by dingpengwei on 8/16/16.
  */
 function showUsers() {
-    var indexUrl = BASE_PATH + "/user/retrieve";
+    var indexUrl = BASE_PATH + "/account/retrieve";
     asyncRequestByGet(indexUrl, function (data) {
         onUsersDataCallback(data);
     }, onRequestError(), onRequestTimeout());
