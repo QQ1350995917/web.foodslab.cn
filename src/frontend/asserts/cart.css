@@ -37,13 +37,22 @@ div.label{
     border: 0px solid #CCCCCC;
 }
 
-div.billingBar{
+div.billingBarFloat{
     position: fixed;
     width: 1000px;
     height: 40px;
     left: 50%;
     top: 100%;
     margin-top: -40px;
+    margin-left: -500px;
+    background-color: #F2F2F2;
+}
+
+div.billingBarBand{
+    position: absolute;
+    width: 1000px;
+    height: 40px;
+    left: 50%;
     margin-left: -500px;
     background-color: #F2F2F2;
 }

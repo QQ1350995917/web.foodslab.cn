@@ -29,7 +29,7 @@ function requestUpdateNumber(accountId, mapping, amount) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestDelete(accountId, mapping,parentView,currentView) {
+function requestDelete(accountId, mapping, parentView, currentView) {
     let url = BASE_PATH + "cart/delete?accountId=" + accountId + "&mapping=" + mapping;
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -199,19 +199,19 @@ function createMainContentView(data) {
             if (totalNumber.value > 1) {
                 totalNumber.value = parseInt(totalNumber.value) - 1;
                 totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
-                requestUpdateNumber(accountId,itemEntity.mappingId,totalNumber.value);
+                requestUpdateNumber(accountId, itemEntity.mappingId, totalNumber.value);
             }
         };
         totalNumberAdd.onclick = function () {
             if (totalNumber.value < 10000) {
                 totalNumber.value = parseInt(totalNumber.value) + 1;
                 totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
-                requestUpdateNumber(accountId,itemEntity.mappingId,totalNumber.value);
+                requestUpdateNumber(accountId, itemEntity.mappingId, totalNumber.value);
             }
         }
 
         deleteAction.onclick = function () {
-            requestDelete(accountId,itemEntity.mappingId,mainView,itemView);
+            requestDelete(accountId, itemEntity.mappingId, mainView, itemView);
         };
     }
 
@@ -222,7 +222,7 @@ function createMainFloatView() {
     let mainView = document.getElementById(MAIN);
 
     let titleView = document.createElement("div");
-    titleView.className = "billingBar";
+    titleView.className = "billingBarFloat";
     let selectAll = document.createElement("input");
     selectAll.type = "checkbox";
     selectAll.className = "selector";
@@ -234,7 +234,6 @@ function createMainFloatView() {
     selectorText.style.textAlign = "left";
     selectorText.innerHTML = "全选";
     titleView.appendChild(selectorText);
-
 
     let deleteSelect = document.createElement("div");
     deleteSelect.className = "label";
@@ -270,20 +269,26 @@ function createMainFloatView() {
     mainView.appendChild(titleView);
     mainView.style.height = mainView.clientHeight + 40 + "px";
 
-    document.getElementById("header_icon").innerHTML = "clientHeight = " + document.body.clientHeight + " ; scrollHeight = " + document.body.scrollTop + " ; availHeight = " + window.screen.availHeight;
+    if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > 0) {
+        titleView.className = "billingBarFloat";
+    } else {
+        titleView.className = "billingBarBand";
+    }
+
     window.onscroll = function () {
-        document.getElementById("header_icon").innerHTML = "clientHeight = " + document.body.clientHeight + " ; scrollHeight = " + document.body.scrollTop + " ; availHeight = " + window.screen.availHeight;
-        // document.getElementById("header_icon").innerHTML = "height = " + (mainView.clientHeight - document.body.scrollTop - window.screen.availHeight + 207);
-        if (mainView.clientHeight - document.body.scrollTop < window.screen.availHeight) {
+        if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > - 70) {
+            titleView.className = "billingBarFloat";
         } else {
+            titleView.className = "billingBarBand";
         }
     };
 
     window.onresize = function () {
-        document.getElementById("header_icon").innerHTML = "clientHeight = " + document.body.clientHeight + " ; scrollHeight = " + document.body.scrollTop + " ; availHeight = " + window.screen.availHeight;
-        // console.log(document.body.offsetHeight  + "clientHeight = " + document.body.clientHeight + " ; scrollHeight = " + document.body.scrollTop + " ; availHeight = " + window.screen.availHeight);
-        console.log(window.screen.availHeight + " = " + window.screen.height);
-        // document.getElementById("header_icon").innerHTML = "clientHeight = " + document.body.clientHeight + " ; scrollHeight = " + document.body.scrollTop + " ; availHeight = " + window.screen.availHeight;
+        if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > - 70) {
+            titleView.className = "billingBarFloat";
+        } else {
+            titleView.className = "billingBarBand";
+        }
     };
 
 }
