@@ -10,6 +10,10 @@ const COLORS = new Array("#715595","#006AA8","#3EAF5C","#F0DB4F","#715595","#006
 
 function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
     var xmlHttp = new XMLHttpRequest();
+    xmlHttp.timeout = 5000;
+    xmlHttp.ontimeout = onTimeoutCallback;
+    xmlHttp.open("GET", url, true);
+    xmlHttp.send(null);
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
             onDataCallback(xmlHttp.responseText);
@@ -17,10 +21,24 @@ function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallba
             onErrorCallback;
         }
     }
+}
+
+function asyncRequestByPost(url,params,onDataCallback, onErrorCallback, onTimeoutCallback) {
+    var xmlHttp = new XMLHttpRequest();
     xmlHttp.timeout = 5000;
     xmlHttp.ontimeout = onTimeoutCallback;
-    xmlHttp.open("GET", url, true);
-    xmlHttp.send(null);
+    xmlHttp.open("POST", url, true);
+    xmlHttp.setRequestHeader("cache-control","no-cache");
+    xmlHttp.setRequestHeader("contentType","text/html;charset=uft-8");
+    xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlHttp.send(encodeURI(params));
+    xmlHttp.onreadystatechange = function () {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+            onDataCallback(xmlHttp.responseText);
+        } else {
+            onErrorCallback();
+        }
+    }
 }
 
 /**

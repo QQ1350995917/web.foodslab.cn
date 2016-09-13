@@ -10,7 +10,6 @@ function requestReceiver(accountId) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestCartCallback(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }

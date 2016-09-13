@@ -3,24 +3,41 @@
  */
 window.onload = function () {
     initTitleView();
-    createBillingView();
     requestLinker();
-    let formatIds = document.getElementById("formatIds") == undefined ? null : document.getElementById("formatIds").content;
-    requestFormat(formatIds);
+    requestBilling();
 };
 
-function requestFormat(formatIds) {
-    let url = BASE_PATH + "product/format?formatIds=" + formatIds;
+function requestBilling() {
+    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+    let params = undefined;
+    if (accountId == undefined || accountId == null || accountId == "") {
+        let formatIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
+        params = "billing?productIds=" + formatIds;
+    } else {
+        let mappingIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
+        params = "billing?accountId=test&productIds=" + mappingIds;
+    }
+
+    let url = BASE_PATH + params;
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createBillingList(jsonData.data);
+            onRequestBillingCallback(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
+function onRequestBillingCallback(data) {
+    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+    if (accountId == undefined) {
+        createBillingByAnonymous(data);
+    } else {
+        createBillingByUser(data);
+    }
+}
+
+function requestCreateOrder(accountId,formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
     let url = BASE_PATH + "order/create?senderName=" + senderName
         + "&senderPhone=" + senderPhone
         + "&cost=1234&postage=123"
@@ -42,97 +59,79 @@ function requestCreateOrder(formatId, senderName, senderPhone, name, phone0, pho
         }
     }, onErrorCallback, onTimeoutCallback);
 }
+
 let orderId = undefined;
 function onRequestCreateOrderCallback(data) {
     console.log(data);
     orderId = data.orderId;
     showPaymentView(function () {
         let url = BASE_PATH + "pq?orderId=" + data.orderId;
-        window.open(url,"_self");
+        window.open(url, "_self");
     });
 }
 
-function createBillingList(data) {
-    let billingList = document.getElementById("billingListContainer");
-    let size = data.length;
-    for (let i = 0; i < size; i++) {
-        let formatEntity = data[i];
-        let listMessage = document.createElement("div");
-        listMessage.className = "productListItem";
-        if (i == 0) {
-            listMessage.style.borderTopWidth = "0px";
-            listMessage.style.borderBottomWidth = "0px";
-        } else {
-            listMessage.style.borderBottomWidth = "0px";
-        }
-        let formatId = document.createElement("input");
-        formatId.id = "formatId";
-        formatId.style.visibility = "hidden";
-        formatId.value = formatEntity.formatId;
-        let snap = document.createElement("img");
-        snap.style.width = "99px";
-        snap.style.height = "119px";
-        snap.style.float = "left";
-        let label = document.createElement("div");
-        label.className = "messageLabelInline";
-        label.style.width = "500px";
-        label.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
-        let price = document.createElement("div");
-        price.className = "messageLabelInline";
-        price.style.width = "170px";
-        price.innerHTML = formatEntity.pricing + "" + formatEntity.priceMeta;
-        let counter = document.createElement("div");
-        counter.className = "messageLabelInline";
-        counter.style.width = "170px";
-        counter.innerHTML = " X" + formatEntity.amount;
-
-        listMessage.appendChild(formatId);
-        listMessage.appendChild(snap);
-        listMessage.appendChild(label);
-        listMessage.appendChild(price);
-        listMessage.appendChild(counter);
-        billingList.appendChild(listMessage);
-    }
-
-    billingList.style.height = 120 * size + 30 + "px";
+/**
+ * 创建匿名支付信息
+ * @param data
+ */
+function createBillingByAnonymous(data) {
     let mainView = document.getElementById(MAIN);
-    mainView.style.height = mainView.clientHeight + 120 * (size - 1) + 30 + "px";
-}
+    mainView.innerHTML = null;
 
-function createBillingView() {
-    let mainView = document.getElementById(MAIN);
+    let receiverView = createAnonymousReceiverContainer();
+    mainView.appendChild(receiverView);
 
-    let tip = document.createElement("div");
-    tip.className = "messageLabel";
-    tip.innerHTML = "填写并核对订单信息";
-    mainView.appendChild(tip);
-
-    let expressView = createExpressView()
-    mainView.appendChild(expressView);
-    let payStyleView = createPayStyleView();
+    let payStyleView = createPayStyleContainer();
     mainView.appendChild(payStyleView);
-    let productView = createProductView();
+
+    let productView = createProductContainer(data.products);
     mainView.appendChild(productView);
-    let paymentBar = createPaymentBarView();
-    mainView.appendChild(paymentBar);
 
-    mainView.style.height = 80 + expressView.clientHeight + payStyleView.clientHeight + productView.clientHeight + paymentBar.clientHeight + "px";
+    let payBarView = createPayBarContainer(data);
+    mainView.appendChild(payBarView);
 
+    mainView.style.height = receiverView.clientHeight + payStyleView.clientHeight + productView.clientHeight + payBarView.clientHeight + "px";
 }
 
-function createExpressView() {
-    let expressContainer = document.createElement("div");
-    expressContainer.className = "blockView";
+/**
+ * 创建用户支付信息
+ * @param data
+ */
+function createBillingByUser(data) {
 
-    let buyerTipMessageLine = document.createElement("div");
-    buyerTipMessageLine.className = "messageLabel";
-    buyerTipMessageLine.innerHTML = "购买人信息<span style='color: #FF0000;'>（为了能和您取得联系请填写真实信息，如不填写则认为购买和收货是同一人）</span>";
-    expressContainer.appendChild(buyerTipMessageLine);
+    let mainView = document.getElementById(MAIN);
+    mainView.innerHTML = null;
+
+    let receiverView = createUserReceiverContainer(data);
+    mainView.appendChild(receiverView);
+
+    let payStyleView = createPayStyleContainer();
+    mainView.appendChild(payStyleView);
+
+    let productView = createProductContainer(data.products);
+    mainView.appendChild(productView);
+
+    let payBarView = createPayBarContainer(data);
+    mainView.appendChild(payBarView);
+
+    mainView.style.height = receiverView.clientHeight + payStyleView.clientHeight + productView.clientHeight + payBarView.clientHeight + "px";
+}
+
+function createAnonymousReceiverContainer() {
+    let receiverContainer = document.createElement("div");
+    receiverContainer.className = "receiverContainer containerStyle";
+    let receiverMessage = document.createElement("div");
+    receiverMessage.className = "messageLabel";
+    receiverMessage.innerHTML = "购买人信息<span style='color: #FF0000;'>（为了能和您取得联系请填写真实信息，如不填写则认为购买和收货是同一人）</span>";
+    receiverContainer.appendChild(receiverMessage);
 
     let buyerInfoMessageLine = document.createElement("div");
     buyerInfoMessageLine.className = "messageLabel";
+    buyerInfoMessageLine.style.height = "35px";
+    buyerInfoMessageLine.style.marginTop = "5px";
     let buyerNameLabel = document.createElement("div");
-    buyerNameLabel.className = "messageLabelInline";
+    buyerNameLabel.className = "messageLabelInItem";
+    buyerNameLabel.style.marginTop = "0px";
     buyerNameLabel.style.marginLeft = "0px";
     buyerNameLabel.innerHTML = "姓名:";
     buyerInfoMessageLine.appendChild(buyerNameLabel);
@@ -143,7 +142,8 @@ function createExpressView() {
     buyerNameEditor.style.marginRight = "20px";
     buyerInfoMessageLine.appendChild(buyerNameEditor);
     let buyerPhoneLabel = document.createElement("div");
-    buyerPhoneLabel.className = "messageLabelInline";
+    buyerPhoneLabel.className = "messageLabelInItem";
+    buyerPhoneLabel.style.marginTop = "0px";
     buyerPhoneLabel.innerHTML = "电话:";
     buyerInfoMessageLine.appendChild(buyerPhoneLabel);
     let buyerPhoneEditor = document.createElement("input");
@@ -151,15 +151,12 @@ function createExpressView() {
     buyerPhoneEditor.className = "editor";
     buyerPhoneEditor.style.float = "left";
     buyerInfoMessageLine.appendChild(buyerPhoneEditor);
-    expressContainer.appendChild(buyerInfoMessageLine);
-
-    let receiverTipMessageLine = document.createElement("div");
-    receiverTipMessageLine.className = "messageLabel";
-    receiverTipMessageLine.innerHTML = "收货人信息";
-    expressContainer.appendChild(receiverTipMessageLine);
+    receiverContainer.appendChild(buyerInfoMessageLine);
 
     let receiverInfoMessageLine = document.createElement("div");
     receiverInfoMessageLine.className = "messageLabel";
+    receiverInfoMessageLine.style.height = "40px";
+    receiverInfoMessageLine.style.lineHeight = "40px";
     receiverInfoMessageLine.style.borderWidth = "1px";
     receiverInfoMessageLine.style.fontSize = "0.8rem";
     receiverInfoMessageLine.style.cursor = "pointer";
@@ -182,40 +179,40 @@ function createExpressView() {
                 receiverInfoMessageLine.style.fontSize = "1rem";
                 let nameLabel = document.createElement("div");
                 nameLabel.id = "RName";
-                nameLabel.className = "messageLabelInline";
+                nameLabel.className = "messageLabelInItem";
                 nameLabel.style.borderWidth = "1px";
                 nameLabel.innerHTML = name;
                 let provinceLabel = document.createElement("div");
                 provinceLabel.id = "RProvince";
-                provinceLabel.className = "messageLabelInline";
+                provinceLabel.className = "messageLabelInItem";
                 provinceLabel.innerHTML = province;
                 let cityLabel = document.createElement("div");
                 cityLabel.id = "RCity";
-                cityLabel.className = "messageLabelInline";
+                cityLabel.className = "messageLabelInItem";
                 cityLabel.innerHTML = city;
                 let countyLabel = document.createElement("div");
                 countyLabel.id = "RCounty";
-                countyLabel.className = "messageLabelInline";
+                countyLabel.className = "messageLabelInItem";
                 countyLabel.innerHTML = county;
                 let townLabel = document.createElement("div");
                 townLabel.id = "RTown";
-                townLabel.className = "messageLabelInline";
+                townLabel.className = "messageLabelInItem";
                 townLabel.innerHTML = town;
                 let villageLabel = document.createElement("div");
                 villageLabel.id = "RVillage";
-                villageLabel.className = "messageLabelInline";
+                villageLabel.className = "messageLabelInItem";
                 villageLabel.innerHTML = village;
                 let appendLabel = document.createElement("div");
                 appendLabel.id = "RAppend";
-                appendLabel.className = "messageLabelInline";
+                appendLabel.className = "messageLabelInItem";
                 appendLabel.innerHTML = append;
                 let phoneLabel = document.createElement("div");
                 phoneLabel.id = "RPhone";
-                phoneLabel.className = "messageLabelInline";
+                phoneLabel.className = "messageLabelInItem";
                 phoneLabel.innerHTML = phone;
                 let phoneBakLabel = document.createElement("div");
                 phoneBakLabel.id = "RPhoneBak";
-                phoneBakLabel.className = "messageLabelInline";
+                phoneBakLabel.className = "messageLabelInItem";
                 phoneBakLabel.innerHTML = phoneBak;
                 receiverInfoMessageLine.appendChild(nameLabel);
                 receiverInfoMessageLine.appendChild(phoneLabel);
@@ -229,17 +226,62 @@ function createExpressView() {
 
             });
     };
-    expressContainer.appendChild(receiverInfoMessageLine);
+    receiverContainer.appendChild(receiverInfoMessageLine);
 
-    expressContainer.style.height = "130px";
-
-    return expressContainer;
+    return receiverContainer;
 }
-//
-function createPayStyleView() {
+
+function createUserReceiverContainer(data) {
+    let receiverContainer = document.createElement("div");
+    receiverContainer.className = "receiverContainer containerStyle";
+    let receiverMessage = document.createElement("div");
+    receiverMessage.className = "messageLabel";
+    receiverMessage.innerHTML = "收货人信息";
+    receiverContainer.appendChild(receiverMessage);
+
+    let currentReceiverContainer = document.createElement("div");
+    currentReceiverContainer.className = "payBarContainer";
+    currentReceiverContainer.style.width = "998px";
+    currentReceiverContainer.style.cursor = "pointer";
+    currentReceiverContainer.style.borderColor = "red";
+    receiverContainer.appendChild(currentReceiverContainer);
+
+    let moreReceiverContainer = document.createElement("div");
+    moreReceiverContainer.className = "messageLabel";
+    moreReceiverContainer.style.width = "120px";
+    moreReceiverContainer.style.height = "40px";
+    moreReceiverContainer.style.lineHeight = "40px";
+    moreReceiverContainer.innerHTML = "更多收货地址 ︾ ";
+    moreReceiverContainer.style.cursor = "pointer";
+    moreReceiverContainer.status = "less";
+    receiverContainer.appendChild(moreReceiverContainer);
+    moreReceiverContainer.onclick = function () {
+        if (this.status == "less") {
+            moreReceiverContainer.innerHTML = "更多收货地址 ︾ ";
+            this.status = "more";
+            receiverContainer.style.height = "210px";
+            let mainView = document.getElementById(MAIN);
+            mainView.style.height = mainView.clientHeight + 90 + "px";
+        } else if (this.status == "more") {
+            moreReceiverContainer.innerHTML = "更多收货地址 ︽ ";
+            this.status = "less";
+            receiverContainer.style.height = "120px";
+            let mainView = document.getElementById(MAIN);
+            mainView.style.height = mainView.clientHeight - 90 + "px";
+        }
+    };
+    receiverContainer.style.height = "120px";
+    return receiverContainer;
+}
+
+/**
+ * 创建支付类型
+ * @returns {Element}
+ */
+function createPayStyleContainer() {
     let payStyleContainer = document.createElement("div");
-    payStyleContainer.className = "blockView";
-    payStyleContainer.style.height = "160px";
+    payStyleContainer.className = "payStyleContainer containerStyle";
+
     let payStyleMessage = document.createElement("div");
     payStyleMessage.className = "messageLabel";
     payStyleMessage.innerHTML = "请选择支付方式";
@@ -259,6 +301,7 @@ function createPayStyleView() {
     payZhi.src = "http://localhost:8080/foodslab/webapp/asserts/images/payzhi.png";
     payStyleView.appendChild(payWei);
     payStyleView.appendChild(payZhi);
+    payStyleContainer.appendChild(payStyleView);
 
     payWei.onclick = function () {
         payWei.className = "payStyleSelect";
@@ -269,104 +312,144 @@ function createPayStyleView() {
         payWei.className = "payStyleNormal";
     };
 
-    payStyleContainer.appendChild(payStyleView);
     return payStyleContainer;
 }
 
-function createProductView() {
+function createProductContainer(data) {
     let productContainer = document.createElement("div");
-    productContainer.id = "billingListContainer";
-    productContainer.className = "blockView";
+    productContainer.className = "productContainer containerStyle";
     let listMessage = document.createElement("div");
     listMessage.className = "messageLabel";
-    listMessage.innerHTML = "送货清单";
+    listMessage.innerHTML = "发货清单";
     productContainer.appendChild(listMessage);
 
+    for (let i = 0; i < data.length; i++) {
+        let product = data[i];
+        console.log(product);
+        let productItemContainer = document.createElement("div");
+        productItemContainer.className = "productItemView";
+
+        let productImg = document.createElement("div");
+        productImg.className = "productImg";
+        productItemContainer.appendChild(productImg);
+
+        let productName = document.createElement("div");
+        productName.className = "messageLabelInItem";
+        productName.style.width = "470px";
+        productName.innerHTML = product.seriesName + " " + product.typeName + " " + product.formatName + product.formatMeta;
+        productItemContainer.appendChild(productName);
+
+        let productPricing = document.createElement("div");
+        productPricing.className = "messageLabelInItem";
+        productPricing.style.width = "190px";
+        productPricing.style.textAlign = "center";
+        productPricing.innerHTML = product.pricing + product.priceMeta;
+        productItemContainer.appendChild(productPricing);
+
+        let productAmount = document.createElement("div");
+        productAmount.className = "messageLabelInItem";
+        productAmount.style.width = "190px";
+        productAmount.style.textAlign = "center";
+        productAmount.innerHTML = product.amount;
+        productItemContainer.appendChild(productAmount);
+
+        productContainer.appendChild(productItemContainer);
+    }
+
+    productContainer.style.height = 120 * data.length + 40 + "px";
     return productContainer;
 }
 
-function createPaymentBarView() {
-    let payingContainer = document.createElement("div");
-    payingContainer.className = "blockView";
-    payingContainer.style.width = "998px";
-    payingContainer.style.height = "40px";
-    payingContainer.style.borderWidth = "1px";
+function createPayBarContainer(data) {
+    let payBarContainer = document.createElement("div");
+    payBarContainer.className = "payBarContainer";
+    payBarContainer.style.borderWidth = "0px";
 
-    let payActionView = document.createElement("div");
-    payActionView.className = "payBarItem";
-    payActionView.style.backgroundColor = "#FF0000";
-    payActionView.style.color = "#FFFFFF";
-    payActionView.style.textAlign = "center";
-    payActionView.style.cursor = "pointer";
-    payActionView.innerHTML = "结算";
-    payActionView.onclick = function () {
-        let name = document.getElementById("RName") == undefined ? undefined : document.getElementById("RName").innerHTML;
-        let province = document.getElementById("RProvince") == undefined ? undefined : document.getElementById("RProvince").innerHTML;
-        let city = document.getElementById("RCity") == undefined ? undefined : document.getElementById("RCity").innerHTML;
-        let county = document.getElementById("RCounty") == undefined ? undefined : document.getElementById("RCounty").innerHTML;
-        let town = document.getElementById("RTown") == undefined ? undefined : document.getElementById("RTown").innerHTML;
-        let village = document.getElementById("RVillage") == undefined ? undefined : document.getElementById("RVillage").innerHTML;
-        let append = document.getElementById("RAppend") == undefined ? undefined : document.getElementById("RAppend").innerHTML;
-        let phone0 = document.getElementById("RPhone") == undefined ? undefined : document.getElementById("RPhone").innerHTML;
-        let phone1 = document.getElementById("RPhoneBak") == undefined ? undefined : document.getElementById("RPhoneBak").innerHTML;
-
-        if (isNullValue(name)) {
-            new Toast().show("请输入收货人姓名");
-            return;
-        }
-
-        if (isNullValue(phone0)) {
-            new Toast().show("请输入收货人电话");
-            return;
-        }
-
-        if (isNullValue(province)) {
-            new Toast().show("请完善收货人地址");
-            return;
-        }
-
-        if (isNullValue(city)) {
-            new Toast().show("请完善收货人地址");
-            return;
-        }
-
-        if (isNullValue(county)) {
-            new Toast().show("请完善收货人地址");
-            return;
-        }
-
-        if (isNullValue(town)) {
-            new Toast().show("请完善收货人地址");
-            return;
-        }
-
-        if (isNullValue(village)) {
-            new Toast().show("请完善收货人地址");
-            return;
-        }
-
-        let senderName = document.getElementById("senderName").value;
-        let senderPhone = document.getElementById("senderPhone").value;
-        let formatId = document.getElementById("formatId").value;
-
-        requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+    let payAction = document.createElement("div");
+    payAction.className = "payBarItem";
+    payAction.style.backgroundColor = "red";
+    payAction.style.color = "#FFFFFF";
+    payAction.style.textAlign = "center";
+    payAction.style.cursor = "pointer";
+    payAction.innerHTML = "结算";
+    payAction.onclick = function () {
+        onPayActionClick();
     };
-    payingContainer.appendChild(payActionView);
+    payBarContainer.appendChild(payAction);
 
-    let payPostageView = document.createElement("div");
-    payPostageView.className = "payBarItem";
-    payPostageView.innerHTML = "运费:";
-    payingContainer.appendChild(payPostageView);
+    let buyInfoView = document.createElement("div");
+    buyInfoView.className = "payBarContainer";
+    buyInfoView.style.width = "798px";
+    let postage = document.createElement("div");
+    postage.className = "payBarItem";
+    postage.innerHTML = "运费:";
+    buyInfoView.appendChild(postage);
 
-    let payPricingView = document.createElement("div");
-    payPricingView.className = "payBarItem";
-    payPricingView.innerHTML = "商品总价:";
-    payingContainer.appendChild(payPricingView);
+    let price = document.createElement("div");
+    price.className = "payBarItem";
+    price.innerHTML = "商品总价:";
+    buyInfoView.appendChild(price);
 
-    let payCounterView = document.createElement("div");
-    payCounterView.className = "payBarItem";
-    payCounterView.innerHTML = "选购商品?件";
-    payingContainer.appendChild(payCounterView);
+    let amount = document.createElement("div");
+    amount.className = "payBarItem";
+    amount.innerHTML = "共选购" + "N" + "件商品";
+    buyInfoView.appendChild(amount);
 
-    return payingContainer;
+    payBarContainer.appendChild(buyInfoView);
+
+    return payBarContainer;
+}
+
+function onPayActionClick() {
+    let name = document.getElementById("RName") == undefined ? undefined : document.getElementById("RName").innerHTML;
+    let province = document.getElementById("RProvince") == undefined ? undefined : document.getElementById("RProvince").innerHTML;
+    let city = document.getElementById("RCity") == undefined ? undefined : document.getElementById("RCity").innerHTML;
+    let county = document.getElementById("RCounty") == undefined ? undefined : document.getElementById("RCounty").innerHTML;
+    let town = document.getElementById("RTown") == undefined ? undefined : document.getElementById("RTown").innerHTML;
+    let village = document.getElementById("RVillage") == undefined ? undefined : document.getElementById("RVillage").innerHTML;
+    let append = document.getElementById("RAppend") == undefined ? undefined : document.getElementById("RAppend").innerHTML;
+    let phone0 = document.getElementById("RPhone") == undefined ? undefined : document.getElementById("RPhone").innerHTML;
+    let phone1 = document.getElementById("RPhoneBak") == undefined ? undefined : document.getElementById("RPhoneBak").innerHTML;
+
+    if (isNullValue(name)) {
+        new Toast().show("请输入收货人姓名");
+        return;
+    }
+
+    if (isNullValue(phone0)) {
+        new Toast().show("请输入收货人电话");
+        return;
+    }
+
+    if (isNullValue(province)) {
+        new Toast().show("请完善收货人地址");
+        return;
+    }
+
+    if (isNullValue(city)) {
+        new Toast().show("请完善收货人地址");
+        return;
+    }
+
+    if (isNullValue(county)) {
+        new Toast().show("请完善收货人地址");
+        return;
+    }
+
+    if (isNullValue(town)) {
+        new Toast().show("请完善收货人地址");
+        return;
+    }
+
+    if (isNullValue(village)) {
+        new Toast().show("请完善收货人地址");
+        return;
+    }
+
+    let senderName = document.getElementById("senderName").value;
+    let senderPhone = document.getElementById("senderPhone").value;
+    let formatId = document.getElementById("formatId").value;
+    
+    requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+
 }

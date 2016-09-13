@@ -19,6 +19,7 @@ function requestUpdateNumber(accountId, mapping, amount) {
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
+
         } else {
             new Toast().show("修改失败");
         }
@@ -46,7 +47,7 @@ function onRequestCartCallback(data) {
     } else {
         let mainView = document.getElementById(MAIN);
         mainView.appendChild(createMainTitleView());
-        createMainContentView(mainView,data);
+        createMainContentView(mainView, data);
         createMainFloatView(mainView);
     }
 }
@@ -59,8 +60,13 @@ function createMainTitleView() {
     let titleView = document.createElement("div");
     titleView.className = "titleView";
     let selectAll = document.createElement("input");
+    selectAll.id = "selectAllCartOnTop";
     selectAll.type = "checkbox";
     selectAll.className = "selector";
+    selectAll.onclick = function () {
+        onSelectAllCartItem(selectAll.checked);
+        document.getElementById("selectAllCartOnBottom").checked = selectAll.checked;
+    };
     titleView.appendChild(selectAll);
     let selectorText = document.createElement("div");
     selectorText.className = "label";
@@ -99,14 +105,16 @@ function createMainTitleView() {
     return titleView;
 }
 
-function createMainContentView(mainView,data) {
+function createMainContentView(mainView, data) {
     for (let i = 0; i < data.length; i++) {
         let itemEntity = data[i];
         let itemView = document.createElement("div");
         itemView.className = "itemView";
         let selector = document.createElement("input");
+        selector.name = "cartItemSelectorName";
         selector.type = "checkbox";
         selector.className = "selector";
+        selector.value = itemEntity.mappingId;
         itemView.appendChild(selector);
 
         let itemIcon = document.createElement("img");
@@ -216,8 +224,13 @@ function createMainFloatView(mainView) {
     let titleView = document.createElement("div");
     titleView.className = "billingBarFloat";
     let selectAll = document.createElement("input");
+    selectAll.id = "selectAllCartOnBottom";
     selectAll.type = "checkbox";
     selectAll.className = "selector";
+    selectAll.onclick = function () {
+        onSelectAllCartItem(selectAll.checked);
+        document.getElementById("selectAllCartOnTop").checked = selectAll.checked;
+    };
     titleView.appendChild(selectAll);
 
     let selectorText = document.createElement("div");
@@ -254,6 +267,7 @@ function createMainFloatView(mainView) {
     let action = document.createElement("div");
     action.className = "label";
     action.style.backgroundColor = "red";
+    action.style.cursor = "pointer";
     action.style.color = "#FFFFFF";
     action.innerHTML = "结算";
     titleView.appendChild(action);
@@ -261,14 +275,14 @@ function createMainFloatView(mainView) {
     mainView.appendChild(titleView);
     mainView.style.height = mainView.clientHeight + 40 + "px";
 
-    if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > 0) {
+    if (mainView.clientHeight - window.innerHeight - document.body.scrollTop > 0) {
         titleView.className = "billingBarFloat";
     } else {
         titleView.className = "billingBarBand";
     }
 
     window.onscroll = function () {
-        if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > - 70) {
+        if (mainView.clientHeight - window.innerHeight - document.body.scrollTop > -70) {
             titleView.className = "billingBarFloat";
         } else {
             titleView.className = "billingBarBand";
@@ -276,12 +290,42 @@ function createMainFloatView(mainView) {
     };
 
     window.onresize = function () {
-        if (mainView.clientHeight - window.innerHeight -  document.body.scrollTop > - 70) {
+        if (mainView.clientHeight - window.innerHeight - document.body.scrollTop > -70) {
             titleView.className = "billingBarFloat";
         } else {
             titleView.className = "billingBarBand";
         }
     };
+
+    action.onclick = function () {
+        onBillingAction();
+    }
+}
+
+function onSelectAllCartItem(checked) {
+    let cartItemSelectorViews = document.getElementsByName("cartItemSelectorName");
+    for (let i = 0; i < cartItemSelectorViews.length; i++) {
+        cartItemSelectorViews[i].checked = checked;
+    }
+}
+
+function onBillingAction() {
+    let cartItemSelectorViews = document.getElementsByName("cartItemSelectorName");
+    let mappingIds = "";
+    for (let j = 0; j < cartItemSelectorViews.length; j++) {
+        if (cartItemSelectorViews[j].checked) {
+            mappingIds = mappingIds + "," + cartItemSelectorViews[j].value;
+        }
+    }
+
+    if (mappingIds == "") {
+
+    } else {
+        mappingIds = mappingIds.replace(/,/, "");
+        console.log(mappingIds);
+        let url = BASE_PATH + "pb?accountId=test&mappingIds=" + mappingIds;
+        window.open(url,"_self");
+    }
 
 }
 
