@@ -37,7 +37,7 @@ function onRequestBillingCallback(data) {
     }
 }
 
-function requestCreateOrder(accountId,formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
+function requestCreateOrder(accountId, formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
     let url = BASE_PATH + "order/create?senderName=" + senderName
         + "&senderPhone=" + senderPhone
         + "&cost=1234&postage=123"
@@ -152,82 +152,8 @@ function createAnonymousReceiverContainer() {
     buyerPhoneEditor.style.float = "left";
     buyerInfoMessageLine.appendChild(buyerPhoneEditor);
     receiverContainer.appendChild(buyerInfoMessageLine);
-
-    let receiverInfoMessageLine = document.createElement("div");
-    receiverInfoMessageLine.className = "messageLabel";
-    receiverInfoMessageLine.style.height = "40px";
-    receiverInfoMessageLine.style.lineHeight = "40px";
-    receiverInfoMessageLine.style.borderWidth = "1px";
-    receiverInfoMessageLine.style.fontSize = "0.8rem";
-    receiverInfoMessageLine.style.cursor = "pointer";
-    receiverInfoMessageLine.style.borderColor = "#FF0000";
-    receiverInfoMessageLine.innerHTML = "点击编辑收货人信息";
-    receiverInfoMessageLine.onclick = function () {
-        showReceiverEditorView(
-            document.getElementById("RName") == undefined ? undefined : document.getElementById("RName").innerHTML,
-            document.getElementById("RProvince") == undefined ? undefined : document.getElementById("RProvince").innerHTML,
-            document.getElementById("RCity") == undefined ? undefined : document.getElementById("RCity").innerHTML,
-            document.getElementById("RCounty") == undefined ? undefined : document.getElementById("RCounty").innerHTML,
-            document.getElementById("RTown") == undefined ? undefined : document.getElementById("RTown").innerHTML,
-            document.getElementById("RVillage") == undefined ? undefined : document.getElementById("RVillage").innerHTML,
-            document.getElementById("RAppend") == undefined ? undefined : document.getElementById("RAppend").innerHTML,
-            document.getElementById("RPhone") == undefined ? undefined : document.getElementById("RPhone").innerHTML,
-            document.getElementById("RPhoneBak") == undefined ? undefined : document.getElementById("RPhoneBak").innerHTML,
-            function (name, province, city, county, town, village, append, phone, phoneBak) {
-                console.log(name + " ; " + province + " ; " + city + " ; " + county + " ; " + town + " ; " + village + " ; " + append + " ; " + phone + " ; " + phoneBak);
-                receiverInfoMessageLine.innerHTML = null;
-                receiverInfoMessageLine.style.fontSize = "1rem";
-                let nameLabel = document.createElement("div");
-                nameLabel.id = "RName";
-                nameLabel.className = "messageLabelInItem";
-                nameLabel.style.borderWidth = "1px";
-                nameLabel.innerHTML = name;
-                let provinceLabel = document.createElement("div");
-                provinceLabel.id = "RProvince";
-                provinceLabel.className = "messageLabelInItem";
-                provinceLabel.innerHTML = province;
-                let cityLabel = document.createElement("div");
-                cityLabel.id = "RCity";
-                cityLabel.className = "messageLabelInItem";
-                cityLabel.innerHTML = city;
-                let countyLabel = document.createElement("div");
-                countyLabel.id = "RCounty";
-                countyLabel.className = "messageLabelInItem";
-                countyLabel.innerHTML = county;
-                let townLabel = document.createElement("div");
-                townLabel.id = "RTown";
-                townLabel.className = "messageLabelInItem";
-                townLabel.innerHTML = town;
-                let villageLabel = document.createElement("div");
-                villageLabel.id = "RVillage";
-                villageLabel.className = "messageLabelInItem";
-                villageLabel.innerHTML = village;
-                let appendLabel = document.createElement("div");
-                appendLabel.id = "RAppend";
-                appendLabel.className = "messageLabelInItem";
-                appendLabel.innerHTML = append;
-                let phoneLabel = document.createElement("div");
-                phoneLabel.id = "RPhone";
-                phoneLabel.className = "messageLabelInItem";
-                phoneLabel.innerHTML = phone;
-                let phoneBakLabel = document.createElement("div");
-                phoneBakLabel.id = "RPhoneBak";
-                phoneBakLabel.className = "messageLabelInItem";
-                phoneBakLabel.innerHTML = phoneBak;
-                receiverInfoMessageLine.appendChild(nameLabel);
-                receiverInfoMessageLine.appendChild(phoneLabel);
-                receiverInfoMessageLine.appendChild(phoneBakLabel);
-                receiverInfoMessageLine.appendChild(provinceLabel);
-                receiverInfoMessageLine.appendChild(cityLabel);
-                receiverInfoMessageLine.appendChild(countyLabel);
-                receiverInfoMessageLine.appendChild(townLabel);
-                receiverInfoMessageLine.appendChild(villageLabel);
-                receiverInfoMessageLine.appendChild(appendLabel);
-
-            });
-    };
+    let receiverInfoMessageLine = createReceiverAddressEditorContainer();
     receiverContainer.appendChild(receiverInfoMessageLine);
-
     return receiverContainer;
 }
 
@@ -239,11 +165,7 @@ function createUserReceiverContainer(data) {
     receiverMessage.innerHTML = "收货人信息";
     receiverContainer.appendChild(receiverMessage);
 
-    let currentReceiverContainer = document.createElement("div");
-    currentReceiverContainer.className = "payBarContainer";
-    currentReceiverContainer.style.width = "998px";
-    currentReceiverContainer.style.cursor = "pointer";
-    currentReceiverContainer.style.borderColor = "red";
+    let currentReceiverContainer = createReceiverAddressEditorContainer();
     receiverContainer.appendChild(currentReceiverContainer);
 
     let moreReceiverContainer = document.createElement("div");
@@ -272,6 +194,85 @@ function createUserReceiverContainer(data) {
     };
     receiverContainer.style.height = "120px";
     return receiverContainer;
+}
+
+function createReceiverAddressEditorContainer(data) {
+    let receiverInfoMessageLine = document.createElement("div");
+    receiverInfoMessageLine.className = "messageLabel";
+    receiverInfoMessageLine.style.width = "998px";
+    receiverInfoMessageLine.style.height = "40px";
+    receiverInfoMessageLine.style.lineHeight = "40px";
+    receiverInfoMessageLine.style.borderWidth = "1px";
+    receiverInfoMessageLine.style.fontSize = "0.8rem";
+    receiverInfoMessageLine.style.cursor = "pointer";
+    receiverInfoMessageLine.style.borderColor = "#FF0000";
+    receiverInfoMessageLine.bindData = data;
+    if (data == undefined) {
+        receiverInfoMessageLine.innerHTML = "双击编辑收货人信息";
+    } else {
+        createReceiverAddressEditorItem(receiverInfoMessageLine, data)
+    }
+
+    receiverInfoMessageLine.ondblclick = function () {
+        showReceiverEditorView(receiverInfoMessageLine.bindData, function (data) {
+            receiverInfoMessageLine.bindData = data;
+            createReceiverAddressEditorItem(receiverInfoMessageLine, data)
+        });
+    };
+
+    return receiverInfoMessageLine;
+}
+
+function createReceiverAddressEditorItem(container, data) {
+    container.innerHTML = null;
+    container.style.fontSize = "1rem";
+    let nameLabel = document.createElement("div");
+    nameLabel.id = "RName";
+    nameLabel.className = "messageLabelInItem";
+    nameLabel.style.borderWidth = "1px";
+    nameLabel.innerHTML = data.name;
+    let phoneLabel = document.createElement("div");
+    phoneLabel.id = "RPhone";
+    phoneLabel.className = "messageLabelInItem";
+    phoneLabel.innerHTML = data.phone0;
+    let phoneBakLabel = document.createElement("div");
+    phoneBakLabel.id = "RPhoneBak";
+    phoneBakLabel.className = "messageLabelInItem";
+    phoneBakLabel.innerHTML = data.phone1;
+    let provinceLabel = document.createElement("div");
+    provinceLabel.id = "RProvince";
+    provinceLabel.className = "messageLabelInItem";
+    provinceLabel.innerHTML = data.province;
+    let cityLabel = document.createElement("div");
+    cityLabel.id = "RCity";
+    cityLabel.className = "messageLabelInItem";
+    cityLabel.innerHTML = data.city;
+    let countyLabel = document.createElement("div");
+    countyLabel.id = "RCounty";
+    countyLabel.className = "messageLabelInItem";
+    countyLabel.innerHTML = data.county;
+    let townLabel = document.createElement("div");
+    townLabel.id = "RTown";
+    townLabel.className = "messageLabelInItem";
+    townLabel.innerHTML = data.town;
+    let villageLabel = document.createElement("div");
+    villageLabel.id = "RVillage";
+    villageLabel.className = "messageLabelInItem";
+    villageLabel.innerHTML = data.village;
+    let appendLabel = document.createElement("div");
+    appendLabel.id = "RAppend";
+    appendLabel.className = "messageLabelInItem";
+    appendLabel.innerHTML = data.append;
+
+    container.appendChild(nameLabel);
+    container.appendChild(phoneLabel);
+    container.appendChild(phoneBakLabel);
+    container.appendChild(provinceLabel);
+    container.appendChild(cityLabel);
+    container.appendChild(countyLabel);
+    container.appendChild(townLabel);
+    container.appendChild(villageLabel);
+    container.appendChild(appendLabel);
 }
 
 /**
@@ -449,7 +450,7 @@ function onPayActionClick() {
     let senderName = document.getElementById("senderName").value;
     let senderPhone = document.getElementById("senderPhone").value;
     let formatId = document.getElementById("formatId").value;
-    
+
     requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
 
 }

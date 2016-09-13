@@ -1,41 +1,7 @@
 /**
  * Created by dingpengwei on 8/24/16.
  */
-
-// function requestSubAddress(pcode, selectView, level) {
-//     let url = BASE_PATH + "meta/address?pcode=" + pcode;
-//     asyncRequestByGet(url, function (data) {
-//         var result = checkResponseDataFormat(data);
-//         if (result) {
-//             var jsonData = JSON.parse(data);
-//             let subAddress = jsonData.data;
-//             selectView.options.length = 0;
-//             console.log(subAddress.length);
-//             if (subAddress.length > 0) {
-//                 let optionTip = new Option("请选择", "selectTip");
-//                 selectView.options.add(optionTip);
-//                 for (let index = 0; index < subAddress.length; index++) {
-//                     let option = new Option(subAddress[index].label, subAddress[index].code);
-//                     selectView.options.add(option);
-//                 }
-//                 selectView.style.visibility = "visible";
-//                 if (level == 5) {
-//                     let appendAddress = document.getElementById("appendAddressContainer");
-//                     appendAddress.style.visibility = "visible";
-//                 }
-//             } else {
-//                 let appendAddress = document.getElementById("appendAddressContainer");
-//                 appendAddress.style.visibility = "visible";
-//             }
-//         }
-//     }, onErrorCallback, onTimeoutCallback);
-// }
-
-
-function showReceiverEditorView(name, province, city, county, town, village, append, phone, phoneBak, callback) {
-    // if (ADDRESS_LEVEL1 == undefined || ADDRESS_LEVEL1.length < 1) {
-    //     requestAddress();
-    // }
+function showReceiverEditorView(data, callback) {
     document.documentElement.style.overflow = 'hidden';
     document.oncontextmenu = new Function("event.returnValue=false;");
     document.onselectstart = new Function("event.returnValue=false;");
@@ -50,11 +16,11 @@ function showReceiverEditorView(name, province, city, county, town, village, app
     let receiverEditor = createReceiverEditor();
     document.body.appendChild(receiverEditor);
     receiverEditor.appendChild(createReceiverEditorTitle());
-    receiverEditor.appendChild(createReceiverEditorName(name));
-    receiverEditor.appendChild(createReceiverEditorPhone(phone, phoneBak));
-    receiverEditor.appendChild(createReceiverEditorAddress(province, city, county, town, village));
-    receiverEditor.appendChild(createReceiverEditorAddressAppend(append));
-    receiverEditor.appendChild(createReceiverEditorSave(callback));
+    receiverEditor.appendChild(createReceiverEditorName(data));
+    receiverEditor.appendChild(createReceiverEditorPhone(data));
+    receiverEditor.appendChild(createReceiverEditorAddress(data));
+    receiverEditor.appendChild(createReceiverEditorAddressAppend(data));
+    receiverEditor.appendChild(createReceiverEditorSave(data,callback));
 }
 
 function dismissReceiverEditorView() {
@@ -130,7 +96,7 @@ function createReceiverEditorTitle() {
     return receiverEditorTitleLine;
 }
 
-function createReceiverEditorName(name) {
+function createReceiverEditorName(data) {
     let receiverEditorNameLine = document.createElement("div");
     receiverEditorNameLine.className = "receiverItem";
     let receiverNameLabel = document.createElement("div");
@@ -144,12 +110,12 @@ function createReceiverEditorName(name) {
     receiverEditorName.id = "receiverEditorName";
     receiverEditorName.className = "editor input";
     receiverEditorName.style.width = "150px";
-    receiverEditorName.value = name == undefined ? "" : name;
+    receiverEditorName.value = data == undefined ? "" : data.name;
     receiverEditorNameLine.appendChild(receiverEditorName);
     return receiverEditorNameLine;
 }
 
-function createReceiverEditorAddress(province, city, county, town, village) {
+function createReceiverEditorAddress(data) {
     let receiverEditorAddressLine = document.createElement("div");
     receiverEditorAddressLine.className = "receiverItem";
     let receiverAddressLabel = document.createElement("div");
@@ -223,7 +189,7 @@ function createReceiverEditorAddress(province, city, county, town, village) {
     return receiverEditorAddressLine;
 }
 
-function createReceiverEditorAddressAppend(append) {
+function createReceiverEditorAddressAppend(data) {
     let receiverEditorAddressAppendLine = document.createElement("div");
     receiverEditorAddressAppendLine.id = "appendAddressContainer";
     receiverEditorAddressAppendLine.className = "receiverItem";
@@ -238,14 +204,14 @@ function createReceiverEditorAddressAppend(append) {
     let receiverEditorAddressAppend = document.createElement("input");
     receiverEditorAddressAppend.id = "receiverEditorAddressAppend";
     receiverEditorAddressAppend.className = "editor input";
-    receiverEditorAddressAppend.value = append == undefined ? "" : append;
+    receiverEditorAddressAppend.value = data == undefined ? "" : data.append;
     receiverEditorAddressAppendLine.appendChild(receiverEditorAddressAppend);
     return receiverEditorAddressAppendLine;
 
 }
 
 
-function createReceiverEditorPhone(phone,phoneBak) {
+function createReceiverEditorPhone(data) {
     let receiverEditorPhoneContainer = document.createElement("div");
     receiverEditorPhoneContainer.className = "receiverItem";
     let receiverPhoneLabel = document.createElement("div");
@@ -260,7 +226,7 @@ function createReceiverEditorPhone(phone,phoneBak) {
     receiverEditorPhone.className = "editor input";
     receiverEditorPhone.style.width = "150px";
     receiverEditorPhone.style.float = "left";
-    receiverEditorPhone.value = phone == undefined ? "":phone;
+    receiverEditorPhone.value = data == undefined ? "":data.phone0;
     receiverEditorPhoneContainer.appendChild(receiverEditorPhone);
 
     let receiverPhoneBackupLabel = document.createElement("div");
@@ -275,20 +241,22 @@ function createReceiverEditorPhone(phone,phoneBak) {
     receiverEditorPhoneBackup.className = "editor input";
     receiverEditorPhoneBackup.style.width = "150px";
     receiverEditorPhoneBackup.style.float = "left";
-    receiverEditorPhoneBackup.value = phoneBak == undefined ? "":phoneBak;
+    receiverEditorPhoneBackup.value = data == undefined ? "":data.phone1;
     receiverEditorPhoneContainer.appendChild(receiverEditorPhoneBackup);
 
     return receiverEditorPhoneContainer;
 }
 
-function createReceiverEditorSave(callback) {
+function createReceiverEditorSave(data,callback) {
     let receiverEditorSave = document.createElement("div");
     receiverEditorSave.className = "receiverItem";
     receiverEditorSave.style.marginTop = "20px";
     let receiverSave = document.createElement("div");
-    receiverSave.className = "receiverItemLabel";
+    receiverSave.style.backgroundColor = "red";
     receiverSave.style.float = "left";
     receiverSave.style.width = "400px";
+    receiverSave.style.height = "40px";
+    receiverSave.style.lineHeight = "40px";
     receiverSave.style.textAlign = "center";
     receiverSave.style.marginLeft = "100px";
     receiverSave.style.backgroundColor = "red";
@@ -310,10 +278,21 @@ function createReceiverEditorSave(callback) {
         let receiverAddressAppend = document.getElementById("receiverEditorAddressAppend").value;
         let receiverPhone = document.getElementById("receiverEditorPhone").value;
         let receiverPhoneBackup = document.getElementById("receiverEditorPhoneBackup").value;
-        callback(receiverName, provinceName, cityName, countyName, townName, villageName, receiverAddressAppend, receiverPhone, receiverPhoneBackup);
+        if (data == undefined){
+            data = new Object();
+        }
+        data.name = receiverName;
+        data.phone0 = receiverPhone;
+        data.phone1 = receiverPhoneBackup;
+        data.province = provinceName;
+        data.city = cityName;
+        data.county = countyName;
+        data.town = townName;
+        data.village = villageName;
+        data.append = receiverAddressAppend;
+        callback(data);
         dismissReceiverEditorView();
     };
     receiverEditorSave.appendChild(receiverSave);
     return receiverEditorSave;
-
 }
