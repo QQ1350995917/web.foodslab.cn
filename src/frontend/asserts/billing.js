@@ -60,14 +60,9 @@ function requestCreateOrder(accountId, formatId, senderName, senderPhone, name, 
     }, onErrorCallback, onTimeoutCallback);
 }
 
-let orderId = undefined;
 function onRequestCreateOrderCallback(data) {
-    console.log(data);
-    orderId = data.orderId;
-    showPaymentView(function () {
-        let url = BASE_PATH + "pq?orderId=" + data.orderId;
-        window.open(url, "_self");
-    });
+    let url = BASE_PATH + "pq?orderId=" + data.orderId;
+    window.open(url, "_self");
 }
 
 /**
@@ -326,7 +321,6 @@ function createProductContainer(data) {
 
     for (let i = 0; i < data.length; i++) {
         let product = data[i];
-        console.log(product);
         let productItemContainer = document.createElement("div");
         productItemContainer.className = "productItemView";
 
@@ -449,8 +443,12 @@ function onPayActionClick() {
 
     let senderName = document.getElementById("senderName").value;
     let senderPhone = document.getElementById("senderPhone").value;
-    let formatId = document.getElementById("formatId").value;
+    let formatId = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
 
-    requestCreateOrder(formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+    showPaymentView(function () {
+        requestCreateOrder(undefined,formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+    });
+
+
 
 }

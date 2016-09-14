@@ -14,7 +14,7 @@ window.onload = function () {
 };
 
 function requestOrderByLean(orderId) {
-    let url = BASE_PATH + "order/retrieve?orderId=" + orderId;
+    let url = BASE_PATH + "order/query?orderId=" + orderId;
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -44,22 +44,26 @@ function onRequestOrderByLeanCallback(orderId,data) {
     searchResultView.innerHTML = null;
     if (searchResultView.clientHeight == 0){
         let mainView = document.getElementById(MAIN);
-        mainView.style.height = mainView.clientHeight + 100 + "px";
+        mainView.style.height = mainView.clientHeight + 120 + "px";
     }
     if (data == undefined) {
-        searchResultView.style.height = "100px";
+        searchResultView.style.height = "120px";
         searchResultView.innerHTML = "没有查询到订单号为<span style='color: #FF0000'>" + orderId + "</span>的订单";
     } else {
-        searchResultView.style.height = "100px";
+        searchResultView.style.height = "120px";
 
         let orderInfo = document.createElement("div");
-        orderInfo.innerHTML = "订单号: " + data.orderId + "  下单时间: " + data.createTime;
+        orderInfo.className = "orderItem";
+        orderInfo.innerHTML = "订单号: " + data.orderId + "  下单时间: " + data.orderTime;
         let receiverInfo = document.createElement("div");
-        receiverInfo.innerHTML = "收货人: " + data.name + " " + data.province + " " + data.city + " " + data.county + " **** " +  data.phone0;
+        receiverInfo.className = "orderItem";
+        receiverInfo.innerHTML = "收货地址: " + data.address + "  收货人: " + data.name + " " + data.phone;
         let expressInfo = document.createElement("div");
+        expressInfo.className = "orderItem";
         expressInfo.innerHTML = "快递公司: " + data.expressName + "    " + "快递单号: " + data.expressNumber;
         let expressCurrentInfo = document.createElement("div");
-        expressCurrentInfo.innerHTML = "快递状态：2016年1月25日 下午7:06:38  北京市|到件|到北京市【北京分拨中心】北京市|发件|北京市【BEX北京昌平区天龙二部】，正发往【北京金盏分拨中心】";
+        expressCurrentInfo.className = "orderItem";
+        expressCurrentInfo.innerHTML = "快递状态: " + data.expressStatus;
 
 
         searchResultView.appendChild(orderInfo);

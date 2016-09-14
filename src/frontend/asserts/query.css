@@ -35,3 +35,6 @@ div.recommendView{
     width: 100%;
     height: 100px;
 }
+div.orderItem{
+    text-align: left;
+}
