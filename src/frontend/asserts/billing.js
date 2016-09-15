@@ -37,31 +37,55 @@ function onRequestBillingCallback(data) {
     }
 }
 
-function requestCreateOrder(accountId, formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
-    let url = BASE_PATH + "order/create?senderName=" + senderName
-        + "&senderPhone=" + senderPhone
-        + "&cost=1234&postage=123"
-        + "&formatId=" + formatId
-        + "&name=" + name
-        + "&phone0=" + phone0
-        + "&phone1=" + phone1
-        + "&province=" + province
-        + "&city=" + city
-        + "&county=" + county
-        + "&town=" + town
-        + "&village=" + village
-        + "&append=" + append;
-    asyncRequestByGet(url, function (data) {
-        var result = checkResponseDataFormat(data);
-        if (result) {
-            var jsonData = JSON.parse(data);
-            onRequestCreateOrderCallback(jsonData.data);
-        }
-    }, onErrorCallback, onTimeoutCallback);
+function requestCreateOrder(accountId, productIds, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
+    let url = BASE_PATH;
+    if (accountId == undefined) {
+        url = BASE_PATH + "order/create?senderName=" + senderName
+            + "&senderPhone=" + senderPhone
+            + "&productIds=" + productIds
+            + "&name=" + name
+            + "&phone0=" + phone0
+            + "&phone1=" + phone1
+            + "&province=" + province
+            + "&city=" + city
+            + "&county=" + county
+            + "&town=" + town
+            + "&village=" + village
+            + "&append=" + append;
+        asyncRequestByGet(url, function (data) {
+            var result = checkResponseDataFormat(data);
+            if (result) {
+                var jsonData = JSON.parse(data);
+                onRequestAnonymousCreateOrderCallback(jsonData.data);
+            }
+        }, onErrorCallback, onTimeoutCallback);
+    } else {
+        url = BASE_PATH + "order/create?productIds=" + productIds + "&accountId=" + accountId + "&receiverId=test";
+        asyncRequestByGet(url, function (data) {
+            var result = checkResponseDataFormat(data);
+            if (result) {
+                var jsonData = JSON.parse(data);
+                onRequestUserCreateOrderCallback(jsonData.data);
+            }
+        }, onErrorCallback, onTimeoutCallback);
+    }
 }
 
-function onRequestCreateOrderCallback(data) {
+/**
+ * 创建匿名订单
+ * @param data
+ */
+function onRequestAnonymousCreateOrderCallback(data) {
     let url = BASE_PATH + "pq?orderId=" + data.orderId;
+    window.open(url, "_self");
+}
+
+/**
+ * 创建用户订单
+ * @param data
+ */
+function onRequestUserCreateOrderCallback(data) {
+    let url = BASE_PATH + "pm?accountId=test&dir=order";
     window.open(url, "_self");
 }
 
@@ -147,7 +171,7 @@ function createAnonymousReceiverContainer() {
     buyerPhoneEditor.style.float = "left";
     buyerInfoMessageLine.appendChild(buyerPhoneEditor);
     receiverContainer.appendChild(buyerInfoMessageLine);
-    let receiverInfoMessageLine = createReceiverAddressEditorContainer();
+    let receiverInfoMessageLine = createReceiverAddressEditorContainer(undefined);
     receiverContainer.appendChild(receiverInfoMessageLine);
     return receiverContainer;
 }
@@ -159,66 +183,88 @@ function createUserReceiverContainer(data) {
     receiverMessage.className = "messageLabel";
     receiverMessage.innerHTML = "收货人信息";
     receiverContainer.appendChild(receiverMessage);
-
-    let currentReceiverContainer = createReceiverAddressEditorContainer();
+    let currentReceiverContainer = createReceiverAddressEditorContainer(data.receivers[0]);
     receiverContainer.appendChild(currentReceiverContainer);
 
-    let moreReceiverContainer = document.createElement("div");
-    moreReceiverContainer.className = "messageLabel";
-    moreReceiverContainer.style.width = "120px";
-    moreReceiverContainer.style.height = "40px";
-    moreReceiverContainer.style.lineHeight = "40px";
-    moreReceiverContainer.innerHTML = "更多收货地址 ︾ ";
-    moreReceiverContainer.style.cursor = "pointer";
-    moreReceiverContainer.status = "less";
-    receiverContainer.appendChild(moreReceiverContainer);
-    moreReceiverContainer.onclick = function () {
+    let moreReceiverTip = document.createElement("div");
+    moreReceiverTip.className = "messageLabel";
+    moreReceiverTip.style.width = "120px";
+    moreReceiverTip.style.height = "40px";
+    moreReceiverTip.style.lineHeight = "40px";
+    moreReceiverTip.innerHTML = "更多收货地址 ︾ ";
+    moreReceiverTip.style.cursor = "pointer";
+    moreReceiverTip.status = "less";
+    receiverContainer.appendChild(moreReceiverTip);
+    let moreReceiverContainer = createMoreReceiverAddressContainer(data.receivers);
+    moreReceiverTip.onclick = function () {
         if (this.status == "less") {
-            moreReceiverContainer.innerHTML = "更多收货地址 ︾ ";
+            moreReceiverTip.innerHTML = "更多收货地址 ︾ ";
             this.status = "more";
             receiverContainer.style.height = "210px";
             let mainView = document.getElementById(MAIN);
-            mainView.style.height = mainView.clientHeight + 90 + "px";
+            receiverContainer.appendChild(moreReceiverContainer);
+            mainView.style.height = mainView.clientHeight + moreReceiverContainer.clientHeight + "px";
         } else if (this.status == "more") {
-            moreReceiverContainer.innerHTML = "更多收货地址 ︽ ";
+            moreReceiverTip.innerHTML = "更多收货地址 ︽ ";
             this.status = "less";
             receiverContainer.style.height = "120px";
             let mainView = document.getElementById(MAIN);
-            mainView.style.height = mainView.clientHeight - 90 + "px";
+            receiverContainer.removeChild(moreReceiverContainer);
+            mainView.style.height = mainView.clientHeight - moreReceiverContainer.clientHeight + "px";
         }
     };
     receiverContainer.style.height = "120px";
     return receiverContainer;
 }
 
+function createMoreReceiverAddressContainer(data) {
+    let moreAddressContainer = document.createElement("div");
+    if (data != undefined && data.length > 0) {
+        for (let i = 0; i < data.length; i++) {
+
+        }
+    }
+    if (data == undefined || data.length < 10) {
+        let addNewReceiver = document.createElement("div");
+        addNewReceiver.className = "billingReceiverItem";
+        addNewReceiver.style.textAlign = "center";
+        addNewReceiver.style.borderColor = "#000000";
+        addNewReceiver.innerHTML = "+";
+        moreAddressContainer.appendChild(addNewReceiver);
+    }
+    moreAddressContainer.style.height = data == undefined ? 0 : data.length * 30 + data.length < 10 ? 1 : 0 * 30 + "px";
+    return moreAddressContainer;
+
+}
+
 function createReceiverAddressEditorContainer(data) {
     let receiverInfoMessageLine = document.createElement("div");
-    receiverInfoMessageLine.className = "messageLabel";
-    receiverInfoMessageLine.style.width = "998px";
+    receiverInfoMessageLine.className = "billingReceiverItem";
     receiverInfoMessageLine.style.height = "40px";
     receiverInfoMessageLine.style.lineHeight = "40px";
-    receiverInfoMessageLine.style.borderWidth = "1px";
-    receiverInfoMessageLine.style.fontSize = "0.8rem";
-    receiverInfoMessageLine.style.cursor = "pointer";
-    receiverInfoMessageLine.style.borderColor = "#FF0000";
     receiverInfoMessageLine.bindData = data;
     if (data == undefined) {
         receiverInfoMessageLine.innerHTML = "双击编辑收货人信息";
     } else {
-        createReceiverAddressEditorItem(receiverInfoMessageLine, data)
+        addCurrentReceiverViewToContainer(receiverInfoMessageLine, data)
     }
 
     receiverInfoMessageLine.ondblclick = function () {
         showReceiverEditorView(receiverInfoMessageLine.bindData, function (data) {
             receiverInfoMessageLine.bindData = data;
-            createReceiverAddressEditorItem(receiverInfoMessageLine, data)
+            addCurrentReceiverViewToContainer(receiverInfoMessageLine, data)
         });
     };
 
     return receiverInfoMessageLine;
 }
 
-function createReceiverAddressEditorItem(container, data) {
+/**
+ * 当前收货人信息
+ * @param container
+ * @param data
+ */
+function addCurrentReceiverViewToContainer(container, data) {
     container.innerHTML = null;
     container.style.fontSize = "1rem";
     let nameLabel = document.createElement("div");
@@ -440,15 +486,19 @@ function onPayActionClick() {
         new Toast().show("请完善收货人地址");
         return;
     }
-
-    let senderName = document.getElementById("senderName").value;
-    let senderPhone = document.getElementById("senderPhone").value;
-    let formatId = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
-
-    showPaymentView(function () {
-        requestCreateOrder(undefined,formatId, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
-    });
-
+    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+    let productIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
+    if (accountId == undefined) {
+        let senderName = document.getElementById("senderName").value;
+        let senderPhone = document.getElementById("senderPhone").value;
+        showPaymentView(function () {
+            requestCreateOrder(undefined, productIds, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+        });
+    } else {
+        showPaymentView(function () {
+            requestCreateOrder(accountId, productIds);
+        });
+    }
 
 
 }

@@ -4,7 +4,16 @@
 window.onload = function () {
     initTitleView();
     requestLinker();
-    createMineTabView();
+    let dir = document.getElementById("dir") == undefined ? null : document.getElementById("dir").content;
+    if (dir == "cart"){
+        createMineTabView(0);
+    }
+    
+    if (dir == "order"){
+        createMineTabView(1);
+    }
+    
+    
 };
 
 const MINE_TABS = new Array("购物车", "订单", "账户", "收货地址");

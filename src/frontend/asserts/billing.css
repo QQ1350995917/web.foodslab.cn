@@ -8,7 +8,15 @@ div.containerStyle{
 div.receiverContainer {
     height: 120px;
 }
-
+div.billingReceiverItem{
+    width: 998px;
+    height: 30px;
+    line-height: 30px;
+    border: 1px solid #FF0000;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #000000;
+}
 div.payStyleContainer {
 
 
