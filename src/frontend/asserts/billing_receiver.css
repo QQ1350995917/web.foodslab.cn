@@ -17,6 +17,7 @@ div.receiverItemLabel {
 
 input.input{
     width: 390px;
+    height: 25px;
     margin-top: 5px;
     border: 1px solid #CCCCCC;
     margin-left: 10px;

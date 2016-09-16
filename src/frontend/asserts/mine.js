@@ -13,6 +13,10 @@ window.onload = function () {
         createMineTabView(1);
     }
     
+    if (dir == "receiver"){
+        createMineTabView(3);
+    }
+    
     
 };
 
