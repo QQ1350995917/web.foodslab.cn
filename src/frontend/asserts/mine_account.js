@@ -92,30 +92,6 @@ function createPhoneAccountContainer(data) {
 
     phoneAccountContainer.appendChild(genderContainer);
     /**
-     * 创建生日行
-     * @type {Element}
-     */
-    let birthdayContainer = document.createElement("div");
-    birthdayContainer.className = "accountItem";
-    let birthdayLabelLeft = document.createElement("div");
-    birthdayLabelLeft.className = "labelLeft";
-    birthdayLabelLeft.innerHTML = "生日:";
-    birthdayContainer.appendChild(birthdayLabelLeft);
-    let birthdayLabelInput = document.createElement("input");
-    birthdayLabelInput.className = "formatSubItemBar_main_widget_number labelInput";
-    birthdayLabelInput.type = "text";
-    birthdayLabelInput.readOnly = "true";
-    new Pikaday({
-        field: birthdayLabelInput,
-        firstDay: 1,
-        minDate: new Date('1900-01-01'),
-        maxDate: new Date('2020-12-31'),
-        yearRange: [2015, 2020]
-    });
-
-    birthdayContainer.appendChild(birthdayLabelInput);
-    phoneAccountContainer.appendChild(birthdayContainer);
-    /**
      * 创建头像行
      * @type {Element}
      */
