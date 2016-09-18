@@ -12,6 +12,10 @@ window.onload = function () {
     if (dir == "order"){
         createMineTabView(1);
     }
+
+    if (dir == "account"){
+        createMineTabView(2);
+    }
     
     if (dir == "receiver"){
         createMineTabView(3);

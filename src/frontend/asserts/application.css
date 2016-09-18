@@ -15,7 +15,6 @@ a {
 
 a:hover {
     color: #000000;
-    font-size: 0.9rem;
 }
 
 div.header {
@@ -75,11 +74,18 @@ div.footer_link {
     color: #CCCCCC;
 }
 
+div.footer_link_item{
+    float: right;
+    width: 100px;
+    border: 0px solid #CCCCCC;
+}
+
 div.footer_link_linker {
-    float: left;
+    float: right;
     width: 70px;
     height: 30px;
     line-height: 28px;
+    text-align: center;
     border: 0px solid #CCCCCC;
     color: #CCCCCC;
     font-size: 0.8rem;
