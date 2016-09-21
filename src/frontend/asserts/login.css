@@ -16,6 +16,11 @@ div.loginContainer {
     border-radius: 10px;
 }
 
+div.functionPanel{
+    width: 400px;
+    height: 260px;
+}
+
 div.titleRowView {
     width: 400px;
     height: 20px;
@@ -102,4 +107,15 @@ div.loginAction{
     text-align: center;
     margin-top: 10px;
     cursor: pointer;
+}
+
+div.functionAction{
+    float: right;
+    height: 30px;
+    line-height: 30px;
+    text-align: right;
+    margin-right: 10px;
+    margin-left: 10px;
+    cursor: pointer;
+
 }

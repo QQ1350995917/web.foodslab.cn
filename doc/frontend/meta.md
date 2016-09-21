@@ -102,3 +102,91 @@
 }
 ```
 - 备注：无
+
+
+## 获取验证码
+#### 描述
+- 用户主动请求或刷新验证码
+
+#### 请求地址
+- http://localhost:8080/foodslab/meta/vcode
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|session   |      |String    |否| |会话标记|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "session": "session"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|2|message  |         |String    |否	|    |相应消息|
+|03|3|data     |         |jsonArray |否	|    |数据集合体|
+|04|4|vCode    |data     |String    |是	|    |判定为机器访问后的验证码图像数据|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 0,
+    "data": 88,
+    "message": "this is a tip message"
+}
+```
+- 备注：无
+
+## 获取短信验证码
+#### 描述
+- 用户手机号码发生变更时候的验证
+
+#### 请求地址
+- http://localhost:8080/foodslab/meta/smscode
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|session   |      |String    |否| |会话标记|
+|01|1|vCode     |      |String    |否| |验证码|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "session": "session",
+    "vCode": "vCode"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |数据集合体|
+
+- 响应数据结构示例：
+
+```json
+{
+    "code": 0,
+    "data": 88,
+    "message": "this is a tip message"
+}
+```
+- 备注：无

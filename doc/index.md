@@ -37,24 +37,7 @@
 
 # **前端接口**
 ## 页面接口
-### [显示首页页面](frontend/index.md)
-- 初始化显示
-- 跳转显示
-### [显示系列页面](frontend/series.md)
-- 初始化显示
-- 跳转显示
-### [显示详情页面](frontend/detail.md)
-- 初始化显示
-- 跳转显示
-### [获取购物车页面](frontend/cart.md)
-- 初始化显示
-- 跳转显示
-### [显示订单页面](frontend/order.md)
-- 初始化显示
-- 跳转显示
-### [显示支付页面](frontend/billing.md)
-- 初始化显示
-- 跳转显示
+### [显示页面](frontend/page.md)
 
 ## 数据接口
 ### [产品数据接口](frontend/product.md)
