@@ -32,13 +32,20 @@
 |02|1|message  |         |String    |否	|    |相应消息|
 |03|1|data     |         |jsonArray |否	|    |数据集合体|
 
-- 响应数据结构示例：
-
+- 响应数据结构(操作失败示例)：
 ```json
 {
-    "code": 0,
+    "code": 3000,
     "data": 88,
-    "message": "this is a tip message"
+    "message": "fail"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 3050,
+    "data": 88,
+    "message": "success"
 }
 ```
 - 备注：无
