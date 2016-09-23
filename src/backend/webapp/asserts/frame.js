@@ -66,20 +66,27 @@ function onFrameMenuItemClick(dataId) {
         managerIndex();
     } else if (dataId == "product") {
         resetView();
-        productSeries();
+        initProduct();
     } else if (dataId == "recommend") {
+        resetView();
         recommend();
     } else if (dataId == "link") {
+        resetView();
         link();
     } else if (dataId == "poster") {
+        resetView();
         posterInit();
     } else if (dataId == "skin") {
+        resetView();
         initSkinView();
     } else if (dataId == "user") {
+        resetView();
         showUsers();
     } else if (dataId == "order"){
+        resetView();
         showOrderView();
     } else if (dataId == "message"){
+        resetView();
         showMessageView();
     } else {
         console.log(dataId);

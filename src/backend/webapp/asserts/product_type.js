@@ -70,8 +70,26 @@ function initTypeDetailView(containerView, typeEntity) {
     textContainer.className = "textContainer";
     let descriptionTextArea = document.createElement("textarea")
     descriptionTextArea.id = "descriptionTextArea";
-    descriptionTextArea.value = typeEntity.description == undefined ? "" : typeEntity.description;
+    descriptionTextArea.value = typeEntity.summary == undefined ? "" : typeEntity.summary;
     descriptionTextArea.className = "descriptionTextArea";
+    descriptionTextArea.onblur = function () {
+        let description = document.getElementById("descriptionTextArea").value;
+        let requestTypeEntity = new Object();
+        requestTypeEntity.sessionId = "admin";
+        requestTypeEntity.typeId = typeEntity.typeId;
+        requestTypeEntity.summary = description;
+        asyncRequestByGet(BASE_PATH + "/type/mSummary?p=" + JSON.stringify(requestTypeEntity), function (data) {
+            var result = checkResponsDataFormat(data);
+            if (result) {
+                var parseData = JSON.parse(data);
+                if (parseData.code == RESPONSE_SUCCESS) {
+                    new Toast().show("更新成功");
+                } else {
+                    new Toast().show("更新失败");
+                }
+            }
+        }, onRequestError(), onRequestTimeout());
+    }
     textContainer.appendChild(descriptionTextArea);
 
     let formatArea = document.createElement("div")
@@ -91,10 +109,21 @@ function initTypeDetailView(containerView, typeEntity) {
     submitContainer.className = "submitContainer";
     submitContainer.innerHTML = "提交";
     submitContainer.onclick = function () {
-        let description = document.getElementById("descriptionTextArea").value;
         let detail = document.getElementById("hyperEditor").innerHTML;
-        asyncRequestByGet(BASE_PATH + "/product/updateTypeDetail?typeId=" + typeEntity.typeId + "&description=" + description + "&detail=" + detail, function (data) {
-            console.log(data);
+        let requestTypeEntity = new Object();
+        requestTypeEntity.sessionId = "admin";
+        requestTypeEntity.typeId = typeEntity.typeId;
+        requestTypeEntity.directions = detail;
+        asyncRequestByGet(BASE_PATH + "/type/mDirections?p=" + JSON.stringify(requestTypeEntity), function (data) {
+            var result = checkResponsDataFormat(data);
+            if (result) {
+                var parseData = JSON.parse(data);
+                if (parseData.code == RESPONSE_SUCCESS) {
+                    new Toast().show("更新成功");
+                } else {
+                    new Toast().show("更新失败");
+                }
+            }
         }, onRequestError(), onRequestTimeout());
     };
     containerView.appendChild(submitContainer);
@@ -160,8 +189,7 @@ function initDetailEditorView(container, typeEntity) {
     hyperEditor.className = "hyperEditor";
     hyperEditor.id = "hyperEditor";
     hyperEditor.contentEditable = true;
-    console.log(typeEntity.detail);
-    hyperEditor.innerHTML = typeEntity.detail == undefined ? "" : typeEntity.detail;
+    hyperEditor.innerHTML = typeEntity.directions == undefined ? "" : typeEntity.directions;
     container.appendChild(toolsBar);
     container.appendChild(hyperEditor);
 }

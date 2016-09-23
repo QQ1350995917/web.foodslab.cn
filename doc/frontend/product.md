@@ -1,4 +1,74 @@
-## [返回首页](../index.md)
+# 产品接口 [返回首页](../index.md)
+
+## 从系列读取产品树
+#### 描述
+- 创建产品规格,后台接口,请求时候服务器检测权限
+
+#### 请求地址
+- http://localhost:8080/foodslab/product/mRetrieves
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|sessionId |          |String    |否| |sessionID|
+
+- GET请求链接示例：无
+- 请求数据结构示例：
+```json
+{
+    "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49"
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|Pkey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonObject|否	|    |相应的数据|
+|04|2|label    |data     |String    |否	|    |提交的数据|
+|05|2|seriesId |data     |String    |否	|    |提交的数据|
+|06|2|typeId   |data     |String    |是	|    |操作失败的时无该数据|
+
+- 响应数据结构(操作失败示例)：
+```json
+{
+    "code": 3000,
+    "data": {
+        "label": "家庭装",
+        "queue": 0,
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321c",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2
+    },
+    "message": "fail"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 3050,
+    "data": {
+        "label": "家庭装",
+        "queue": 0,
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321c",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2,
+        "typeId": "fe4095fc-9158-4008-93d5-0dcc96f29801"
+    },
+    "message": "success"
+}
+```
+- 备注：无
+
+
+
+
+
 
 ## 获取系列数据
 #### 描述

@@ -6,6 +6,8 @@ const MAIN_TITLE_ID = "main_title";
 const MAIN_CONTENT_ID = "main_content_container";
 const TOAST_CONTAINER_ID = "body";
 
+const RESPONSE_SUCCESS = 3050;
+
 const APP_CONST_MENU = new Array();//全局变量,保存所有的菜单引用
 const APP_CONST_CLIENT_ID = "clientId";
 

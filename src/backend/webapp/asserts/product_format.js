@@ -368,41 +368,44 @@ function saveFormat(typeEntity) {
     let formatGiftEnd = document.getElementById("vid_format_gift_endTime");
 
 
-    let indexUrl = "http://localhost:8080/foodslab/product/createFormat?typeId=" + typeEntity.typeId;
-    indexUrl = indexUrl + "&status=" + (formatStatus.checked == true ? 1 : 0);
-    indexUrl = indexUrl + "&label=" + formatLabel.value;
-    indexUrl = indexUrl + "&meta=" + formatLabel_unit.options[formatLabel_unit.selectedIndex].text;
-    indexUrl = indexUrl + "&amount=" + formatMount.value;
-    indexUrl = indexUrl + "&amountMeta=" + formatMount_unit.options[formatMount_unit.selectedIndex].text;
-    indexUrl = indexUrl + "&pricing=" + formatPricing.value;
-    indexUrl = indexUrl + "&pricingMeta=" + formatPricing_unit.options[formatPricing_unit.selectedIndex].text;
-    indexUrl = indexUrl + "&postage=" + formatPostage.value;
-    indexUrl = indexUrl + "&postageMeta=" + formatPostage_unit.options[formatPostage_unit.selectedIndex].text;
+    let requestFormatEntity = new Object();
+    requestFormatEntity.typeId = typeEntity.typeId;
+    requestFormatEntity.status = (formatStatus.checked == true ? 1 : 0);
+    requestFormatEntity.label= formatLabel.value;
+    requestFormatEntity.meta= formatLabel_unit.options[formatLabel_unit.selectedIndex].text;
+    requestFormatEntity.amount= formatMount.value;
+    requestFormatEntity.amountMeta= formatMount_unit.options[formatMount_unit.selectedIndex].text;
+    requestFormatEntity.pricing = formatPricing.value;
+    requestFormatEntity.priceMeta = formatPricing_unit.options[formatPricing_unit.selectedIndex].text;
+    requestFormatEntity.postage = formatPostage.value;
+    requestFormatEntity.postageMeta = formatPostage_unit.options[formatPostage_unit.selectedIndex].text;
+    requestFormatEntity.priceStatus = (formatPriceStatus.checked == true ? 1 : 0);
+    requestFormatEntity.pricingDiscount = formatPriceDiscount.value;
+    requestFormatEntity.price = formatPrice.value;
+    requestFormatEntity.priceStart = formatDiscountStart.value;
+    requestFormatEntity.priceEnd = formatDiscountEnd.value;
+    requestFormatEntity.expressStatus = (formatExpressStatus.checked == true ? 1 : 0);
+    requestFormatEntity.expressCount = formatExpressCount.value;
+    requestFormatEntity.expressName = formatExpress.options[formatExpress.selectedIndex].text;
+    requestFormatEntity.expressStart = formatExpressStart.value;
+    requestFormatEntity.expressEnd = formatExpressEnd.value;
+    requestFormatEntity.giftStatus = (formatGiftStatus.checked == true ? 1 : 0);
+    requestFormatEntity.giftCount = formatGiftCount.value;
+    requestFormatEntity.giftLabel = formatGift.options[formatGift.selectedIndex].text;
+    requestFormatEntity.giftStart = formatGiftStart.value;
+    requestFormatEntity.giftEnd = formatGiftEnd.value;
 
-    indexUrl = indexUrl + "&priceStatus=" + (formatPriceStatus.checked == true ? 1 : 0);
-    indexUrl = indexUrl + "&priceDiscount=" + formatPriceDiscount.value;
-    indexUrl = indexUrl + "&price=" + formatPrice.value;
-    indexUrl = indexUrl + "&priceStart=" + formatDiscountStart.value;
-    indexUrl = indexUrl + "&priceEnd=" + formatDiscountEnd.value;
+    let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(requestFormatEntity);
 
-    indexUrl = indexUrl + "&expressStatus=" + (formatExpressStatus.checked == true ? 1 : 0);
-    indexUrl = indexUrl + "&expressCount=" + formatExpressCount.value;
-    indexUrl = indexUrl + "&expressName=" + formatExpress.options[formatExpress.selectedIndex].text;
-    indexUrl = indexUrl + "&expressStart=" + formatExpressStart.value;
-    indexUrl = indexUrl + "&expressEnd=" + formatExpressEnd.value;
-
-    indexUrl = indexUrl + "&giftStatus=" + (formatGiftStatus.checked == true ? 1 : 0);
-    indexUrl = indexUrl + "&giftCount=" + formatGiftCount.value;
-    indexUrl = indexUrl + "&giftLabel=" + formatGift.options[formatGift.selectedIndex].text;
-    ;
-    indexUrl = indexUrl + "&giftStart=" + formatGiftStart.value;
-    indexUrl = indexUrl + "&giftEnd=" + formatGiftEnd.value;
-
-    console.log(indexUrl);
-
-    asyncRequestByGet(indexUrl, saveFormatCallback, onRequestError(), onRequestTimeout());
-}
-
-function saveFormatCallback(data) {
-    console.log(data);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
 }

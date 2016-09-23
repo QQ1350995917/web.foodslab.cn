@@ -5,14 +5,49 @@
 /**
  * 全局变量,产品树数据
  */
-let GLOBAL_PRODUCT_ENTITIES;
+let GLOBAL_PRODUCT_TREE;
 
 /**
  * 请求产品列表
  */
-function productSeries() {
-    var indexUrl = BASE_PATH + "/product/retrieve";
-    asyncRequestByGet(indexUrl, onProductDataCallBack, onRequestError(), onRequestTimeout());
+function initProduct() {
+    resetView();
+    var indexUrl = BASE_PATH + "/product/mRetrieves?p={\"sessionId\":\"admin\"}";
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                console.log(parseData.data);
+                onRequestProductTreeCallback(parseData.data);
+            } else {
+                new Toast().show("删除失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+/**
+ * 请求服务器的产品树数据的回调
+ * @param data 产品树数据
+ */
+function onRequestProductTreeCallback(data) {
+    GLOBAL_PRODUCT_TREE = data;
+    // 获取根元素对象
+    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
+    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
+    // 添加标题
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "产品总览";
+    titleView.className = "horizontalSelected";
+    titleView.style.width = "100%";
+    titleViewContainer.appendChild(titleView);
+    // 构建系列组合
+    let seriesEntitiesSize = GLOBAL_PRODUCT_TREE == undefined ? 0 : GLOBAL_PRODUCT_TREE.length;
+    for (let index = 0; index < seriesEntitiesSize; index++) {
+        initProductItemView(contentViewContainer, GLOBAL_PRODUCT_TREE[index]);
+    }
+    addNewSeries(contentViewContainer);
 }
 
 /**
@@ -20,21 +55,37 @@ function productSeries() {
  * @param containerView 所在的容器对象
  * @param seriesName 名称
  */
-function createSeries(containerView, label) {
-    var indexUrl = BASE_PATH + "/product/createSeries?label=" + label;
+function createSeries(containerView, seriesEntity) {
+    var indexUrl = BASE_PATH + "/series/mCreate?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onSeriesCreateDataCallback(containerView, data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            containerView.removeChild(containerView.childNodes[containerView.childNodes.length - 1]);
+            containerView.removeChild(containerView.childNodes[containerView.childNodes.length - 1]);
+            initProductItemView(containerView, parseData.data);
+            addNewSeries(containerView);
+        }
     }, onRequestError(), onRequestTimeout());
 }
 
 /**
  * 更新系列名称
- * @param seriesId 系列的ID
- * @param label 系列的名称
+ * @param seriesEntity 系列对象
  */
-function renameSeries(seriesId, label) {
-    var indexUrl = BASE_PATH + "/product/updateSeries?label=" + label + "&seriesId=" + seriesId + "&status=1";
-    asyncRequestByGet(indexUrl, onSeriesRenameDataCallback, onRequestError(), onRequestTimeout());
+function renameSeries(seriesEntity) {
+    var indexUrl = BASE_PATH + "/series/mUpdate?p=" + JSON.stringify(seriesEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("更新成功");
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
 }
 
 
@@ -48,101 +99,21 @@ function blockSeries() {
  * @param seriesRootView 系列根对象
  * @param seriesId 数据ID
  */
-function deleteSeries(rootView, seriesRootView, seriesId, label) {
-    var indexUrl = BASE_PATH + "/product/updateSeries?label=" + label + "&seriesId=" + seriesId + "&status=-1";
+function deleteSeries(rootView, seriesRootView, seriesEntity) {
+    var indexUrl = BASE_PATH + "/series/mMark?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onSeriesDeleteDataCallback(rootView, seriesRootView, data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                rootView.removeChild(seriesRootView);
+                new Toast().show("删除成功");
+            } else {
+                new Toast().show("删除失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
-
-/**
- * 处理服务器返回的产品数据
- * @param data 服务器返回的数据
- */
-function onProductDataCallBack(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        GLOBAL_PRODUCT_ENTITIES = parseData.data;
-        initProductView(GLOBAL_PRODUCT_ENTITIES);
-    }
-}
-
-/**
- * 处理服务器返回的创建系列数据
- * @param containerView 容器对象
- * @param data 数据
- */
-function onSeriesCreateDataCallback(containerView, data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        containerView.removeChild(containerView.childNodes[containerView.childNodes.length - 1]);
-        containerView.removeChild(containerView.childNodes[containerView.childNodes.length - 1]);
-        initProductItemView(containerView, parseData.data);
-        addNewSeries(containerView);
-    }
-}
-
-/**
- * 处理服务器返回的系列更新系列名称的数据
- * @param data
- */
-function onSeriesRenameDataCallback(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("更新成功");
-        } else {
-            new Toast().show("更新失败");
-        }
-    }
-}
-
-/**
- * 处理服务器返回的系列删除的数据
- * @param rootView 根对象
- * @param seriesRootView 系列根对象
- * @param data 数据
- */
-function onSeriesDeleteDataCallback(rootView, seriesRootView, data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            rootView.removeChild(seriesRootView);
-            new Toast().show("删除成功");
-        } else {
-            new Toast().show("删除失败");
-        }
-    }
-}
-
-/**
- * 显示产品数据到界面
- * @param productEntities
- */
-function initProductView(productEntities) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "产品总览";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-    // 构建系列组合
-    let seriesEntitiesSize = productEntities == undefined ? 0 : productEntities.length;
-    for (let index = 0; index < seriesEntitiesSize; index++) {
-        initProductItemView(contentViewContainer, productEntities[index]);
-    }
-    addNewSeries(contentViewContainer);
-}
-
 
 /**
  * 显示单个的产品数据到界面
@@ -310,7 +281,10 @@ function addNewSeries(containerView) {
                 if (addNewSeriesViewSub.value == "" || addNewSeriesViewSub.value == undefined || addNewSeriesViewSub.value == null) {
                     new Toast().show("请输入系列名称");
                 } else {
-                    createSeries(containerView, addNewSeriesViewSub.value);
+                    let seriesEntity = new Object()
+                    seriesEntity.label = addNewSeriesViewSub.value;
+                    seriesEntity.sessionId = "admin";
+                    createSeries(containerView, seriesEntity);
                 }
             };
             seriesItemLabelContainerView.appendChild(seriesNameSaveView);
@@ -340,9 +314,9 @@ function onSeriesItemClick(seriesId) {
         alert("error");
     } else {
         let seriesEntity;
-        for (let index = 0; index < GLOBAL_PRODUCT_ENTITIES.length; index++) {
-            if (seriesId == GLOBAL_PRODUCT_ENTITIES[index].seriesId) {
-                seriesEntity = GLOBAL_PRODUCT_ENTITIES[index]
+        for (let index = 0; index < GLOBAL_PRODUCT_TREE.length; index++) {
+            if (seriesId == GLOBAL_PRODUCT_TREE[index].seriesId) {
+                seriesEntity = GLOBAL_PRODUCT_TREE[index]
                 break;
             }
         }
@@ -398,7 +372,10 @@ function onSeriesNameClick(rootView, seriesRootView, containerView, seriesEntity
     seriesNameDeleteView.innerHTML = "删除";
     seriesNameDeleteView.className = "B_B_D";
     seriesNameDeleteView.onclick = function () {
-        deleteSeries(rootView, seriesRootView, seriesEntity.seriesId);
+        let requestSeriesEntity = new Object();
+        requestSeriesEntity.seriesId = seriesEntity.seriesId;
+        requestSeriesEntity.status = -1;
+        deleteSeries(rootView, seriesRootView, requestSeriesEntity);
     };
     containerView.appendChild(seriesNameDeleteView);
 }
@@ -415,6 +392,9 @@ function onSeriesNameBlur(rootView, seriesRootView, containerView, seriesEntity,
     containerView.appendChild(seriesItemLabelView);
 
     if (newValue != undefined && newValue != null && newValue.trim() != "" && seriesEntity.label != newValue) {
-        renameSeries(seriesEntity.seriesId, newValue);
+        let requestSeriesEntity = new Object();
+        requestSeriesEntity.seriesId = seriesEntity.seriesId;
+        requestSeriesEntity.label = newValue;
+        renameSeries(requestSeriesEntity);
     }
 }

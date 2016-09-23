@@ -59,3 +59,5 @@
 - 获取海报数据
 - 获取链接数据
 - 获取地址数据
+
+http://localhost:8080/foodslab/

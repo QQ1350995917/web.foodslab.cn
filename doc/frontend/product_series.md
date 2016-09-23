@@ -1,4 +1,4 @@
-## 产品系列接口 [返回首页](../index.md)
+# 产品系列接口 [返回首页](../index.md)
 
 ## 创建系列
 #### 描述
@@ -40,7 +40,9 @@
 {
     "code": 3000,
     "data": {
-        "label": "石磨香油"
+        "label": "石磨香油",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2
     },
     "message": "fail"
 }
@@ -50,8 +52,10 @@
 {
     "code": 3050,
     "data": {
-        "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-        "label": "石磨香油"
+        "label": "石磨香油",
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321c",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2
     },
     "message": "success"
 }
@@ -101,8 +105,10 @@
 {
     "code": 3000,
     "data": {
-        "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-        "label": "石磨香油"
+        "label": "石磨香油",
+        "seriesId": "xxx",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2
     },
     "message": "fail"
 }
@@ -112,8 +118,10 @@
 {
     "code": 3050,
     "data": {
-        "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-        "label": "石磨香油"
+        "label": "石磨香油",
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321c",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "status": -2
     },
     "message": "success"
 }
@@ -163,7 +171,8 @@
 {
     "code": 3000,
     "data": {
-        "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321cx",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
         "status": -1
     },
     "message": "fail"
@@ -174,7 +183,8 @@
 {
     "code": 3050,
     "data": {
-        "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
+        "seriesId": "64cd6220-1fa8-4fec-b944-182c09d2321c",
+        "sessionId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
         "status": -1
     },
     "message": "success"
@@ -230,19 +240,24 @@
     "code": 3050,
     "data": [
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "status": 0,
-            "label": "石磨香油1"
+            "label": "白芝麻",
+            "seriesId": "3cd62990-0683-4e0f-b051-93ef363e8c39",
+            "status": -2
         },
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "status": 0,
-            "label": "石磨香油2"
+            "label": "石磨香油",
+            "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677",
+            "status": -2
         },
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "status": 0,
-            "label": "石磨香油3"
+            "label": "吊炉花生",
+            "seriesId": "c081fe20-098e-4ef9-8be6-1d8788cb8057",
+            "status": -2
+        },
+        {
+            "label": "石磨麻酱",
+            "seriesId": "c7df824a-744d-445f-8bed-7039f0cecf0b",
+            "status": -2
         }
     ],
     "message": "success"
@@ -296,16 +311,24 @@
     "code": 3050,
     "data": [
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "label": "石磨香油1"
+            "label": "白芝麻",
+            "seriesId": "3cd62990-0683-4e0f-b051-93ef363e8c39",
+            "status": -2
         },
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "label": "石磨香油2"
+            "label": "石磨香油",
+            "seriesId": "b2523f4e-77c5-4a40-810e-c1e436e80677",
+            "status": -2
         },
         {
-            "seriesId": "a8002cbe-60bc-4f7d-abef-a36e46b23f49",
-            "label": "石磨香油3"
+            "label": "吊炉花生",
+            "seriesId": "c081fe20-098e-4ef9-8be6-1d8788cb8057",
+            "status": -2
+        },
+        {
+            "label": "石磨麻酱",
+            "seriesId": "c7df824a-744d-445f-8bed-7039f0cecf0b",
+            "status": -2
         }
     ],
     "message": "success"

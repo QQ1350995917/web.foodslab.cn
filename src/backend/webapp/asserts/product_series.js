@@ -3,35 +3,46 @@
  */
 
 /**
- * 请求系列列表
- */
-function productType() {
-    var indexUrl = BASE_PATH + "/product/retrieveType?typeId=aba4d190-6874-426a-883f-a1e561a6f879&managerId=xxx";
-    asyncRequestByGet(indexUrl, onTypeDataCallBack, onRequestError(), onRequestTimeout());
-}
-
-/**
  * 创建类型名称
  * @param containerView 容器对象
  * @param seriesId 类型的ID
  * @param label 类型的名称
  */
-function createType(containerView, seriesId, label) {
-    var indexUrl = BASE_PATH + "/product/createType?seriesId=" + seriesId + "&label=" + label;
+function createType(containerView, typeEntity) {
+    var indexUrl = BASE_PATH + "/type/mCreate?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onTypeCreateDataCallback(containerView, data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("创建成功");
+                containerView.removeChild(containerView.lastChild);
+                containerView.removeChild(containerView.lastChild);
+                initTypeView(containerView, parseData.data);
+                addNewType(containerView);
+            } else {
+                new Toast().show("创建失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
 
 /**
  * 重命名类型名称
- * @param typeId
- * @param label
+ * @param typeEntity
  */
-function renameType(typeEntity,label) {
-    var indexUrl = BASE_PATH + "/product/updateType?seriesId=" + typeEntity.seriesId +"&typeId=" + typeEntity.typeId + "&label=" + label + "&status=1";
+function renameType(typeEntity) {
+    var indexUrl = BASE_PATH + "/type/mUpdate?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onTypeRenameDataCallback(data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("更新成功");
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
 
@@ -39,66 +50,21 @@ function blockType() {
 
 }
 
-function deleteType(typeEntitiesViewContainer,typeEntityView,typeEntity) {
-    var indexUrl = BASE_PATH + "/product/updateType?seriesId=" + typeEntity.seriesId +"&typeId=" + typeEntity.typeId + "&label=" + typeEntity.label + "&status=-1";
+function deleteType(typeEntitiesViewContainer, typeEntityView, typeEntity) {
+    var indexUrl = BASE_PATH + "/type/mMark?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onTypeDeleteDataCallback(typeEntitiesViewContainer,typeEntityView,data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                typeEntitiesViewContainer.removeChild(typeEntityView);
+                new Toast().show("删除成功");
+            } else {
+                new Toast().show("删除失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 
-}
-
-/**
- * 处理服务器返回的创建型号的数据
- * @param containerView
- * @param data
- */
-function onTypeCreateDataCallback(containerView, data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("创建成功");
-            containerView.removeChild(containerView.lastChild);
-            containerView.removeChild(containerView.lastChild);
-            initTypeView(containerView, parseData.data);
-            addNewType(containerView);
-        } else {
-            new Toast().show("创建失败");
-        }
-    }
-}
-
-/**
- * 处理服务器返回的类型更新名称的数据
- * @param data
- */
-function onTypeRenameDataCallback(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200){
-            new Toast().show("更新成功");
-        }else{
-            new Toast().show("更新失败");
-        }
-    }
-}
-
-/**
- * 处理服务器返回的类型删除的数据
- * @param data
- */
-function onTypeDeleteDataCallback(typeEntitiesViewContainer,typeEntityView,data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200){
-            typeEntitiesViewContainer.removeChild(typeEntityView);
-            new Toast().show("删除成功");
-        }else{
-            new Toast().show("删除失败");
-        }
-    }
 }
 
 /**
@@ -134,7 +100,7 @@ function showSeries(seriesEntity) {
  */
 function backToProduct() {
     CURRENT_SERIES_ENTITY = null;
-    productSeries();
+    initProduct();
 }
 
 
@@ -185,7 +151,7 @@ function initSeriesView(containerView, seriesEntity) {
     containerView.appendChild(seriesRootView);
 }
 
-function initTypeView(typeEntitiesViewContainer,typeEntity) {
+function initTypeView(typeEntitiesViewContainer, typeEntity) {
     // 显示类型和规格的根对象
     let typeEntityView = document.createElement("div");
     typeEntityView.className = "SS_IC";
@@ -207,7 +173,7 @@ function initTypeView(typeEntitiesViewContainer,typeEntity) {
     typeLabelView.className = "SS_IC_LABEL";
     typeLabelView.innerHTML = typeEntity.label;
     typeLabelView.ondblclick = function () {
-        onTypeNameClick(typeEntitiesViewContainer,typeEntityView,typeLabelConvertView, typeEntity);
+        onTypeNameClick(typeEntitiesViewContainer, typeEntityView, typeLabelConvertView, typeEntity);
     };
     typeLabelConvertView.appendChild(typeLabelView);
     formatRootViewContainer.appendChild(typeLabelConvertView);
@@ -305,7 +271,10 @@ function addNewType(containerView) {
                 if (addNewTypeViewSub.value == "" || addNewTypeViewSub.value == undefined || addNewTypeViewSub.value == null) {
                     new Toast().show("请输入类型名称");
                 } else {
-                    createType(containerView, CURRENT_SERIES_ENTITY.seriesId, addNewTypeViewSub.value);
+                    let requestTypeEntity = new Object();
+                    requestTypeEntity.seriesId = CURRENT_SERIES_ENTITY.seriesId;
+                    requestTypeEntity.label = addNewTypeViewSub.value;
+                    createType(containerView, requestTypeEntity);
                 }
             };
             typeItemLabelContainerView.appendChild(typeNameSaveView);
@@ -331,7 +300,7 @@ function addNewType(containerView) {
 /**
  * 修改类型名称状态
  */
-function onTypeNameClick(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity) {
+function onTypeNameClick(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity) {
     convertViewContainer.innerHTML = null;
     let typeNameInputView = document.createElement("input");
     typeNameInputView.value = typeEntity.label;
@@ -348,45 +317,52 @@ function onTypeNameClick(typeEntitiesViewContainer,typeEntityView,convertViewCon
     typeNameBackView.className = "B_B_D";
     convertViewContainer.appendChild(typeNameBackView);
     typeNameBackView.onclick = function () {
-        onTypeNameBlur(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity,typeEntity.label);
+        onTypeNameBlur(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity, typeEntity.label);
     };
     let typeNameSaveView = document.createElement("div");
     typeNameSaveView.innerHTML = "保存";
     typeNameSaveView.className = "B_B_D";
     convertViewContainer.appendChild(typeNameSaveView);
     typeNameSaveView.onclick = function () {
-        onTypeNameBlur(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity,typeNameInputView.value);
+        onTypeNameBlur(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity, typeNameInputView.value);
     };
     let typeNameBlockView = document.createElement("div");
     typeNameBlockView.innerHTML = "禁用";
     typeNameBlockView.className = "B_B_D";
     convertViewContainer.appendChild(typeNameBlockView);
     typeNameBlockView.onclick = function () {
-        onTypeNameBlur(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity,typeEntity.label);
+        onTypeNameBlur(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity, typeEntity.label);
     };
     let typeNameDeleteView = document.createElement("div");
     typeNameDeleteView.innerHTML = "删除";
     typeNameDeleteView.className = "B_B_D";
     convertViewContainer.appendChild(typeNameDeleteView);
     typeNameDeleteView.onclick = function () {
-        onTypeNameBlur(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity,typeEntity.label);
-        deleteType(typeEntitiesViewContainer,typeEntityView,typeEntity);
+        onTypeNameBlur(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity, typeEntity.label);
+        let requestTypeEntity = new Object();
+        requestTypeEntity.seriesId = typeEntity.seriesId;
+        requestTypeEntity.typeId = typeEntity.typeId;
+        requestTypeEntity.status = -1;
+        deleteType(typeEntitiesViewContainer, typeEntityView, requestTypeEntity);
     };
-
 }
 
-function onTypeNameBlur(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity,newValue) {
+function onTypeNameBlur(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity, newValue) {
     convertViewContainer.innerHTML = null;
     //系列显示框
     let seriesItemLabelView = document.createElement("div");
     seriesItemLabelView.className = "SS_IC_LABEL";
     seriesItemLabelView.innerHTML = newValue;
     seriesItemLabelView.ondblclick = function () {
-        onTypeNameClick(typeEntitiesViewContainer,typeEntityView,convertViewContainer, typeEntity);
+        onTypeNameClick(typeEntitiesViewContainer, typeEntityView, convertViewContainer, typeEntity);
     };
     convertViewContainer.appendChild(seriesItemLabelView);
 
     if (newValue != undefined && newValue != null && newValue.trim() != "" && typeEntity.label != newValue) {
-        renameType(typeEntity, newValue);
+        let requestTypeEntity = new Object();
+        requestTypeEntity.seriesId = typeEntity.seriesId;
+        requestTypeEntity.typeId = typeEntity.typeId;
+        requestTypeEntity.label = newValue;
+        renameType(requestTypeEntity);
     }
 }
