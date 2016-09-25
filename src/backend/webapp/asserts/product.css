@@ -1,14 +1,81 @@
-div.descriptionContainer {
-    width: 100%;
-    height: 450px;
-}
 
-div.imageContainer {
+div.formatDisplayLeftBar {
     float: left;
-    width: 25%;
-    height: 100%;
+    width: 680px;
+    height: 97px;
+    border: 0px solid;
 }
 
+div.formatDisplayRightBar {
+    float: right;
+    width: 105px;
+    height: 97px;
+    line-height: 105px;
+    text-align: center;
+    color: #FFFFFF;
+    border: 0px solid;
+    background-color: #FF0000;
+    cursor: pointer;
+}
+
+div.formatSubItemBar {
+    width: 790px;
+    height: 35px;
+    margin-top: 1px;
+    border: 0px solid #CCCCCC;
+}
+
+div.formatDisplayDelete {
+    float: right;
+    width: 30px;
+    height: 33px;
+    margin: 0px;
+    padding: 0px;
+    color: #FFFFFF;
+    background-color: #33aaff;
+    border: 0px solid #CCCCCC;
+    line-height: 33px;
+    text-align: center;
+    cursor: pointer;
+}
+
+
+div.formatSubItemBar_main_widget_label {
+    float: left;
+    width: 40px;
+    height: 30px;
+    border: 0px solid #CCCCCC;
+    line-height: 30px;
+    text-align: center;
+}
+
+
+input.formatSubItemBar_main_widget_number {
+    float: left;
+    width: 50px;
+    height: 28px;
+    border: 1px solid #CCCCCC;
+}
+
+
+select.formatSubItemBar_main_widget_meta {
+    float: left;
+    width: 50px;
+    height: 32px;
+    border: 1px solid #CCCCCC;
+    border-radius: 0px;
+}
+
+
+input.formatDisplayCheckBox {
+    float: left;
+    width: 20px;
+    height: 33px;
+    margin: 0px;
+    padding: 0px;
+}
+
+/*   ====delete up====  */
 canvas.imageCuter {
     width: 100%;
     height: 300px;
@@ -31,11 +98,6 @@ div.imageCuterSubmit {
     margin: 0px;
 }
 
-div.imageChoseContainer{
-    width: 100%;
-    height: 105px;
-}
-
 .fileInput {
     width: 33%;
     height: 105px;
@@ -45,118 +107,30 @@ div.imageChoseContainer{
     cursor: pointer;
 }
 
-div.textContainer{
-    float: left;
-    width: 75%;
-    height: 100%;
-}
-
-textarea.descriptionTextArea{
-    width : 785px;
-    height: 150px;
-    fontSize :1rem;
-    color:#666666;
-    resize: none;
-    margin-left: 10px;
-    border: 1px solid #CCCCCC;
-}
-
-div.formatArea{
-    width : 790px;
-    height: 290px;
-    margin-left: 10px;
-    border: 1px solid #CCCCCC;
-}
-
-div.formatSubItemBar{
-    width : 790px;
-    height: 35px;
-    margin-top: 1px;
-    border: 0px solid #CCCCCC;
-}
-
-input.formatDisplayCheckBox{
-    float: left;
-    width: 20px;
-    height:33px;
-    margin: 0px;
-    padding: 0px;
-}
 
 
-div.formatDisplayDelete{
-    float: right;
-    width: 30px;
-    height:33px;
-    margin: 0px;
-    padding: 0px;
-    color: red;
-    border: 1px solid #CCCCCC;
-    line-height: 33px;
-    text-align: center;
-}
 
 
-div.formatSubItemBar_main_widget_label{
-    float: left;
-    width: 40px;
-    height: 30px;
-    border: 0px solid #CCCCCC;
-    line-height: 30px;
-    text-align: center;
-}
 
-input.formatSubItemBar_main_widget_number{
-    float: left;
-    width: 50px;
-    height: 28px;
-    border: 1px solid #CCCCCC;
-}
 
-select.formatSubItemBar_main_widget_meta{
-    float: left;
-    width: 50px;
-    height: 32px;
-    border: 1px solid #CCCCCC;
-    border-radius: 0px;
-}
-div.formatDisplayLeftBar{
-    float: left;
-    width : 680px;
-    height: 97px;
-    border: 0px solid;
-}
 
-div.formatDisplayRightBar{
-    float: right;
-    width : 105px;
-    height: 97px;
-    line-height: 105px;
-    text-align: center;
-    color: #FFFFFF;
-    border: 0px solid;
-    background-color: #FF0000;
-    cursor: pointer;
-}
-
-div.detailDescriptionContainer{
+div.detailDescriptionContainer {
     width: 100%;
     height: 500px;
     margin-top: 20px;
     border: 1px solid #CCCCCC;
 }
 
-div.submitContainer{
+div.submitContainer {
     height: 100%;
     height: 30px;
-    line-height:30px;
+    line-height: 30px;
     text-align: center;
     color: #FFFFFF;
     margin-top: 10px;
     margin-bottom: 10px;
-    background-color: red;
+    background-color: #33aaff;
 }
-
 
 input.hyperEditorToolButton {
     float: left;
@@ -179,6 +153,217 @@ div.hyperEditor {
     margin: 5px;
 }
 
+/*===================================*/
+div.productItemContainer {
+    float: left;
+    width: 25%;
+    height: 200px;
+}
+
+div.productItemSubContainer {
+    width: 98%;
+    height: 98%;
+    text-align: center;
+    margin: 0px auto;
+    border: 1px solid #CCCCCC;
+    cursor: pointer;
+}
+
+input.labelNameEditor {
+    width: 95%;
+    height: 30px;
+    text-align: center;
+    margin: 5px auto;
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+div.actionBar {
+    width: 98%;
+    height: 30px;
+    margin: 5px auto;
+    border: 0px solid #CCCCCC;
+    font-size: 1rem;
+}
+
+div.actionButton {
+    float: left;
+    width: 23%;
+    height: 30px;
+    line-height: 30px;
+    margin: 0px 1%;
+    color: #000000;
+    background-color: #33aaff;
+    cursor: pointer;
+}
+
+div.fillWidthContainer {
+    width: 100%;
+    height: 450px;
+}
+
+div.typeTopLeftContainer {
+    float: left;
+    width: 25%;
+    height: 100%;
+}
+
+div.typeTopRightContainer {
+    float: right;
+    width: 74%;
+    height: 100%;
+}
+
+div.typeSummaryContainer {
+    width: 100%;
+    height: 160px;
+}
+
+textarea.typeSummary {
+    float: left;
+    width: 90%;
+    height: 150px;
+    font-size: 1rem;
+    color: #666666;
+    resize: none;
+    border: 1px solid #CCCCCC;
+}
+
+div.typeSummarySave {
+    float: left;
+    width: 9%;
+    height: 156px;
+    fontSize: 1rem;
+    text-align: center;
+    line-height: 156px;
+    color: #FFFFFF;
+    resize: none;
+    border: 0px solid #CCCCCC;
+    background-color: #33aaff;
+    cursor: pointer;
+}
+
+div.formatContainer {
+    width: 99.5%;
+    height: 287px;
+    border: 1px solid #CCCCCC;
+}
+
+div.formatItemContainer {
+    width: 100%;
+    height: 35px;
+    margin-top: 1px;
+    border: 0px solid #CCCCCC;
+}
+
+div.formatFunctionLeftContainer {
+    float: left;
+    width: 91%;
+    height: 100%;
+    border: 0px solid;
+}
+
+div.formatFunctionRightContainer {
+    float: right;
+    width: 9%;
+    height: 100%;
+    text-align: center;
+    border: 0px solid;
+}
+div.formatAction {
+    width: 100%;
+    height: 100%;
+    fontSize: 1rem;
+    line-height: 97px;
+    text-align: center;
+    color: #FFFFFF;
+    border: 0px solid #CCCCCC;
+    background-color: #33aaff;
+    cursor: pointer;
+}
+
+div.formatDeleteView {
+    float: right;
+    width: 100%;
+    height: 35px;
+    margin: 0px;
+    padding: 0px;
+    color: #FFFFFF;
+    background-color: #33aaff;
+    border: 0px solid #CCCCCC;
+    line-height: 35px;
+    text-align: center;
+    cursor: pointer;
+}
+
+div.HTabSelected{
+    float: left;
+    height: 40px;
+    max-height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 1px solid #CCCCCC;
+    border-bottom-width: 0px;
+    background: linear-gradient(to bottom, #999999 0%,#ffffff 100%);
+    pointer-events: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+div.HTabNormal{
+    float: left;
+    height: 40px;
+    max-height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 1px solid #CCCCCC;
+    background: linear-gradient(to bottom, #E3E3E3 0%,#ffffff 100%);
+    box-shadow: 0px 0px 0px #999999;
+    cursor: pointer;
+    pointer-events: all;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 
+input.formatCheckBox {
+    float: left;
+    width: 20px;
+    height: 33px;
+    margin: 0px;
+    padding: 0px;
+}
+
+div.formatLabel {
+    float: left;
+    width: 40px;
+    height: 30px;
+    border: 0px solid #CCCCCC;
+    line-height: 30px;
+    text-align: center;
+    margin-left: 5px;
+}
+
+input.formatInput {
+    float: left;
+    width: 50px;
+    height: 28px;
+    border: 1px solid #CCCCCC;
+}
+
+select.formatSelect {
+    float: left;
+    width: 50px;
+    height: 32px;
+    border: 1px solid #CCCCCC;
+    border-radius: 0px;
+}

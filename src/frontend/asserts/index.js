@@ -10,7 +10,7 @@ window.onload = function () {
 };
 
 function requestSeries() {
-    let url = BASE_PATH + "product/series";
+    let url = BASE_PATH + "series/retrieves";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -25,7 +25,7 @@ function requestPoster() {
 }
 
 function requestRecommend() {
-    let url = BASE_PATH + "product/recommend";
+    let url = BASE_PATH + "format/recommends";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

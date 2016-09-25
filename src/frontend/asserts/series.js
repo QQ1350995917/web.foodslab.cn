@@ -8,10 +8,7 @@ window.onload = function () {
 };
 
 function requestSeries(seriesId) {
-    let url = BASE_PATH + "product/series?flag=1";
-    if (seriesId != undefined){
-        url = url + "&seriesId=" + seriesId;
-    }
+    let url = BASE_PATH + "series/retrieves";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

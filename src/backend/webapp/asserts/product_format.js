@@ -1,6 +1,286 @@
 /**
  * Created by dingpengwei on 8/12/16.
  */
+
+function initProductFormat(seriesEntity, typeEntity) {
+    resetView();
+    let titleContainer = document.getElementById(MAIN_TITLE_ID);
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "系列总览 >> " + seriesEntity.label + " >> " + typeEntity.label;
+    titleView.className = "horizontalSelected";
+    titleView.style.width = "100%";
+    titleView.style.cursor = "cursor";
+    titleContainer.appendChild(titleView);
+    titleContainer.onclick = function () {
+        initProductType(seriesEntity);
+    };
+    createMixContainer(typeEntity);
+    requestFormatListData(typeEntity);
+}
+
+function requestFormatListData(typeEntity) {
+    var indexUrl = BASE_PATH + "/format/mRetrieves?p=" + JSON.stringify(typeEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                onRequestFormatListDataCallback(typeEntity, parseData.data);
+            } else {
+                new Toast().show("请求数据失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function onRequestFormatListDataCallback(typeEntity, formatEntities) {
+    let formatContainer = document.getElementById("formatContainer");
+    formatContainer.innerHTML = null;
+
+    let titleContainer = document.createElement("div");
+    titleContainer.className = "formatItemContainer";
+    titleContainer.style.height = "45px";
+    titleContainer.style.marginTop = "0px";
+    formatContainer.appendChild(titleContainer);
+
+    let baseInfoContainer = document.createElement("div");
+    baseInfoContainer.className = "formatItemContainer";
+    formatContainer.appendChild(baseInfoContainer);
+
+    let discountContainer = document.createElement("div");
+    discountContainer.className = "formatItemContainer";
+    formatContainer.appendChild(discountContainer);
+
+    let postageContainer = document.createElement("div");
+    postageContainer.className = "formatItemContainer";
+    formatContainer.appendChild(postageContainer);
+
+    let giftContainer = document.createElement("div");
+    giftContainer.className = "formatItemContainer";
+    formatContainer.appendChild(giftContainer);
+
+    let functionContainer = document.createElement("div");
+    functionContainer.className = "formatItemContainer";
+    functionContainer.style.height = "96px";
+    formatContainer.appendChild(functionContainer);
+
+    attachFormatTitleContainer(titleContainer, formatEntities, 0, function (formatEntity) {
+        if (formatEntity != null && formatEntity.tag == APP_CONST_CLIENT_ID) {
+            formatEntity = undefined;
+        }
+        attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity);
+        attachFormatDiscountContainer(discountContainer, formatEntity);
+        attachFormatPostageContainer(postageContainer, formatEntity)
+        attachFormatGiftContainer(giftContainer, formatEntity);
+        attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity);
+    });
+}
+
+function attachFormatTitleContainer(titleContainer, formatEntities, selectedIndex, callback) {
+    titleContainer.innerHTML = null;
+    let containerWidth = titleContainer.clientWidth;
+    let length = formatEntities == undefined ? 0 : formatEntities.length;
+    /*
+     容器的宽度减去每个页签的左右边框的宽度除以页签的个数就是页签的宽度(有效页签的个数加上一个添加新页签就是总页签个数)
+     */
+    let tabWidth = (containerWidth - ((length + 1) * 2)) / (length + 1) + "px";
+    /*
+     每次创建页签后追加一个新的页签,故循环次数是有效页签的个数加一
+     */
+    for (let i = 0; i < length + 1; i++) {
+        let tabView = document.createElement("div");
+        tabView.style.width = tabWidth;
+        let formatEntity = undefined;
+        if (i < length) {
+            formatEntity = formatEntities[i];
+            /*
+             通过点击添加新页签添加的未经过服务器保存的页签的tag是newFormat
+             */
+            if (formatEntity.tag == APP_CONST_CLIENT_ID) {
+                tabView.innerHTML = "新规格";
+            } else {
+                tabView.innerHTML = formatEntity.label;
+                if (formatEntity.status == 0) {
+                    tabView.style.color = "red";
+                }
+            }
+        } else {
+            tabView.tag = "addNewFormat";
+            tabView.innerHTML = "+";
+        }
+        if (i == selectedIndex) {
+            tabView.className = "HTabSelected";
+            callback(formatEntity);
+        } else {
+            tabView.className = "HTabNormal";
+        }
+
+        titleContainer.appendChild(tabView);
+        tabView.onclick = function () {
+            if (tabView.tag == "addNewFormat") {
+                if (formatEntities[length - 1].tag == APP_CONST_CLIENT_ID) {
+                    new Toast().show("请先保存新规格");
+                } else {
+                    let newFormat = new Object();
+                    newFormat.tag = APP_CONST_CLIENT_ID;
+                    formatEntities.push(newFormat)
+                    attachFormatTitleContainer(titleContainer, formatEntities, i, callback)
+                }
+            } else {
+                attachFormatTitleContainer(titleContainer, formatEntities, i, callback)
+            }
+        }
+    }
+}
+
+function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity) {
+    baseInfoContainer.innerHTML = null;
+    let baseInfoLeftLeftContainer = document.createElement("div");
+    baseInfoLeftLeftContainer.className = "formatFunctionLeftContainer";
+    let displayStatus = document.createElement("input");
+    displayStatus.setAttribute("type", "checkbox");
+    displayStatus.className = "formatDisplayCheckBox";
+    displayStatus.id = "formatStatus";
+    if (formatEntity == undefined) {
+        displayStatus.checked = false;
+    } else {
+        if (formatEntity.status == 0) {
+            displayStatus.checked = false;
+        } else if (formatEntity.status == 1) {
+            displayStatus.checked = true;
+        }
+    }
+    baseInfoLeftLeftContainer.appendChild(displayStatus);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("规格", "formatLabel", formatEntity == undefined ? "" : formatEntity.label, "formatLabelUnit", formatEntity == undefined ? "" : formatEntity.meta, true);
+    let formatBaseViewInfo2 = new FormatBaseViewInfo("数量", "formatMount", formatEntity == undefined ? "" : formatEntity.amount, "formatMountUnit", formatEntity == undefined ? "" : formatEntity.amountMeta, true);
+    let formatBaseViewInfo3 = new FormatBaseViewInfo("定价", "formatPrice", formatEntity == undefined ? "" : formatEntity.price, "formatPriceUnit", formatEntity == undefined ? "" : formatEntity.priceMeta, true);
+    let formatBaseViewInfo4 = new FormatBaseViewInfo("邮费", "formatPostage", formatEntity == undefined ? "" : formatEntity.postage, "formatPostageUnit", formatEntity == undefined ? "" : formatEntity.postageMeta, true);
+    let baseInfo = new Array();
+    baseInfo.push(formatBaseViewInfo1);
+    baseInfo.push(formatBaseViewInfo2);
+    baseInfo.push(formatBaseViewInfo3);
+    baseInfo.push(formatBaseViewInfo4);
+    let unitIndex = new Array();
+    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.meta);
+    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.amountMeta);
+    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.priceMeta);
+    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.postageMeta);
+
+    for (let index = 0; index < 4; index++) {
+        createInputSelectWidget(baseInfoLeftLeftContainer, baseInfo[index], unitIndex[index]);
+    }
+
+    baseInfoContainer.appendChild(baseInfoLeftLeftContainer);
+    let baseInfoRightContainer = document.createElement("div");
+    baseInfoRightContainer.className = "formatFunctionRightContainer";
+    let formatDelete = document.createElement("div");
+    formatDelete.className = "formatDeleteView";
+    formatDelete.innerHTML = "删除";
+    baseInfoRightContainer.appendChild(formatDelete);
+    baseInfoContainer.appendChild(baseInfoRightContainer);
+    formatDelete.onclick = function () {
+        let requestFormatEntity = new Object();
+        requestFormatEntity.typeId = typeEntity.typeId;
+        requestFormatEntity.formatId = formatEntity.formatId;
+        requestFormatEntity.status = -1;
+        requestMarkFormat(typeEntity, requestFormatEntity);
+    }
+}
+
+function attachFormatDiscountContainer(discountContainer, formatEntity) {
+    discountContainer.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "formatPricingStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.pricingStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.pricingStatus == 1) {
+            display.checked = true;
+        }
+    }
+    discountContainer.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("折扣", "formatPricingDiscount", formatEntity == undefined ? "" : formatEntity.pricingDiscount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    let formatBaseViewInfo2 = new FormatBaseViewInfo("现价", "formatPricing", formatEntity == undefined ? "" : formatEntity.pricing, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    let baseInfo = new Array();
+    baseInfo.push(formatBaseViewInfo1);
+    baseInfo.push(formatBaseViewInfo2);
+    for (let index = 0; index < 2; index++) {
+        createInputSelectWidget(discountContainer, baseInfo[index]);
+    }
+    createFormatDatePickerWidget(discountContainer, "formatDiscountStartTime", formatEntity == undefined ? undefined : formatEntity.pricingStart);
+    createFormatDatePickerWidget(discountContainer, "formatDiscountEndTime", formatEntity == undefined ? undefined : formatEntity.pricingEnd);
+
+}
+
+function attachFormatPostageContainer(postageContainer, formatEntity) {
+    postageContainer.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "formatExpressStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.expressStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.expressStatus == 1) {
+            display.checked = true;
+        }
+    }
+    postageContainer.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("包邮", "formatExpressCount", formatEntity == undefined ? "" : formatEntity.expressCount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    createInputSelectWidget(postageContainer, formatBaseViewInfo1);
+    createFormatSelectWidget(postageContainer, "formatExpress", EXPRESS, formatEntity == undefined ? undefined : formatEntity.expressName, "请选择快递公司");
+    createFormatDatePickerWidget(postageContainer, "formatExpressStartTime", formatEntity == undefined ? undefined : formatEntity.expressStart);
+    createFormatDatePickerWidget(postageContainer, "formatExpressEndTime", formatEntity == undefined ? undefined : formatEntity.expressEnd);
+
+}
+
+function attachFormatGiftContainer(giftContainer, formatEntity) {
+    giftContainer.innerHTML = null;
+    let display = document.createElement("input");
+    display.setAttribute("type", "checkbox");
+    display.className = "formatDisplayCheckBox";
+    display.id = "formatGiftStatus";
+    if (formatEntity == undefined) {
+        display.checked = false;
+    } else {
+        if (formatEntity.giftStatus == 0) {
+            display.checked = false;
+        } else if (formatEntity.giftStatus == 1) {
+            display.checked = true;
+        }
+    }
+    giftContainer.appendChild(display);
+    let formatBaseViewInfo1 = new FormatBaseViewInfo("满赠", "formatGiftCount", formatEntity == undefined ? "" : formatEntity.giftCount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
+    createInputSelectWidget(giftContainer, formatBaseViewInfo1);
+    createFormatSelectWidget(giftContainer, "formatGift", ["giftProduct1", "giftProduct2"], formatEntity == undefined ? "" : formatEntity.giftLabel, "请选择赠送产品");
+    createFormatDatePickerWidget(giftContainer, "formatGiftStartTime", formatEntity == undefined ? undefined : formatEntity.giftStart);
+    createFormatDatePickerWidget(giftContainer, "formatGiftEndTime", formatEntity == undefined ? undefined : formatEntity.giftEnd);
+}
+
+function attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity) {
+    functionContainer.innerHTML = null;
+    let functionLeftContainer = document.createElement("div");
+    functionLeftContainer.className = "formatFunctionLeftContainer";
+    functionContainer.appendChild(functionLeftContainer);
+    let functionRightContainer = document.createElement("div");
+    functionRightContainer.className = "formatFunctionRightContainer";
+    let saveFormatAction = document.createElement("div");
+    saveFormatAction.className = "formatAction";
+    saveFormatAction.innerHTML = "保存";
+    functionRightContainer.appendChild(saveFormatAction);
+    functionContainer.appendChild(functionRightContainer);
+
+    saveFormatAction.onclick = function () {
+        saveFormat(typeEntity, formatEntity);
+    }
+}
+
 class FormatBaseViewInfo {
     constructor(title, labelId, label, unitId, unitLabel, isSelector) {
         this.title = title;
@@ -12,264 +292,14 @@ class FormatBaseViewInfo {
     }
 }
 
-/**
- * 规格显示区域
- * @param containerView
- * @param formatEntities
- */
-function initFormatView(containerView,typeEntity) {
-    let formatTitleBar = document.createElement("div");
-    formatTitleBar.className = "formatSubItemBar";
-    formatTitleBar.style.height = "45px";
-    let formatMainBar = document.createElement("div");
-    formatMainBar.id = "formatMainBar";
-    formatMainBar.className = "formatSubItemBar";
-    let formatDiscountBar = document.createElement("div");
-    formatDiscountBar.id = "formatDiscountBar";
-    formatDiscountBar.className = "formatSubItemBar";
-    let formatPostBar = document.createElement("div");
-    formatPostBar.id = "formatPostBar";
-    formatPostBar.className = "formatSubItemBar";
-    let formatGiftBar = document.createElement("div");
-    formatGiftBar.id = "formatGiftBar";
-    formatGiftBar.className = "formatSubItemBar";
-    let formatDisplayBar = document.createElement("div");
-    formatDisplayBar.className = "formatSubItemBar";
-    formatDisplayBar.style.height = "97px";
-    let formatDisplayLeftBar = document.createElement("div");
-    formatDisplayLeftBar.className = "formatDisplayLeftBar";
-    let formatDisplayRightBar = document.createElement("div");
-    formatDisplayRightBar.className = "formatDisplayRightBar";
-    formatDisplayRightBar.innerHTML = "保存";
-    formatDisplayRightBar.onclick = function () {
-        saveFormat(typeEntity);
-    }
-    formatDisplayBar.appendChild(formatDisplayLeftBar);
-    formatDisplayBar.appendChild(formatDisplayRightBar);
-
-    let formatDisplayDiscountBar = document.createElement("div");
-    let formatDisplayPostBar = document.createElement("div");
-    let formatDisplayGiftBar = document.createElement("div");
-
-    formatDisplayLeftBar.appendChild(formatDisplayDiscountBar);
-    formatDisplayLeftBar.appendChild(formatDisplayPostBar);
-    formatDisplayLeftBar.appendChild(formatDisplayGiftBar);
-
-    containerView.appendChild(formatTitleBar);
-    containerView.appendChild(formatMainBar);
-    containerView.appendChild(formatDiscountBar);
-    containerView.appendChild(formatPostBar);
-    containerView.appendChild(formatGiftBar);
-    containerView.appendChild(formatDisplayBar);
-
-
-    var horizontalTabItems = new Array();
-    for (let index = 0; index < typeEntity.children.length; index++) {
-        let formatEntity = typeEntity.children[index];
-        if (index == 0) {
-            let tabItem = new TabItem(formatEntity.formatId, formatEntity.label + formatEntity.meta, APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalSelected");
-            tabItem.formatEntity = formatEntity;
-            horizontalTabItems.push(tabItem);
-        } else {
-            let tabItem = new TabItem(formatEntity.formatId, formatEntity.label + formatEntity.meta, APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalNormal");
-            tabItem.formatEntity = formatEntity;
-            horizontalTabItems.push(tabItem);
-        }
-    }
-
-    horizontalTabItems.push(new TabItem(APP_CONST_ADD_NEW, "+", APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalNormal"));
-
-    initFormatSubView_title(formatTitleBar, horizontalTabItems);
-    initFormatSubView_main(formatMainBar, typeEntity.children[0]);
-    initFormatSubView_discount(formatDiscountBar, typeEntity.children[0]);
-    initFormatSubView_post(formatPostBar, typeEntity.children[0]);
-    initFormatSubView_gift(formatGiftBar, typeEntity.children[0]);
-}
-
-/**
- * 规格标题
- * @param container
- * @param tabItems
- */
-function initFormatSubView_title(container, tabItems) {
-    container.innerHTML = null;
-    initHorizontalTabHostView(container, tabItems, (780 - tabItems.length * 2) / tabItems.length, false, function () {
-        let id = this.dataId;
-        let currentFormatEntity;
-        if (id == APP_CONST_ADD_NEW) {
-            let isHasAddNew = false;
-            for (let index = 0; index < tabItems.length; index++) {
-                if (tabItems[index].id == APP_CONST_CLIENT_ID) {
-                    isHasAddNew = true;
-                    tabItems[index].currentClassName = tabItems[index].selectedClassName;
-                    new Toast().show("请先保存新规格");
-                } else {
-                    tabItems[index].currentClassName = tabItems[index].normalClassName;
-                }
-            }
-            if (!isHasAddNew) {
-                tabItems.splice(tabItems.length - 1, 0, new TabItem(APP_CONST_CLIENT_ID, "新规格", APP_CONST_ADD_NEW, "horizontalNormal", "horizontalSelected", "horizontalSelected"));
-            }
-        } else {
-            for (let index = 0; index < tabItems.length; index++) {
-                if (tabItems[index].id == id) {
-                    tabItems[index].currentClassName = tabItems[index].selectedClassName;
-                    currentFormatEntity = tabItems[index].formatEntity;
-                } else {
-                    tabItems[index].currentClassName = tabItems[index].normalClassName;
-                }
-            }
-        }
-
-        initFormatSubView_title(container, tabItems);
-
-        initFormatSubView_main(document.getElementById("formatMainBar"), currentFormatEntity);
-        initFormatSubView_discount(document.getElementById("formatDiscountBar"), currentFormatEntity);
-        initFormatSubView_post(document.getElementById("formatPostBar"), currentFormatEntity);
-        initFormatSubView_gift(document.getElementById("formatGiftBar"), currentFormatEntity);
-
-    });
-}
-
-/**
- * 规格主要信息
- * @param container
- */
-function initFormatSubView_main(container, formatEntity) {
-    container.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "vid_format_status";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.status == 0) {
-            display.checked = false;
-        } else if (formatEntity.status == 1) {
-            display.checked = true;
-        }
-    }
-    container.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("规格", "vid_format_label", formatEntity == undefined ? "" : formatEntity.label, "vid_format_label_unit", formatEntity == undefined ? "" : formatEntity.meta, true);
-    let formatBaseViewInfo2 = new FormatBaseViewInfo("数量", "vid_format_mount", formatEntity == undefined ? "" : formatEntity.amount, "vid_format_mount_unit", formatEntity == undefined ? "" : formatEntity.amountMeta, true);
-    let formatBaseViewInfo3 = new FormatBaseViewInfo("定价", "vid_format_pricing", formatEntity == undefined ? "" : formatEntity.pricing, "vid_format_pricing_unit", formatEntity == undefined ? "" : formatEntity.pricingMeta, true);
-    let formatBaseViewInfo4 = new FormatBaseViewInfo("邮费", "vid_format_postage", formatEntity == undefined ? "" : formatEntity.postage, "vid_format_postage_unit", formatEntity == undefined ? "" : formatEntity.postageMeta, true);
-    let baseInfo = new Array();
-    baseInfo.push(formatBaseViewInfo1);
-    baseInfo.push(formatBaseViewInfo2);
-    baseInfo.push(formatBaseViewInfo3);
-    baseInfo.push(formatBaseViewInfo4);
-    let unitIndex = new Array();
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.meta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.amountMeta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.pricingMeta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.postageMeta);
-
-    for (let index = 0; index < 4; index++) {
-        createInputSelectWidget(container, baseInfo[index], unitIndex[index]);
-    }
-    let formatDelete = document.createElement("div");
-    formatDelete.className = "formatDisplayDelete";
-    formatDelete.innerHTML = "X";
-    container.appendChild(formatDelete);
-}
-
-/**
- * 折扣信息
- * @param container
- */
-function initFormatSubView_discount(container, formatEntity) {
-    container.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "vid_format_priceStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.priceStatus == 0) {
-            display.checked = false;
-        } else if (formatEntity.priceStatus == 1) {
-            display.checked = true;
-        }
-    }
-    container.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("折扣", "vid_format_priceDiscount", formatEntity == undefined ? "" : formatEntity.priceDiscount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    let formatBaseViewInfo2 = new FormatBaseViewInfo("现价", "vid_format_price", formatEntity == undefined ? "" : formatEntity.price, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    let baseInfo = new Array();
-    baseInfo.push(formatBaseViewInfo1);
-    baseInfo.push(formatBaseViewInfo2);
-    for (let index = 0; index < 2; index++) {
-        createInputSelectWidget(container, baseInfo[index]);
-    }
-    createFormatDatePickerWidget(container, "vid_format_discount_startTime", formatEntity == undefined ? "请选择时间" :formatEntity.priceStart);
-    createFormatDatePickerWidget(container, "vid_format_discount_endTime", formatEntity == undefined ? "请选择时间" :formatEntity.priceEnd);
-}
-
-
-/**
- * 邮寄信息
- * @param container
- */
-function initFormatSubView_post(container, formatEntity) {
-    container.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "vid_format_expressStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.expressStatus == 0) {
-            display.checked = false;
-        } else if (formatEntity.expressStatus == 1) {
-            display.checked = true;
-        }
-    }
-    container.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("包邮", "vid_format_expressCount", formatEntity == undefined ? "" : formatEntity.expressCount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    createInputSelectWidget(container, formatBaseViewInfo1);
-    createFormatSelectWidget(container, "vid_format_express", EXPRESS, formatEntity == undefined ? undefined : formatEntity.expressName, "请选择快递公司");
-    createFormatDatePickerWidget(container, "vid_format_express_startTime", formatEntity == undefined ? "请选择时间" :formatEntity.expressStart);
-    createFormatDatePickerWidget(container, "vid_format_express_endTime", formatEntity == undefined ? "请选择时间" :formatEntity.expressEnd);
-}
-
-/**
- * 满赠信息
- * @param container
- */
-function initFormatSubView_gift(container, formatEntity) {
-    container.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "vid_format_giftStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.giftStatus == 0) {
-            display.checked = false;
-        } else if (formatEntity.giftStatus == 1) {
-            display.checked = true;
-        }
-    }
-    container.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("满赠", "vid_format_giftCount", formatEntity == undefined ? "" : formatEntity.giftCount, "vid_spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    createInputSelectWidget(container, formatBaseViewInfo1);
-    createFormatSelectWidget(container, "vid_format_gift", ["gift_product1", "gift_product2"], formatEntity == undefined ? "" : formatEntity.giftLabel, "请选择赠送产品");
-    createFormatDatePickerWidget(container, "vid_format_gift_startTime", formatEntity == undefined ? "请选择时间" :formatEntity.giftStart);
-    createFormatDatePickerWidget(container, "vid_format_gift_endTime", formatEntity == undefined ? "请选择时间" :formatEntity.giftEnd);
-}
-
 function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
     let labelView = document.createElement("div");
     labelView.innerHTML = formatBaseViewInfo.title;
-    labelView.className = "formatSubItemBar_main_widget_label";
+    labelView.className = "formatLabel";
     labelView.style.marginLeft = "5px";
     container.appendChild(labelView);
     let inputView = document.createElement("input");
-    inputView.className = "formatSubItemBar_main_widget_number";
+    inputView.className = "formatInput";
     inputView.value = formatBaseViewInfo.label;
     inputView.id = formatBaseViewInfo.labelId;
     container.appendChild(inputView);
@@ -277,7 +307,7 @@ function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
         let metaView = document.createElement("select");
         metaView.value = formatBaseViewInfo.unit;
         metaView.id = formatBaseViewInfo.unitId;
-        metaView.className = "formatSubItemBar_main_widget_meta";
+        metaView.className = "formatSelect";
         if (defaultUnit == undefined) {
             metaView.options.add(new Option("单位", "单位"));
         } else {
@@ -287,7 +317,6 @@ function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
         for (let index = 0; index < UNITS.length; index++) {
             metaView.options.add(new Option(UNITS[index].label, UNITS[index].unitId));
         }
-
         container.appendChild(metaView);
     }
 }
@@ -296,7 +325,7 @@ function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
 function createFormatSelectWidget(container, id, options, defaultOption, tip) {
     let metaView = document.createElement("select");
     metaView.id = id;
-    metaView.className = "formatSubItemBar_main_widget_meta";
+    metaView.className = "formatSelect";
     metaView.style.width = "200px";
     metaView.style.marginLeft = "10px";
 
@@ -320,10 +349,10 @@ function createFormatDatePickerWidget(container, id, defaultValue) {
     if (defaultValue == undefined) {
         inputView.value = "请选择时间";
     } else {
-        inputView.value = defaultValue;
+        inputView.value = new Date(defaultValue).format("yyyy-MM-dd");
     }
     inputView.readOnly = true;
-    inputView.className = "formatSubItemBar_main_widget_number";
+    inputView.className = "formatInput";
     inputView.style.width = "200px";
     inputView.style.marginLeft = "10px";
     inputView.id = id;
@@ -338,71 +367,116 @@ function createFormatDatePickerWidget(container, id, defaultValue) {
     });
 }
 
-function saveFormat(typeEntity) {
-    let formatStatus = document.getElementById("vid_format_status");
-    let formatLabel = document.getElementById("vid_format_label");
-    let formatLabel_unit = document.getElementById("vid_format_label_unit");
-    let formatMount = document.getElementById("vid_format_mount");
-    let formatMount_unit = document.getElementById("vid_format_mount_unit");
-    let formatPricing = document.getElementById("vid_format_pricing");
-    let formatPricing_unit = document.getElementById("vid_format_pricing_unit");
-    let formatPostage = document.getElementById("vid_format_postage");
-    let formatPostage_unit = document.getElementById("vid_format_postage_unit");
+function saveFormat(typeEntity, formatEntity) {
+    let formatStatus = document.getElementById("formatStatus");
+    let formatLabel = document.getElementById("formatLabel");
+    let formatLabelUnit = document.getElementById("formatLabelUnit");
+    let formatMount = document.getElementById("formatMount");
+    let formatMountUnit = document.getElementById("formatMountUnit");
+    let formatPrice = document.getElementById("formatPrice");
+    let formatPriceUnit = document.getElementById("formatPriceUnit");
+    let formatPostage = document.getElementById("formatPostage");
+    let formatPostageUnit = document.getElementById("formatPostageUnit");
 
-    let formatPriceStatus = document.getElementById("vid_format_priceStatus");
-    let formatPriceDiscount = document.getElementById("vid_format_priceDiscount");
-    let formatPrice = document.getElementById("vid_format_price");
-    let formatDiscountStart = document.getElementById("vid_format_discount_startTime");
-    let formatDiscountEnd = document.getElementById("vid_format_discount_endTime");
+    let formatPricingStatus = document.getElementById("formatPricingStatus");
+    let formatPricingDiscount = document.getElementById("formatPricingDiscount");
+    let formatPricing = document.getElementById("formatPricing");
+    let formatPricingDiscountStart = document.getElementById("formatDiscountStartTime");
+    let formatPricingDiscountEnd = document.getElementById("formatDiscountEndTime");
 
-    let formatExpressStatus = document.getElementById("vid_format_expressStatus");
-    let formatExpressCount = document.getElementById("vid_format_expressCount");
-    let formatExpress = document.getElementById("vid_format_express");
-    let formatExpressStart = document.getElementById("vid_format_express_startTime");
-    let formatExpressEnd = document.getElementById("vid_format_express_endTime");
+    let formatExpressStatus = document.getElementById("formatExpressStatus");
+    let formatExpressCount = document.getElementById("formatExpressCount");
+    let formatExpress = document.getElementById("formatExpress");
+    let formatExpressStart = document.getElementById("formatExpressStartTime");
+    let formatExpressEnd = document.getElementById("formatExpressEndTime");
 
-    let formatGiftStatus = document.getElementById("vid_format_giftStatus");
-    let formatGiftCount = document.getElementById("vid_format_giftCount");
-    let formatGift = document.getElementById("vid_format_gift");
-    let formatGiftStart = document.getElementById("vid_format_gift_startTime");
-    let formatGiftEnd = document.getElementById("vid_format_gift_endTime");
+    let formatGiftStatus = document.getElementById("formatGiftStatus");
+    let formatGiftCount = document.getElementById("formatGiftCount");
+    let formatGift = document.getElementById("formatGift");
+    let formatGiftStart = document.getElementById("formatGiftStartTime");
+    let formatGiftEnd = document.getElementById("formatGiftEndTime");
 
 
     let requestFormatEntity = new Object();
     requestFormatEntity.typeId = typeEntity.typeId;
+
     requestFormatEntity.status = (formatStatus.checked == true ? 1 : 0);
-    requestFormatEntity.label= formatLabel.value;
-    requestFormatEntity.meta= formatLabel_unit.options[formatLabel_unit.selectedIndex].text;
-    requestFormatEntity.amount= formatMount.value;
-    requestFormatEntity.amountMeta= formatMount_unit.options[formatMount_unit.selectedIndex].text;
-    requestFormatEntity.pricing = formatPricing.value;
-    requestFormatEntity.priceMeta = formatPricing_unit.options[formatPricing_unit.selectedIndex].text;
-    requestFormatEntity.postage = formatPostage.value;
-    requestFormatEntity.postageMeta = formatPostage_unit.options[formatPostage_unit.selectedIndex].text;
-    requestFormatEntity.priceStatus = (formatPriceStatus.checked == true ? 1 : 0);
-    requestFormatEntity.pricingDiscount = formatPriceDiscount.value;
+    requestFormatEntity.label = formatLabel.value;
+    requestFormatEntity.meta = formatLabelUnit.options[formatLabelUnit.selectedIndex].text;
+    requestFormatEntity.amount = formatMount.value;
+    requestFormatEntity.amountMeta = formatMountUnit.options[formatMountUnit.selectedIndex].text;
     requestFormatEntity.price = formatPrice.value;
-    requestFormatEntity.priceStart = formatDiscountStart.value;
-    requestFormatEntity.priceEnd = formatDiscountEnd.value;
+    requestFormatEntity.priceMeta = formatPriceUnit.options[formatPriceUnit.selectedIndex].text;
+    requestFormatEntity.postage = formatPostage.value;
+    requestFormatEntity.postageMeta = formatPostageUnit.options[formatPostageUnit.selectedIndex].text;
+
+    requestFormatEntity.pricingStatus = (formatPricingStatus.checked == true ? 1 : 0);
+    requestFormatEntity.pricingDiscount = formatPricingDiscount.value;
+    requestFormatEntity.pricing = formatPricing.value;
+    requestFormatEntity.pricingStart = new Date(formatPricingDiscountStart.value).getTime();
+    requestFormatEntity.pricingEnd = new Date(formatPricingDiscountEnd.value).getTime();
+
     requestFormatEntity.expressStatus = (formatExpressStatus.checked == true ? 1 : 0);
     requestFormatEntity.expressCount = formatExpressCount.value;
     requestFormatEntity.expressName = formatExpress.options[formatExpress.selectedIndex].text;
-    requestFormatEntity.expressStart = formatExpressStart.value;
-    requestFormatEntity.expressEnd = formatExpressEnd.value;
+    requestFormatEntity.expressStart = new Date(formatExpressStart.value).getTime();
+    requestFormatEntity.expressEnd = new Date(formatExpressEnd.value).getTime();
+
     requestFormatEntity.giftStatus = (formatGiftStatus.checked == true ? 1 : 0);
     requestFormatEntity.giftCount = formatGiftCount.value;
     requestFormatEntity.giftLabel = formatGift.options[formatGift.selectedIndex].text;
-    requestFormatEntity.giftStart = formatGiftStart.value;
-    requestFormatEntity.giftEnd = formatGiftEnd.value;
+    requestFormatEntity.giftStart = new Date(formatGiftStart.value).getTime();
+    requestFormatEntity.giftEnd = new Date(formatGiftEnd.value).getTime();
 
-    let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(requestFormatEntity);
+    if (formatEntity == undefined || formatEntity.formatId == undefined || formatEntity.formatId == null || formatEntity.formatId == APP_CONST_CLIENT_ID) {
+        requestCreateFormat(typeEntity, requestFormatEntity);
+    } else {
+        requestFormatEntity.formatId = formatEntity.formatId;
+        requestUpdateFormat(typeEntity, requestFormatEntity);
+    }
+}
 
+function requestCreateFormat(typeEntity, formatEntity) {
+    let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponsDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("保存成功");
+                requestFormatListData(typeEntity);
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function requestUpdateFormat(typeEntity, formatEntity) {
+    let indexUrl = BASE_PATH + "/format/mUpdate?p=" + JSON.stringify(formatEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+                requestFormatListData(typeEntity);
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function requestMarkFormat(typeEntity, formatEntity) {
+    let indexUrl = BASE_PATH + "/format/mMark?p=" + JSON.stringify(formatEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+                requestFormatListData(typeEntity);
             } else {
                 new Toast().show("保存失败");
             }

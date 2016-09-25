@@ -5,22 +5,37 @@
  * 请求产品反转树形列表
  */
 function recommend() {
-    var indexUrl = BASE_PATH + "/product/convert";
+    var indexUrl = BASE_PATH + "/format/mWeights";
     asyncRequestByGet(indexUrl, function (data) {
-        onConvertDataCallback(data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                initRecommendView(parseData.data);
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
-
 
 /**
  * 请求产品推荐交换
  * @param formatId
  * @param weight
  */
-function swapRecommend(formatId1, weight1,formatId2, weight2) {
-    var indexUrl = BASE_PATH + "/product/swapWeight?formatId1=" + formatId1 + "&weight1=" + weight1 + "&formatId2=" + formatId2 + "&weight2=" + weight2;
+function swapRecommend(swapWeightFormatEntity) {
+    var indexUrl = BASE_PATH + "/format/mSwapWeight?p="  + JSON.stringify(swapWeightFormatEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onSwapDataCallback(data);
+        var result = checkResponsDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("更新成功");
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
 
@@ -43,30 +58,6 @@ function updateRecommend(formatId, weight) {
         }
         onConvertDataCallback(data);
     }, onRequestError(), onRequestTimeout());
-}
-
-function onSwapDataCallback(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("更新成功");
-        } else {
-            new Toast().show("更新失败");
-        }
-    }
-}
-
-/**
- * 处理请求产品反转树的数据
- * @param data
- */
-function onConvertDataCallback(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        initRecommendView(parseData.data);
-    }
 }
 
 function initRecommendView(formatEntities) {
@@ -200,7 +191,12 @@ function onDrop(event) {
     event.dataTransfer.setData("targetFormatId", targetFormatId);
     event.dataTransfer.setData("targetWeight", targetWeight);
 
-    swapRecommend(sourceFormatId,sourceWeight,targetFormatId,targetWeight);
+    let swapWeightFormatEntity = new Object();
+    swapWeightFormatEntity.formatId1 = sourceFormatId;
+    swapWeightFormatEntity.weight1 = sourceWeight;
+    swapWeightFormatEntity.formatId2 = targetFormatId;
+    swapWeightFormatEntity.weight2 = targetWeight;
+    swapRecommend(swapWeightFormatEntity);
 
 }
 
@@ -210,5 +206,4 @@ function onDragEnd(event) {
     let targetFormatId = event.dataTransfer.getData("targetFormatId");
     let targetWeight = event.dataTransfer.getData("targetWeight");
     event.dataTransfer.clearData();
-
 }
