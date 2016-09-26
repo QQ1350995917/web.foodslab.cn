@@ -5,24 +5,20 @@ window.onload = function () {
     initTitleView();
     let typeId = document.getElementById("typeId") == undefined ? null : document.getElementById("typeId").content;
     let formatId = document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content;
-    requestType(typeId,formatId);
+    let typeEntity = new Object();
+    typeEntity.typeId = typeId;
+    requestType(typeEntity);
     requestLinker();
 };
 
-function requestType(typeId,formatId) {
-    let url = BASE_PATH + "product/type?";
-    if (typeId != undefined){
-        url = url + "typeId=" + typeId;
-    }
-    if (formatId != undefined){
-        url = url + "&formatId=" + formatId;
-    }
-    
+function requestType(typeEntity) {
+    let url = BASE_PATH + "type/retrieveTree?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createTypeView(jsonData.data);
+            createTypeTitle(jsonData.data);
+            createTypeMainView(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -43,12 +39,7 @@ function onRequestPutInCartCallback(data) {
     createPutInCartResultView(data);
 }
 
-function createTypeView(data) {
-    createTypeTitle(data);
-    createTypeMainView(data);
-}
-
-function createTypeTitle(data) {
+function createTypeTitle(typeEntity) {
     let typeEntityView = document.getElementById(HEADER_MENU_DOWN);
     typeEntityView.innerHTML = null;
 
@@ -60,9 +51,9 @@ function createTypeTitle(data) {
 
     let seriesEntityView = document.createElement("div");
     seriesEntityView.className = "tabItem_normal";
-    seriesEntityView.innerHTML = data.label;
+    seriesEntityView.innerHTML = typeEntity.parent.label;
     seriesEntityView.onclick = function () {
-        let url = BASE_PATH + "ps?seriesId=" + data.seriesId;
+        let url = BASE_PATH + "ps?seriesId=" + typeEntity.parent.seriesId;
         window.open(url, "_self");
     };
     typeEntityView.appendChild(seriesEntityView);
@@ -76,12 +67,11 @@ function createTypeTitle(data) {
     let typeLabelView = document.createElement("div");
     typeLabelView.className = "tabItem_normal";
     typeLabelView.style.cursor = "default";
-    typeLabelView.style.fontSize = "1.2rem";
-    typeLabelView.innerHTML = data.child.label;
+    typeLabelView.innerHTML = typeEntity.label;
     typeEntityView.appendChild(typeLabelView);
 }
 
-function createTypeMainView(data) {
+function createTypeMainView(typeEntity) {
     let typeMainTopView = document.createElement("div");
     typeMainTopView.className = "typeMainTopView";
 
@@ -98,14 +88,14 @@ function createTypeMainView(data) {
     typeMainTopRight.appendChild(countdownView);
 
     let descriptionView = document.createElement("div");
-    descriptionView.innerHTML = data.child.description;
+    descriptionView.innerHTML = typeEntity.summary;
     descriptionView.style.color = "black";
     descriptionView.style.height = "120px";
     typeMainTopRight.appendChild(descriptionView);
 
     let formatEntitiesView = document.createElement("div");
     formatEntitiesView.style.height = "251px";
-    createFormatView(formatEntitiesView, data.child.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
+    createFormatView(formatEntitiesView, typeEntity.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
     typeMainTopRight.appendChild(formatEntitiesView);
 
     typeMainTopView.appendChild(typeMainTopRight);
@@ -114,18 +104,13 @@ function createTypeMainView(data) {
     typeMainLine.className = "typeMainLine";
     let typeMainDownView = document.createElement("div");
     typeMainDownView.className = "typeMainDownView";
-    typeMainDownView.innerHTML = data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail + data.child.detail;
+    typeMainDownView.innerHTML = typeEntity.directions;
 
     let mainView = document.getElementById(MAIN);
     mainView.appendChild(typeMainTopView);
     mainView.appendChild(typeMainLine);
     mainView.appendChild(typeMainDownView);
     mainView.style.height = typeMainTopView.clientHeight + typeMainLine.clientHeight + typeMainDownView.clientHeight + "px";
-}
-
-
-function createImageView() {
-
 }
 
 function createFormatView(containerView, formatEntity, selectedFormatId) {

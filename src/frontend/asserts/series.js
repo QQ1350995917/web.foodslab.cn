@@ -41,7 +41,7 @@ function createSeriesView(seriesId,seriesEntities,callback) {
 }
 
 function onSeriesTabClick(seriesEntity) {
-    let url = BASE_PATH + "format/retrieveInSeries?p=" + JSON.stringify(seriesEntity);
+    let url = BASE_PATH + "series/retrieveInversionTree?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
