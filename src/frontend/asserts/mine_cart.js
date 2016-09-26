@@ -2,20 +2,29 @@
  * Created by dingpengwei on 9/6/16.
  */
 function requestCart(accountId) {
+    let cartEntity = new Object();
+    cartEntity.sessionId = accountId;
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
-    let url = BASE_PATH + "cart/retrieve?accountId=" + accountId;
+    let url = BASE_PATH + "cart/retrieve?p=" + JSON.stringify(cartEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestCartCallback(jsonData.data);
+            if (jsonData.data == undefined || jsonData.data.length == 0) {
+                createEmptyCartView();
+            } else {
+                let mainView = document.getElementById(MAIN);
+                mainView.appendChild(createMainTitleView());
+                createMainContentView(mainView, jsonData.data);
+                createMainFloatView(mainView);
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestUpdateNumber(accountId, mapping, amount) {
-    let url = BASE_PATH + "cart/update?accountId=" + accountId + "&mapping=" + mapping + "&amount=" + amount;
+function requestUpdateNumber(cartEntity) {
+    let url = BASE_PATH + "cart/update?p=" + JSON.stringify(cartEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -26,8 +35,9 @@ function requestUpdateNumber(accountId, mapping, amount) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestDelete(accountId, mapping, parentView, currentView) {
-    let url = BASE_PATH + "cart/delete?accountId=" + accountId + "&mapping=" + mapping;
+function requestDelete(cartEntity, parentView, currentView) {
+    console.log(cartEntity);
+    let url = BASE_PATH + "cart/delete?p=" + JSON.stringify(cartEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -39,17 +49,6 @@ function requestDelete(accountId, mapping, parentView, currentView) {
             new Toast().show("删除失败");
         }
     }, onErrorCallback, onTimeoutCallback);
-}
-
-function onRequestCartCallback(data) {
-    if (data == undefined || data.length == 0) {
-        createEmptyCartView();
-    } else {
-        let mainView = document.getElementById(MAIN);
-        mainView.appendChild(createMainTitleView());
-        createMainContentView(mainView, data);
-        createMainFloatView(mainView);
-    }
 }
 
 function createEmptyCartView() {
@@ -105,42 +104,42 @@ function createMainTitleView() {
     return titleView;
 }
 
-function createMainContentView(mainView, data) {
-    for (let i = 0; i < data.length; i++) {
-        let itemEntity = data[i];
+function createMainContentView(mainView, cartEntities) {
+    let length = cartEntities == undefined ? 0:cartEntities.length;
+    for (let i = 0; i < length; i++) {
+        let cartEntity = cartEntities[i];
         let itemView = document.createElement("div");
         itemView.className = "itemView";
         let selector = document.createElement("input");
         selector.name = "cartItemSelectorName";
         selector.type = "checkbox";
         selector.className = "selector";
-        selector.value = itemEntity.mappingId;
+        selector.value = cartEntity.mappingId;
         itemView.appendChild(selector);
 
         let itemIcon = document.createElement("img");
         itemIcon.className = "itemIcon";
         itemIcon.onclick = function () {
-            let url = BASE_PATH + "pd?typeId=" + itemEntity.product.parent.typeId + "&formatId=" + itemEntity.product.formatId;
+            let url = BASE_PATH + "pd?typeId=" + cartEntity.formatEntity.parent.typeId + "&formatId=" + cartEntity.formatEntity.formatId;
             window.open(url);
         }
         itemView.appendChild(itemIcon);
-
 
         let productName = document.createElement("div");
         productName.className = "label";
         productName.style.width = "450px";
         productName.style.textAlign = "left";
-        productName.innerHTML = " " + itemEntity.product.parent.label + " " + itemEntity.product.label + itemEntity.product.meta;
+        productName.innerHTML = " " + cartEntity.formatEntity.parent.parent.label + " " + cartEntity.formatEntity.parent.label + " " + cartEntity.formatEntity.label+ cartEntity.formatEntity.meta;
         productName.style.cursor = "pointer";
         productName.onclick = function () {
-            let url = BASE_PATH + "pd?typeId=" + itemEntity.product.parent.typeId + "&formatId=" + itemEntity.product.formatId;
+            let url = BASE_PATH + "pd?typeId=" + cartEntity.formatEntity.parent.typeId + "&formatId=" + cartEntity.formatEntity.formatId;
             window.open(url);
         };
         itemView.appendChild(productName);
 
         let price = document.createElement("div");
         price.className = "label";
-        price.innerHTML = itemEntity.product.pricing + itemEntity.product.priceMeta;
+        price.innerHTML = cartEntity.formatEntity.pricing + cartEntity.formatEntity.priceMeta;
         itemView.appendChild(price);
 
         let totalNumberContainer = document.createElement("div");
@@ -167,7 +166,7 @@ function createMainContentView(mainView, data) {
         totalNumber.style.height = "26px";
         totalNumber.style.textAlign = "center";
         totalNumber.style.borderWidth = "0px";
-        totalNumber.value = itemEntity.amount;
+        totalNumber.value = cartEntity.amount;
         totalNumberContainer.appendChild(totalNumber);
 
         let totalNumberAdd = document.createElement("div");
@@ -183,7 +182,7 @@ function createMainContentView(mainView, data) {
 
         let totalPrice = document.createElement("div");
         totalPrice.className = "label";
-        totalPrice.innerHTML = (itemEntity.amount * itemEntity.product.pricing) + itemEntity.product.priceMeta;
+        totalPrice.innerHTML = (cartEntity.amount * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
         itemView.appendChild(totalPrice);
 
         let deleteAction = document.createElement("div");
@@ -200,24 +199,35 @@ function createMainContentView(mainView, data) {
         totalNumberMinus.onclick = function () {
             if (totalNumber.value > 1) {
                 totalNumber.value = parseInt(totalNumber.value) - 1;
-                totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
-                requestUpdateNumber(accountId, itemEntity.mappingId, totalNumber.value);
+                totalPrice.innerHTML = (parseInt(totalNumber.value) * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
+                let requestCartEntity = new Object();
+                requestCartEntity.sessionId = accountId;
+                requestCartEntity.mappingId = cartEntity.mappingId;
+                requestCartEntity.amount = totalNumber.value;
+                requestUpdateNumber(requestCartEntity);
             }
         };
         totalNumberAdd.onclick = function () {
             if (totalNumber.value < 10000) {
                 totalNumber.value = parseInt(totalNumber.value) + 1;
-                totalPrice.innerHTML = (parseInt(totalNumber.value) * itemEntity.product.pricing) + itemEntity.product.priceMeta;
-                requestUpdateNumber(accountId, itemEntity.mappingId, totalNumber.value);
+                totalPrice.innerHTML = (parseInt(totalNumber.value) * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
+                let requestCartEntity = new Object();
+                requestCartEntity.sessionId = accountId;
+                requestCartEntity.mappingId = cartEntity.mappingId;
+                requestCartEntity.amount = totalNumber.value;
+                requestUpdateNumber(requestCartEntity);
             }
         }
 
         deleteAction.onclick = function () {
-            requestDelete(accountId, itemEntity.mappingId, mainView, itemView);
+            let requestCartEntity = new Object();
+            requestCartEntity.sessionId = accountId;
+            requestCartEntity.mappingId = cartEntity.mappingId;
+            requestDelete(requestCartEntity, mainView, itemView);
         };
     }
 
-    mainView.style.height = 50 + data.length * 100 + "px";
+    mainView.style.height = 50 + length * 100 + "px";
 }
 
 function createMainFloatView(mainView) {
@@ -324,7 +334,7 @@ function onBillingAction() {
         mappingIds = mappingIds.replace(/,/, "");
         console.log(mappingIds);
         let url = BASE_PATH + "pb?accountId=test&mappingIds=" + mappingIds;
-        window.open(url,"_self");
+        window.open(url, "_self");
     }
 
 }

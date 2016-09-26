@@ -12,7 +12,9 @@ function requestBilling() {
     let params = undefined;
     if (accountId == undefined || accountId == null || accountId == "") {
         let formatIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
-        params = "billing?productIds=" + formatIds;
+        let formatEntity = new Object();
+        formatEntity.formatId = formatIds;
+        params = "format/retrieveInversionTree?p=" + JSON.stringify(formatEntity);
     } else {
         let mappingIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
         params = "billing?accountId=test&productIds=" + mappingIds;
@@ -23,18 +25,13 @@ function requestBilling() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestBillingCallback(jsonData.data);
+            if (accountId == undefined) {
+                createBillingByAnonymous(jsonData.data);
+            } else {
+                createBillingByUser(jsonData.data);
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
-}
-
-function onRequestBillingCallback(data) {
-    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
-    if (accountId == undefined) {
-        createBillingByAnonymous(data);
-    } else {
-        createBillingByUser(data);
-    }
 }
 
 function requestCreateOrder(accountId, productIds, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
@@ -93,7 +90,7 @@ function onRequestUserCreateOrderCallback(data) {
  * 创建匿名支付信息
  * @param data
  */
-function createBillingByAnonymous(data) {
+function createBillingByAnonymous(formatEntity) {
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
 
@@ -102,11 +99,12 @@ function createBillingByAnonymous(data) {
 
     let payStyleView = createPayStyleContainer();
     mainView.appendChild(payStyleView);
-
-    let productView = createProductContainer(data.products);
+    let formatEntities = new Array();
+    formatEntities.push(formatEntity);
+    let productView = createProductContainer(formatEntities);
     mainView.appendChild(productView);
 
-    let payBarView = createPayBarContainer(data);
+    let payBarView = createPayBarContainer(formatEntity);
     mainView.appendChild(payBarView);
 
     mainView.style.height = receiverView.clientHeight + payStyleView.clientHeight + productView.clientHeight + payBarView.clientHeight + "px";
@@ -357,16 +355,16 @@ function createPayStyleContainer() {
     return payStyleContainer;
 }
 
-function createProductContainer(data) {
+function createProductContainer(formatEntities) {
     let productContainer = document.createElement("div");
     productContainer.className = "productContainer containerStyle";
     let listMessage = document.createElement("div");
     listMessage.className = "messageLabel";
     listMessage.innerHTML = "发货清单";
     productContainer.appendChild(listMessage);
-
-    for (let i = 0; i < data.length; i++) {
-        let product = data[i];
+    let length = formatEntities == undefined ? 0 : formatEntities.length;
+    for (let i = 0; i < length; i++) {
+        let formatEntity = formatEntities[i];
         let productItemContainer = document.createElement("div");
         productItemContainer.className = "productItemView";
 
@@ -377,27 +375,27 @@ function createProductContainer(data) {
         let productName = document.createElement("div");
         productName.className = "messageLabelInItem";
         productName.style.width = "470px";
-        productName.innerHTML = product.seriesName + " " + product.typeName + " " + product.formatName + product.formatMeta;
+        productName.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
         productItemContainer.appendChild(productName);
 
         let productPricing = document.createElement("div");
         productPricing.className = "messageLabelInItem";
         productPricing.style.width = "190px";
         productPricing.style.textAlign = "center";
-        productPricing.innerHTML = product.pricing + product.priceMeta;
+        productPricing.innerHTML = formatEntity.pricing + formatEntity.priceMeta;
         productItemContainer.appendChild(productPricing);
 
         let productAmount = document.createElement("div");
         productAmount.className = "messageLabelInItem";
         productAmount.style.width = "190px";
         productAmount.style.textAlign = "center";
-        productAmount.innerHTML = product.amount;
+        productAmount.innerHTML = formatEntity.amount;
         productItemContainer.appendChild(productAmount);
 
         productContainer.appendChild(productItemContainer);
     }
 
-    productContainer.style.height = 120 * data.length + 40 + "px";
+    productContainer.style.height = 120 * length + 40 + "px";
     return productContainer;
 }
 

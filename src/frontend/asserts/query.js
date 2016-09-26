@@ -29,7 +29,7 @@ function requestOrderByKey(key) {
 }
 
 function requestRecommend() {
-    let url = BASE_PATH + "product/recommend";
+    let url = BASE_PATH + "format/recommends";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
