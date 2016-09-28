@@ -4,68 +4,70 @@
 window.onload = function () {
     initTitleView();
     requestLinker();
-    requestBilling();
+    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+    if (accountId == undefined || accountId == null || accountId == "") {
+        requestBillingByAnonymous();
+    } else {
+        requestUserReceiver();
+    }
 };
 
-function requestBilling() {
-    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
-    let params = undefined;
-    if (accountId == undefined || accountId == null || accountId == "") {
-        let formatIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
-        let formatEntity = new Object();
-        formatEntity.formatId = formatIds;
-        params = "format/retrieveInversionTree?p=" + JSON.stringify(formatEntity);
-    } else {
-        let mappingIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
-        params = "billing?accountId=test&productIds=" + mappingIds;
-    }
-
-    let url = BASE_PATH + params;
+function requestBillingByAnonymous() {
+    let formatIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
+    let formatEntity = new Object();
+    formatEntity.formatId = formatIds;
+    let url = BASE_PATH + "format/retrieveInversionTree?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (accountId == undefined) {
-                createBillingByAnonymous(jsonData.data);
-            } else {
-                createBillingByUser(jsonData.data);
-            }
+            createBillingByAnonymous(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestCreateOrder(accountId, productIds, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append) {
-    let url = BASE_PATH;
-    if (accountId == undefined) {
-        url = BASE_PATH + "order/create?senderName=" + senderName
-            + "&senderPhone=" + senderPhone
-            + "&productIds=" + productIds
-            + "&name=" + name
-            + "&phone0=" + phone0
-            + "&phone1=" + phone1
-            + "&province=" + province
-            + "&city=" + city
-            + "&county=" + county
-            + "&town=" + town
-            + "&village=" + village
-            + "&append=" + append;
-        asyncRequestByGet(url, function (data) {
-            var result = checkResponseDataFormat(data);
-            if (result) {
-                var jsonData = JSON.parse(data);
+let tempReceiver = undefined;
+function requestUserReceiver() {
+    let url = BASE_PATH + "receiver/retrieve?accountId=test";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            tempReceiver = jsonData.data;
+            requestBillingByUser();
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestBillingByUser() {
+    let mappingIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
+    let cartEntity = new Object();
+    cartEntity.sessionId = "test";
+    cartEntity.mappingIds = mappingIds;
+    let url = BASE_PATH + "cart/retrieve?p=" + JSON.stringify(cartEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createBillingByUser(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestCreateOrder(orderEntity) {
+    console.log(orderEntity);
+    let url = BASE_PATH + "order/create?p="  + JSON.stringify(orderEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            if (orderEntity.sessionId == undefined) {
                 onRequestAnonymousCreateOrderCallback(jsonData.data);
-            }
-        }, onErrorCallback, onTimeoutCallback);
-    } else {
-        url = BASE_PATH + "order/create?productIds=" + productIds + "&accountId=" + accountId + "&receiverId=test";
-        asyncRequestByGet(url, function (data) {
-            var result = checkResponseDataFormat(data);
-            if (result) {
-                var jsonData = JSON.parse(data);
+            } else {
                 onRequestUserCreateOrderCallback(jsonData.data);
             }
-        }, onErrorCallback, onTimeoutCallback);
-    }
+        }
+    }, onErrorCallback, onTimeoutCallback);
 }
 
 /**
@@ -114,21 +116,28 @@ function createBillingByAnonymous(formatEntity) {
  * 创建用户支付信息
  * @param data
  */
-function createBillingByUser(data) {
-
+function createBillingByUser(cartEntities) {
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
-
-    let receiverView = createUserReceiverContainer(data);
+    let receiverView = createUserReceiverContainer(tempReceiver);
     mainView.appendChild(receiverView);
 
     let payStyleView = createPayStyleContainer();
     mainView.appendChild(payStyleView);
 
-    let productView = createProductContainer(data.products);
+    let length = cartEntities == undefined ? 0:cartEntities.length;
+    let formatEntities = new Array();
+    for (let i=0;i<length;i++){
+        let cartEntity = cartEntities[i];
+        console.log(cartEntity);
+        let formatEntity = cartEntity.formatEntity;
+        formatEntity.amount = cartEntity.amount;
+        formatEntities.push(formatEntity);
+    }
+    let productView = createProductContainer(formatEntities);
     mainView.appendChild(productView);
 
-    let payBarView = createPayBarContainer(data);
+    let payBarView = createPayBarContainer(cartEntities);
     mainView.appendChild(payBarView);
 
     mainView.style.height = receiverView.clientHeight + payStyleView.clientHeight + productView.clientHeight + payBarView.clientHeight + "px";
@@ -174,14 +183,14 @@ function createAnonymousReceiverContainer() {
     return receiverContainer;
 }
 
-function createUserReceiverContainer(data) {
+function createUserReceiverContainer(receiverEntities) {
     let receiverContainer = document.createElement("div");
     receiverContainer.className = "receiverContainer containerStyle";
     let receiverMessage = document.createElement("div");
     receiverMessage.className = "messageLabel";
     receiverMessage.innerHTML = "收货人信息";
     receiverContainer.appendChild(receiverMessage);
-    let currentReceiverContainer = createReceiverAddressEditorContainer(data.receivers[0]);
+    let currentReceiverContainer = createReceiverAddressEditorContainer(receiverEntities[0]);
     receiverContainer.appendChild(currentReceiverContainer);
 
     let moreReceiverTip = document.createElement("div");
@@ -193,7 +202,7 @@ function createUserReceiverContainer(data) {
     moreReceiverTip.style.cursor = "pointer";
     moreReceiverTip.status = "less";
     receiverContainer.appendChild(moreReceiverTip);
-    let moreReceiverContainer = createMoreReceiverAddressContainer(data.receivers);
+    let moreReceiverContainer = createMoreReceiverAddressContainer(receiverEntities);
     moreReceiverTip.onclick = function () {
         if (this.status == "less") {
             moreReceiverTip.innerHTML = "更多收货地址 ︾ ";
@@ -490,11 +499,28 @@ function onPayActionClick() {
         let senderName = document.getElementById("senderName").value;
         let senderPhone = document.getElementById("senderPhone").value;
         showPaymentView(function () {
-            requestCreateOrder(undefined, productIds, senderName, senderPhone, name, phone0, phone1, province, city, county, town, village, append);
+            let orderEntity = new Object();
+            orderEntity.productIds = productIds;
+            orderEntity.senderName = senderName;
+            orderEntity.senderPhone = senderPhone;
+            orderEntity.name = name;
+            orderEntity.phone0 = phone0;
+            orderEntity.phone1 = phone1;
+            orderEntity.province = province;
+            orderEntity.city = city;
+            orderEntity.county = county;
+            orderEntity.town = town;
+            orderEntity.village = village;
+            orderEntity.append = append;
+            requestCreateOrder(orderEntity);
         });
     } else {
         showPaymentView(function () {
-            requestCreateOrder(accountId, productIds);
+            let orderEntity = new Object();
+            orderEntity.sessionId = accountId;
+            orderEntity.productIds = productIds;
+            orderEntity.receiverId = "50cbf344-c92c-43ce-88f7-7fbe21e8e478";
+            requestCreateOrder(orderEntity);
         });
     }
 

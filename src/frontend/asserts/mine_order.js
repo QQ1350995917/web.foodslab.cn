@@ -2,7 +2,9 @@
  * Created by dingpengwei on 9/8/16.
  */
 function requestOrder(accountId) {
-    let url = BASE_PATH + "order/retrieve?accountId=" + accountId;
+    let orderEntity = new Object();
+    orderEntity.sessionId = accountId;
+    let url = BASE_PATH + "order/retrieve?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -13,12 +15,13 @@ function requestOrder(accountId) {
 }
 
 
-function onRequestOrderCallback(data) {
+function onRequestOrderCallback(orderEntities) {
     let mainView = document.getElementById(MAIN);
     mainView.innerText = null;
     mainView.style.height = 0;
-    for (let i = 0; i < data.length; i++) {
-        let orderItemView = createOrderItemView(data[i]);
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let orderItemView = createOrderItemView(orderEntities[i]);
         mainView.appendChild(orderItemView);
         mainView.style.height = mainView.clientHeight + orderItemView.clientHeight + "px";
     }
@@ -31,8 +34,8 @@ function createOrderItemView(orderEntity) {
     let orderItemTitleView = createOrderItemTitleView(orderEntity)
     itemContainer.appendChild(orderItemTitleView);
     itemContainer.customerHeight = orderItemTitleView.customerHeight;
-
-    let orderProductsContainer = createOrderProductItem(orderEntity.products);
+    console.log(orderEntity);
+    let orderProductsContainer = createOrderProductItem(orderEntity.formatEntities);
     itemContainer.customerHeight = itemContainer.customerHeight + orderProductsContainer.customerHeight;
     itemContainer.appendChild(orderProductsContainer);
 
@@ -61,12 +64,13 @@ function createOrderItemTitleView(orderEntity) {
     return itemTitleContainer;
 }
 
-function createOrderProductItem(orderProducts) {
+function createOrderProductItem(formatEntities) {
     let productContainer = document.createElement("div");
     productContainer.className = "productContainer";
     productContainer.customerHeight = 0;
-    for (let i = 0; i < orderProducts.length; i++) {
-        let orderProduct = orderProducts[i];
+    let length = formatEntities == undefined ? 0 : formatEntities.length;
+    for (let i = 0; i < length; i++) {
+        let formatEntity = formatEntities[i];
         let productItemView = document.createElement("div");
         productItemView.className = "productItemView";
         productItemView.customerHeight = 101;
@@ -80,7 +84,7 @@ function createOrderProductItem(orderProducts) {
         name.style.width = "350px";
         name.style.textAlign = "left";
         name.style.marginLeft = "10px";
-        name.innerHTML = orderProduct.parent.parent.label + " " + orderProduct.parent.label + " " + orderProduct.label + orderProduct.meta;
+        name.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
         productItemView.appendChild(name);
 
         let num = document.createElement("div");

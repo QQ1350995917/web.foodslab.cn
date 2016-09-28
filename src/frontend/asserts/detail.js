@@ -23,8 +23,9 @@ function requestType(typeEntity) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestPutInCart(accountId, formatId, amount) {
-    let url = BASE_PATH + "cart/create?accountId=test&formatId=" + formatId + "&amount=" + amount;
+function requestPutInCart(formatEntity) {
+    formatEntity.sessionId = "test";
+    let url = BASE_PATH + "cart/create?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -256,7 +257,10 @@ function createFormatDiscountItemView(formatEntity) {
     putInCart.className = "formatLabel button";
     putInCart.innerHTML = "加入购物车";
     putInCart.onclick = function () {
-        requestPutInCart(undefined,formatEntity.formatId,formatCounterEdit.value);
+        let requestFormatEntity = new Object();
+        requestFormatEntity.formatId = formatEntity.formatId;
+        requestFormatEntity.amount = formatCounterEdit.value;
+        requestPutInCart(requestFormatEntity);
     };
     formatDiscountView.appendChild(putInCart);
     return formatDiscountView;

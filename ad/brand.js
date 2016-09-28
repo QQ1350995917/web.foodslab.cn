@@ -66,6 +66,13 @@ function drawProductName(context) {
     context.fillText("小磨香油", 850, 170);
     context.font = "50px Arial";
     context.fillText(company, 750, 970);
+
+    var fangImage = new Image();
+    fangImage.onload = function () {
+        context.drawImage(fangImage, 600, 450,560,440);
+    };
+    fangImage.src = "mo.png";
+
 }
 
 function drawRawMaterial(context) {
