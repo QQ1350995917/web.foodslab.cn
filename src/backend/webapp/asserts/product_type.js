@@ -20,7 +20,7 @@ function initProductType(seriesEntity) {
 function requestTypeListData(seriesEntity) {
     var indexUrl = BASE_PATH + "/type/mRetrieves?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -398,7 +398,7 @@ function format() {
 
 function requestCreateType(seriesEntity,typeEntity) {
     asyncRequestByGet(BASE_PATH + "/type/mCreate?p=" + JSON.stringify(typeEntity), function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -413,7 +413,7 @@ function requestCreateType(seriesEntity,typeEntity) {
 
 function requestRenameType(seriesEntity,typeEntity) {
     asyncRequestByGet(BASE_PATH + "/type/mUpdate?p=" + JSON.stringify(typeEntity), function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -428,7 +428,7 @@ function requestRenameType(seriesEntity,typeEntity) {
 
 function requestMarkType(seriesEntity,typeEntity) {
     asyncRequestByGet(BASE_PATH + "/type/mMark?p=" + JSON.stringify(typeEntity), function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -443,7 +443,7 @@ function requestMarkType(seriesEntity,typeEntity) {
 
 function requestUpdateSummary(typeEntity) {
     asyncRequestByGet(BASE_PATH + "/type/mSummary?p=" + JSON.stringify(typeEntity), function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -457,7 +457,7 @@ function requestUpdateSummary(typeEntity) {
 
 function requestUpdateDirections(typeEntity) {
     asyncRequestByGet(BASE_PATH + "/type/mDirections?p=" + JSON.stringify(typeEntity), function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {

@@ -1,109 +1,145 @@
 /**
  * Created by dingpengwei on 8/16/16.
  */
-
-function onExpressingTabCallback() {
-    console.log("onExpressingTabCallback");
-    createExpressingView();
-}
-
-function onExpressedTabCallback() {
-    console.log("onExpressedTabCallback");
-    createExpressedView();
-}
-
-function onFinishedTabCallback() {
-    console.log("onFinishTabCallback");
-    createFinishedView();
-}
-
-function onAllTabCallback() {
-    console.log("onAllTabCallback");
-    createAllView();
-}
-
+const ORDER_TABS = new Array("未发货", "已发货", "已完成", "全部");
 function showOrderView() {
     // 重置界面
     resetView();
     // 获取根元素对象
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-
-    let tabItems = new Array();
-    tabItems.push(new Tab("expressing", "未发货", "horizontalSelected", onExpressingTabCallback));
-    tabItems.push(new Tab("expressed", "已发货", "horizontalNormal", onExpressedTabCallback));
-    tabItems.push(new Tab("finished", "已完成", "horizontalNormal", onFinishedTabCallback));
-    tabItems.push(new Tab("all", "全部", "horizontalNormal", onAllTabCallback));
-    createOrderTitleTab(titleViewContainer, tabItems);
-
-    createExpressingView();
+    createOrderTitleTab(titleViewContainer, ORDER_TABS, 0, function (index) {
+        if (index == 0) {
+            onUnExpressTabCallback();
+        } else if (index == 1) {
+            onExpressingTabCallback();
+        } else if (index == 2) {
+            onExpressedTabCallback();
+        } else if (index == 3) {
+            onAllTabCallback();
+        }
+    });
 }
 
-function createOrderTitleTab(containerView, tabItems) {
+function createOrderTitleTab(containerView, tabItems, index, callback) {
     containerView.innerHTML = null;
-    for (let index = 0; index < tabItems.length; index++) {
-        let tabItem = tabItems[index];
+    for (let i = 0; i < tabItems.length; i++) {
+        let tabItem = tabItems[i];
         let tabView = document.createElement("div");
         tabView.className = tabItem.className;
         tabView.style.width = "270px";
         tabView.style.height = "100%";
-        tabView.innerHTML = tabItem.label;
+        tabView.innerHTML = tabItem;
+        if (i == index) {
+            tabView.className = "horizontalSelected";
+            callback(i);
+        } else {
+            tabView.className = "horizontalNormal";
+        }
         tabView.onclick = function () {
-            for (let i = 0; i < tabItems.length; i++) {
-                tabItems[i].className = "horizontalNormal";
-            }
-            tabItem.className = "horizontalSelected";
-            createOrderTitleTab(containerView, tabItems);
-            tabItem.onTabClick();
+            createOrderTitleTab(containerView, tabItems, i, callback);
         };
         containerView.appendChild(tabView);
     }
 }
 
-function createExpressingView() {
+function onUnExpressTabCallback() {
+    const url = BASE_PATH + "/order/mRetrieveUnExpress";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createUnExpressView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function onExpressingTabCallback() {
+    const url = BASE_PATH + "/order/mRetrieveExpressing";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createExpressingView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function onExpressedTabCallback() {
+    const url = BASE_PATH + "/order/mRetrieveExpressed";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createExpressedView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function onAllTabCallback() {
+    const url = BASE_PATH + "/order/mRetrieveAll";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createAllView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function createUnExpressView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
-
-    let exportView = document.createElement("div");
-    exportView.className = "SS_IC";
-    exportView.style.width = "200px";
-    exportView.style.height = "30px";
-    exportView.style.lineHeight = "30px";
-    exportView.style.borderWidth = "1px";
-    exportView.style.marginTop = "10px";
-    exportView.style.textAlign = "center";
-    exportView.innerHTML = "导出发货信息";
-    contentViewContainer.appendChild(exportView);
-
-    let importView = document.createElement("div");
-    importView.className = "SS_IC";
-    importView.style.width = "200px";
-    importView.style.height = "30px";
-    importView.style.lineHeight = "30px";
-    importView.style.borderWidth = "1px";
-    importView.style.margin = "10px";
-    importView.style.textAlign = "center";
-    importView.innerHTML = "导入发货信息";
-    contentViewContainer.appendChild(importView);
-
-    let size = 3;
-    for (let index =0;index<size;index++){
-        let expressInfoView = document.createElement("div");
-        expressInfoView.className = "SS_IC";
-        expressInfoView.style.width = "250px";
-        expressInfoView.style.height = "100%";
-        expressInfoView.style.textAlign = "center";
-        onExpressButtonClick(expressInfoView, false);
-        contentViewContainer.appendChild(createOrderCommonView(index,expressInfoView));
+    let unExpressTitleContainer = createUnExpressTitleContainer();
+    contentViewContainer.appendChild(unExpressTitleContainer);
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let paramView = document.createElement("div");
+        paramView.className = "orderItemMainBlock";
+        paramView.style.borderRightWidth = "0px";
+        attachUnExpressView(orderEntities[i], paramView, false);
+        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
+        contentViewContainer.appendChild(orderItemContainer);
     }
 }
 
-function onExpressButtonClick(container, status) {
+/**
+ * 创建未发货订单的title
+ * @returns {Element}
+ */
+function createUnExpressTitleContainer() {
+    let unExpressTitleView = document.createElement("div");
+    unExpressTitleView.className = "orderExpressTitle";
+    let exportView = document.createElement("div");
+    exportView.className = "actionButton";
+    exportView.style.width = "15%";
+    exportView.innerHTML = "导出发货信息";
+    unExpressTitleView.appendChild(exportView);
+
+    let importView = document.createElement("div");
+    importView.className = "actionButton";
+    importView.style.width = "15%";
+    importView.style.marginLeft = "1%";
+    importView.innerHTML = "导入发货信息";
+    unExpressTitleView.appendChild(importView);
+
+    let searchView = createSearchWidget("68%", function (data) {
+        console.log(data);
+    });
+
+    searchView.style.float = "left";
+    searchView.style.marginLeft = "1%";
+    unExpressTitleView.appendChild(searchView);
+    return unExpressTitleView;
+}
+
+function attachUnExpressView(orderEntity, container, status) {
     container.innerHTML = null;
     if (status) {
         let expressCompany = document.createElement("select");
         expressCompany.className = "SS_IC_LABEL";
         expressCompany.style.marginTop = "5px";
         expressCompany.style.width = "100%";
+        expressCompany.style.textAlign = "center";
         container.appendChild(expressCompany);
 
         let expressNumber = document.createElement("input");
@@ -118,7 +154,7 @@ function onExpressButtonClick(container, status) {
         expressCancel.style.marginTop = "5px";
         expressCancel.innerHTML = "取消发货";
         expressCancel.onclick = function () {
-            onExpressButtonClick(container, false);
+            attachUnExpressView(orderEntity, container, false);
         };
         container.appendChild(expressCancel);
 
@@ -128,227 +164,155 @@ function onExpressButtonClick(container, status) {
         expressGoing.style.marginTop = "5px";
         expressGoing.innerHTML = "确定发货";
         container.appendChild(expressGoing);
+        expressGoing.onclick = function () {
+            let requestOrderEntity = new Object();
+            requestOrderEntity.orderId = orderEntity.orderId;
+            requestOrderEntity.expressLabel = "顺丰快递";
+            requestOrderEntity.expressNumber = expressNumber.value;
+            requestOrderEntity.status = 2;
+            requestExpress(requestOrderEntity);
+        }
     } else {
         let expressButton = document.createElement("div");
-        expressButton.className = "B_B_D";
+        expressButton.className = "actionButton";
         expressButton.style.width = "90%";
         expressButton.style.height = "30%";
         expressButton.style.marginTop = "2px";
         expressButton.innerHTML = "去发货";
         expressButton.onclick = function () {
-            onExpressButtonClick(container, true);
+            attachUnExpressView(orderEntity, container, true);
         };
         container.appendChild(expressButton);
     }
 }
 
-function createExpressedView() {
+function createExpressingView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
-    let size = 3;
-    for (let index =0;index<size;index++){
-        let expressInfoView = document.createElement("div");
-        expressInfoView.className = "SS_IC";
-        expressInfoView.style.width = "250px";
-        expressInfoView.style.height = "100%";
-        expressInfoView.style.textAlign = "center";
-
-        let expressNameNumber = document.createElement("div");
-        expressNameNumber.className = "SS_IC";
-        expressNameNumber.style.width = "100%";
-        expressNameNumber.style.height = "20px";
-        expressNameNumber.style.borderWidth = "0px";
-        expressNameNumber.innerHTML = "圆通快递 单号:12345678980";
-        expressInfoView.appendChild(expressNameNumber);
-
-        let expressDetail = document.createElement("div");
-        expressDetail.className = "SS_IC";
-        expressDetail.style.width = "100%";
-        expressDetail.style.borderWidth = "0px";
-        expressDetail.style.overflow = "scroll";
-        expressDetail.innerHTML = "2016-08-08 12:23:34 <br> 北京市昌平区<br>2016-08-08 12:23:34 <br> 北京市昌平区<br>2016-08-08 12:23:34 <br> 北京市昌平区<br>2016-08-08 12:23:34 <br> 北京市昌平区<br>2016-08-08 12:23:34 <br> 北京市昌平区<br>2016-08-08 12:23:34 <br> 北京市昌平区<br>";
-        expressInfoView.appendChild(expressDetail);
-
-        contentViewContainer.appendChild(createOrderCommonView(index,expressInfoView));
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let paramView = document.createElement("div");
+        paramView.className = "orderItemMainBlock";
+        paramView.style.borderRightWidth = "0px";
+        attachExpressingStatusView(orderEntities[i], paramView, false);
+        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
+        contentViewContainer.appendChild(orderItemContainer);
     }
-
 }
 
-function createFinishedView() {
+function attachExpressingStatusView(orderEntity, container) {
+    container.innerHTML = orderEntity.expressLabel + " " + orderEntity.expressNumber;
+}
+
+function createExpressedView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
-    let size = 3;
-    for (let index =0;index<size;index++){
-        let expressInfoView = document.createElement("div");
-        expressInfoView.className = "SS_IC";
-        expressInfoView.style.width = "250px";
-        expressInfoView.style.height = "100%";
-        expressInfoView.style.textAlign = "center";
-
-        let expressNameNumber = document.createElement("div");
-        expressNameNumber.className = "SS_IC";
-        expressNameNumber.style.width = "100%";
-        expressNameNumber.style.height = "20px";
-        expressNameNumber.style.borderWidth = "0px";
-        expressNameNumber.innerHTML = "圆通快递 单号:12345678980";
-        expressInfoView.appendChild(expressNameNumber);
-
-        let expressDetail = document.createElement("div");
-        expressDetail.className = "SS_IC";
-        expressDetail.style.width = "100%";
-        expressDetail.style.borderWidth = "0px";
-        expressDetail.style.overflow = "scroll";
-        expressDetail.innerHTML = "2016-07-08 17:05:32 <br> 用户确认完成";
-        expressInfoView.appendChild(expressDetail);
-
-        // let expressReturn = document.createElement("div");
-        // expressReturn.className = "B_B_D";
-        // expressReturn.style.width = "110px";
-        // expressReturn.style.marginTop = "5px";
-        // expressReturn.innerHTML = "退货";
-        // expressInfoView.appendChild(expressReturn);
-        //
-        // let expressAdd = document.createElement("div");
-        // expressAdd.className = "B_B_D";
-        // expressAdd.style.width = "110px";
-        // expressAdd.style.marginTop = "5px";
-        // expressAdd.innerHTML = "补发";
-        // expressInfoView.appendChild(expressAdd);
-
-        contentViewContainer.appendChild(createOrderCommonView(index,expressInfoView));
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let paramView = document.createElement("div");
+        paramView.className = "orderItemMainBlock";
+        paramView.style.borderRightWidth = "0px";
+        attachExpressingStatusView(orderEntities[i], paramView, false);
+        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
+        contentViewContainer.appendChild(orderItemContainer);
     }
-
 }
 
-function createAllView() {
+function createAllView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let orderEntity = orderEntities[i];
+        let paramView = document.createElement("div");
+        paramView.className = "orderItemMainBlock";
+        paramView.style.borderRightWidth = "0px";
+        if (orderEntity.status == 1) {
 
-    let searchView = createSearchWidget(function (data) {
-        console.log(data);
-    });
-    contentViewContainer.appendChild(searchView);
-
-    let size = 3;
-    for (let index =0;index<size;index++){
-        let expressInfoView = document.createElement("div");
-        expressInfoView.className = "SS_IC";
-        expressInfoView.style.width = "250px";
-        expressInfoView.style.height = "100%";
-        expressInfoView.style.textAlign = "center";
-        expressInfoView.innerHTML = "动态内容";
-
-        contentViewContainer.appendChild(createOrderCommonView(index,expressInfoView));
+        } else {
+            attachExpressingStatusView(orderEntities[i], paramView, false);
+        }
+        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
+        contentViewContainer.appendChild(orderItemContainer);
     }
-
 }
 
-function createOrderCommonView(index,paramView) {
+function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, statusViewWidth, paramView) {
     /**
      * 最外层的容器根对象
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
      */
     let orderEntityView = document.createElement("div");
-    orderEntityView.className = "SS_IC";
-    orderEntityView.style.width = "1065px";
-    orderEntityView.style.height = "150px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
-    orderEntityView.style.minHeight = "160px";
-    orderEntityView.style.borderWidth = "1px";
-    if (index > 0) {
-        orderEntityView.style.borderTopWidth = "0px";
-    }
-
+    orderEntityView.className = "orderItemContainer";
     /**
      * 上部分title容器
      */
     let orderEntityTitleView = document.createElement("div");
-    orderEntityTitleView.className = "SS_IC";
-    orderEntityTitleView.style.width = "1055px";
-    orderEntityTitleView.style.height = "40px";
-    orderEntityTitleView.style.borderWidth = "0px";
-    orderEntityTitleView.style.borderBottomWidth = "1px";
-    orderEntityTitleView.style.backgroundColor = "#F2F2F2";
-    orderEntityTitleView.style.lineHeight = "40px";
-    orderEntityTitleView.style.paddingLeft = "10px";
-    orderEntityTitleView.innerHTML = "2016-06-30 14:22:42  订单号：20103205392  收货人：地球往事    电话：123 4567 78900";
+    orderEntityTitleView.className = "orderItemTitle";
+    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId + "  收货人：地球往事    电话：123 4567 78900";
     orderEntityView.appendChild(orderEntityTitleView);
 
     /**
      * 下部分内容容器
      */
     let orderEntityContentView = document.createElement("div");
-    orderEntityContentView.className = "SS_IC";
-    orderEntityContentView.style.width = "1066px";
-    orderEntityContentView.style.minHeight = "120px";
-    orderEntityContentView.style.height = "110px"; // 高度根据产品数量动态设定
-    orderEntityContentView.style.borderWidth = "0px";
+    orderEntityContentView.className = "orderItemMain";
 
-    let orderEntityProductView = document.createElement("div");
-    orderEntityProductView.className = "SS_IC";
-    orderEntityProductView.style.width = "550px";
-    orderEntityProductView.style.height = "100%";
-    orderEntityProductView.style.borderWidth = "0px";
+    let orderEntityProductContainer = document.createElement("div");
+    orderEntityProductContainer.className = "orderItemMainBlock";
+    orderEntityProductContainer.style.width = productViewWidth;
 
     /**
      * 动态添加产品数量
      */
-    let size = 1;
-    for (let i = 0; i < size; i++) {
+    let length = orderEntity == undefined ? 0 : orderEntity.formatEntities == undefined ? 0 : orderEntity.formatEntities.length;
+    for (let i = 0; i < length; i++) {
+        let formatEntity = orderEntity.formatEntities[i];
         /**
          * 左右分为两个部分,做部分显示产品信息,右部分显示数量
          * @type {Element}
          */
-        let productView = document.createElement("div");
-        productView.className = "SS_IC";
-        productView.style.width = "550px";
-        productView.style.height = "30px";
-        productView.style.borderWidth = "0px";
-        if (i != 0) {
-            productView.style.borderTopWidth = "1px";
-        }
+        let productItemView = document.createElement("div");
+        productItemView.className = "orderItemMainProductItem";
         /**
          * 添加左边产品名称区域
          */
         let productNameView = document.createElement("div");
-        productNameView.className = "SS_IC";
-        productNameView.style.width = "490px";
-        productNameView.style.height = "30px";
-        productNameView.style.marginLeft = "10px";
-        productNameView.style.borderWidth = "0px";
-        productNameView.style.lineHeight = "30px";
-        productNameView.innerHTML = "产品系列 + 产品型号 + 产品规格";
-        productView.appendChild(productNameView);
+        productNameView.className = "orderItemMainProductItemLabel";
+        productNameView.style.width = "85%";
+        productNameView.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
+        productItemView.appendChild(productNameView);
 
         /**
          * 添加右边产品数量区域
          */
         let productNumView = document.createElement("div");
-        productNumView.className = "SS_IC";
-        productNumView.style.width = "50px";
-        productNumView.style.height = "30px";
-        productNumView.style.borderWidth = "0px";
-        productNumView.style.lineHeight = "30px";
+        productNumView.className = "orderItemMainProductItemLabel";
+        productNumView.style.width = "15%";
         productNumView.innerHTML = "x 5";
-        productView.appendChild(productNumView);
-        orderEntityProductView.appendChild(productView);
+        productItemView.appendChild(productNumView);
+        orderEntityProductContainer.appendChild(productItemView);
     }
-    orderEntityContentView.style.height = size * 31 + "px";// 高度根据产品数量动态设定
-    orderEntityView.style.height = 40 + size * 31 + "px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
-    orderEntityContentView.appendChild(orderEntityProductView);
+    orderEntityContentView.style.height = length * 31 + "px";// 高度根据产品数量动态设定
+    orderEntityView.style.height = 40 + length * 31 + "px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
+    orderEntityContentView.appendChild(orderEntityProductContainer);
 
     let orderEntityReceiverView = document.createElement("div");
-    orderEntityReceiverView.className = "SS_IC";
-    orderEntityReceiverView.style.width = "263px";
-    orderEntityReceiverView.style.height = "100%";
+    orderEntityReceiverView.className = "orderItemMainBlock";
+    orderEntityReceiverView.style.width = receiverViewWidth;
     orderEntityReceiverView.style.textAlign = "center";
     orderEntityReceiverView.innerHTML = "北京 北京市 昌平区 回龙观 新龙城小区二期380号院 36A 8单元 9008";
     orderEntityContentView.appendChild(orderEntityReceiverView);
+
     /**
-     * 添加参数view
+     * 状态区域
      */
-    orderEntityContentView.appendChild(paramView);
+    if (paramView != undefined) {
+        paramView.style.width = statusViewWidth;
+        orderEntityContentView.appendChild(paramView);
+    }
 
     /**
      * 想最外层的容器根对象添加内容容器
@@ -356,4 +320,22 @@ function createOrderCommonView(index,paramView) {
     orderEntityView.appendChild(orderEntityContentView);
 
     return orderEntityView;
+}
+
+
+function requestExpress(orderEntity) {
+    console.log(orderEntity);
+    const url = BASE_PATH + "/order/mUpdateExpress?p=" + JSON.stringify(orderEntity);
+    ;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            if (jsonData.code == RESPONSE_SUCCESS) {
+                showOrderView();
+            } else {
+                new Toast().show("发货失败");
+            }
+        }
+    }, onErrorCallback, onTimeoutCallback);
 }

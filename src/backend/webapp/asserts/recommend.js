@@ -7,7 +7,7 @@
 function recommend() {
     var indexUrl = BASE_PATH + "/format/mWeights";
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -27,7 +27,7 @@ function recommend() {
 function swapRecommend(swapWeightFormatEntity) {
     var indexUrl = BASE_PATH + "/format/mSwapWeight?p="  + JSON.stringify(swapWeightFormatEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -47,7 +47,7 @@ function swapRecommend(swapWeightFormatEntity) {
 function updateRecommend(formatId, weight) {
     var indexUrl = BASE_PATH + "/product/updateWeight?formatId=" + formatId + "&weight=" + weight;
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == 200) {

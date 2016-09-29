@@ -14,7 +14,7 @@ function createPoster(pid, status, clickable, href) {
 }
 
 function onCreateDataCallback(data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
         if (parseData.code == 200) {

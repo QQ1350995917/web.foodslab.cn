@@ -17,7 +17,7 @@ function updatePoster(posterId, status, clickable, href, start, end) {
 }
 
 function onPosterDataCallback(data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
         initPosterView(parseData.data);
@@ -25,7 +25,7 @@ function onPosterDataCallback(data) {
 }
 
 function onUpdateDataCallback(data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
         if (parseData.code == 200) {

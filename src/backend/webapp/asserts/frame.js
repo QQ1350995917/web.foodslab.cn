@@ -82,10 +82,10 @@ function onFrameMenuItemClick(dataId) {
     } else if (dataId == "user") {
         resetView();
         showUsers();
-    } else if (dataId == "order"){
+    } else if (dataId == "order") {
         resetView();
         showOrderView();
-    } else if (dataId == "message"){
+    } else if (dataId == "message") {
         resetView();
         showMessageView();
     } else {
@@ -99,34 +99,25 @@ function onFrameMenuItemClick(dataId) {
  * @param callback
  * @returns {Element}
  */
-function createSearchWidget(callback) {
+function createSearchWidget(width,callback) {
     let searchContainer = document.createElement("div");
-    searchContainer.className = "SS_IC";
-    searchContainer.style.width = "100%";
-    searchContainer.style.height = "30px";
-    searchContainer.style.marginTop = "5px";
-    searchContainer.style.marginBottom = "10px";
-    searchContainer.style.borderWidth = "0px";
+    searchContainer.className = "searchWidgetContainer";
+    searchContainer.style.width = width;
 
     let searchEditor = document.createElement("input");
-    searchEditor.className = "SS_IC_LABEL";
-    searchEditor.style.width = "952px";
-    searchEditor.style.height = "30px";
-    searchEditor.style.lineHeight = "30px";
-    searchEditor.style.borderWidth = "1px";
+    searchEditor.className = "searchInput";
+    searchEditor.style.width = "89%";
     searchContainer.appendChild(searchEditor);
 
     let searchActionView = document.createElement("div");
-    searchActionView.className = "B_B_D";
-    searchActionView.style.width = "100px";
-    searchActionView.style.height = "34px";
-    searchActionView.style.lineHeight = "30px";
+    searchActionView.className = "actionButton";
+    searchActionView.style.width = "10%";
     searchActionView.innerHTML = "搜索";
     searchActionView.onclick = function () {
-      callback(searchEditor.value);
+        callback(searchEditor.value);
     };
     searchContainer.appendChild(searchActionView);
-    
+
     return searchContainer;
 }
 

@@ -52,12 +52,21 @@ function asyncRequestByPost(url,onDataCallback, onErrorCallback, onTimeoutCallba
     xmlHttp.send(encodeURI(params));
 }
 
+function onErrorCallback() {
+
+}
+
+function onTimeoutCallback() {
+
+}
+
+
 /**
  * 通用函数,检测服务器返回的数据格式是否正确
  * @param data 服务器返回的数据
  * @returns {boolean} 检测结果
  */
-function checkResponsDataFormat(data) {
+function checkResponseDataFormat(data) {
     return true;
 }
 
@@ -84,4 +93,5 @@ Date.prototype.format = function (format) {
         }
     }
     return format;
-}      
+}
+

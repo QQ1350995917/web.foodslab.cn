@@ -46,7 +46,7 @@ function updateLink(subLinkItemRootView, deleteView, linkId, pid, label, href, s
  * @param data
  */
 function onLinkDataCallback(data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
         initLinkRootView(parseData.data);
@@ -58,7 +58,7 @@ function onLinkDataCallback(data) {
  * @param data
  */
 function onCreateLinkDataCallback(pid, subLinkItemRootView, data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var parseData = JSON.parse(data);
         if (parseData.code == 200) {

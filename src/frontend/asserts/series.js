@@ -55,7 +55,7 @@ function createProductView(formatEntities) {
     let formatEntitiesView = document.createElement("div")
     let length = formatEntities == null ? 0:formatEntities.length;
     for (let i = 0; i < length; i++) {
-        if (length % 4 == 0) {
+        if (i % 4 == 0) {
             let clearFloat = document.createElement("div")
             clearFloat.className = "clearFloat";
             formatEntitiesView.appendChild(clearFloat);

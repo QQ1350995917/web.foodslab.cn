@@ -188,16 +188,7 @@ div.actionBar {
     font-size: 1rem;
 }
 
-div.actionButton {
-    float: left;
-    width: 23%;
-    height: 30px;
-    line-height: 30px;
-    margin: 0px 1%;
-    color: #000000;
-    background-color: #33aaff;
-    cursor: pointer;
-}
+
 
 div.fillWidthContainer {
     width: 100%;

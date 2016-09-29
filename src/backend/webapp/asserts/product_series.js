@@ -18,7 +18,7 @@ function requestSeriesListData(sessionEntity) {
     tempSessionEntity.sessionId = "admin";
     var indexUrl = BASE_PATH + "/series/mRetrieves?p=" + JSON.stringify(tempSessionEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -210,7 +210,7 @@ function convertSeriesContainerToEditor(seriesContainer, seriesEntity) {
 function requestCreateSeries(seriesEntity) {
     var indexUrl = BASE_PATH + "/series/mCreate?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -226,7 +226,7 @@ function requestCreateSeries(seriesEntity) {
 function requestRenameSeries(seriesEntity) {
     var indexUrl = BASE_PATH + "/series/mUpdate?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -242,7 +242,7 @@ function requestRenameSeries(seriesEntity) {
 function requestMarkSeries(seriesEntity) {
     var indexUrl = BASE_PATH + "/series/mMark?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {

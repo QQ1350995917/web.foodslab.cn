@@ -21,7 +21,7 @@ function initProductFormat(seriesEntity, typeEntity) {
 function requestFormatListData(typeEntity) {
     var indexUrl = BASE_PATH + "/format/mRetrieves?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -439,7 +439,7 @@ function saveFormat(typeEntity, formatEntity) {
 function requestCreateFormat(typeEntity, formatEntity) {
     let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -455,7 +455,7 @@ function requestCreateFormat(typeEntity, formatEntity) {
 function requestUpdateFormat(typeEntity, formatEntity) {
     let indexUrl = BASE_PATH + "/format/mUpdate?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
@@ -471,7 +471,7 @@ function requestUpdateFormat(typeEntity, formatEntity) {
 function requestMarkFormat(typeEntity, formatEntity) {
     let indexUrl = BASE_PATH + "/format/mMark?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponsDataFormat(data);
+        var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {

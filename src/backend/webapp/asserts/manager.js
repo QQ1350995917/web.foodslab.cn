@@ -83,7 +83,7 @@ function managerIndex() {
  * 读取管理员列表
  */
 function onIndexDataCallback(data) {
-    var result = checkResponsDataFormat(data);
+    var result = checkResponseDataFormat(data);
     if (result) {
         var mainTitles = new Array(new TabItem("1", "管理员信息", "", "horizontalNormal", "horizontalSelected", "horizontalSelected"));
         initHorizontalTabHostView(document.getElementById(MAIN_TITLE_ID), mainTitles);

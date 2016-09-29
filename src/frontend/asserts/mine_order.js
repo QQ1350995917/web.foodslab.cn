@@ -1,7 +1,9 @@
 /**
  * Created by dingpengwei on 9/8/16.
  */
+let tempAccountId = undefined;
 function requestOrder(accountId) {
+    tempAccountId = accountId;
     let orderEntity = new Object();
     orderEntity.sessionId = accountId;
     let url = BASE_PATH + "order/retrieve?p=" + JSON.stringify(orderEntity);
@@ -34,7 +36,7 @@ function createOrderItemView(orderEntity) {
     let orderItemTitleView = createOrderItemTitleView(orderEntity)
     itemContainer.appendChild(orderItemTitleView);
     itemContainer.customerHeight = orderItemTitleView.customerHeight;
-    console.log(orderEntity);
+
     let orderProductsContainer = createOrderProductItem(orderEntity.formatEntities);
     itemContainer.customerHeight = itemContainer.customerHeight + orderProductsContainer.customerHeight;
     itemContainer.appendChild(orderProductsContainer);
@@ -47,7 +49,7 @@ function createOrderItemView(orderEntity) {
     orderMoneyView.style.height = itemContainer.customerHeight - 41 + "px";
     itemContainer.appendChild(orderMoneyView);
 
-    let orderStatusView = createOrderStatusView();
+    let orderStatusView = createOrderStatusView(orderEntity);
     orderStatusView.style.height = itemContainer.customerHeight - 41 + "px";
     itemContainer.appendChild(orderStatusView);
 
@@ -60,7 +62,7 @@ function createOrderItemTitleView(orderEntity) {
     let itemTitleContainer = document.createElement("div");
     itemTitleContainer.className = "itemTitleContainer";
     itemTitleContainer.customerHeight = 40;
-    itemTitleContainer.innerHTML = orderEntity.createTime + " 订单号: " + orderEntity.orderId;
+    itemTitleContainer.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId;
     return itemTitleContainer;
 }
 
@@ -123,14 +125,44 @@ function createOrderMoneyView() {
     return orderMoneyContainer;
 }
 
-function createOrderStatusView() {
+function createOrderStatusView(orderEntity) {
     let orderStatusContainer = document.createElement("div");
     orderStatusContainer.className = "orderReceiverView";
     orderStatusContainer.style.width = "227px";
     let statusView = document.createElement("div");
     statusView.style.height = "40px";
     statusView.style.lineHeight = "40px";
-    statusView.innerHTML = "$1000";
+    if (orderEntity.status == 1) {
+        statusView.innerHTML = "已付款,待发货";
+    } else if (orderEntity.status == 2) {
+        let orderExpressing = document.createElement("div");
+        orderExpressing.innerHTML = "已发货,待收货";
+        orderStatusContainer.appendChild(orderExpressing);
+        let orderExpressed = document.createElement("div");
+        orderExpressed.innerHTML = "确认收货";
+        orderExpressed.style.cursor = "pointer";
+        orderExpressed.onclick = function () {
+            let requestOrderEntity = new Object();
+            requestOrderEntity.orderId = orderEntity.orderId;
+            let url = BASE_PATH + "order/expressed?p=" + JSON.stringify(requestOrderEntity);
+            asyncRequestByGet(url, function (data) {
+                var result = checkResponseDataFormat(data);
+                if (result) {
+                    var jsonData = JSON.parse(data);
+                    if (jsonData.code == RESPONSE_SUCCESS) {
+                        requestOrder(tempAccountId);
+                    } else {
+                        new Toast().show("操作失败");
+                    }
+                }
+            }, onErrorCallback, onTimeoutCallback);
+        };
+        orderStatusContainer.appendChild(orderExpressed);
+    } else if (orderEntity.status == 3) {
+        statusView.innerHTML = "已收货,已完成";
+    } else {
+        statusView.innerHTML = "未知状态";
+    }
     orderStatusContainer.appendChild(statusView);
     return orderStatusContainer;
 }

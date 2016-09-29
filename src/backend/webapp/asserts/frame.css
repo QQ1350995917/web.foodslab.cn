@@ -1,11 +1,3 @@
-body, html {
-    padding: 0;
-    margin: 0;
-}
-
-input:focus, textarea:focus,select:focus {
-    outline: none;
-}
 
 div.headerContainer {
     background-color: #333333;
@@ -164,3 +156,6 @@ div.B_B_D{
 div.clearFloat{
     clear: both;
 }
+
+/*************************************************/
+

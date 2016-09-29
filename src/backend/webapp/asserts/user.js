@@ -2,22 +2,18 @@
  * Created by dingpengwei on 8/16/16.
  */
 function showUsers() {
-    var indexUrl = BASE_PATH + "/account/retrieve";
+    var indexUrl = BASE_PATH + "/account/mRetrieve";
     asyncRequestByGet(indexUrl, function (data) {
-        onUsersDataCallback(data);
-    }, onRequestError(), onRequestTimeout());
-}
-
-function onUsersDataCallback(data) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            initUserList(parseData.data);
-        } else {
-            new Toast().show("请求失败");
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                initUserList(parseData.data);
+            } else {
+                new Toast().show("请求失败");
+            }
         }
-    }
+    }, onRequestError(), onRequestTimeout());
 }
 
 function initUserList(userEntities) {
@@ -79,7 +75,7 @@ function createSearchViewWidget() {
 }
 
 function createUserItemViewWidget(userEntity) {
-    let accountEntity = userEntity.children[0];
+    let accountEntities = userEntity.accountEntities;
     let listViewContainer = document.createElement("div")
     listViewContainer.className = "SS_IC";
     listViewContainer.style.width = "100%";
@@ -97,7 +93,7 @@ function createUserItemViewWidget(userEntity) {
     userInfoView.style.borderWidth = "1px";
     userInfoView.style.lineHeight = "30px";
     userInfoView.style.paddingLeft = "10px";
-    userInfoView.innerHTML = accountEntity.name + " - " + accountEntity.telephone + " - " + (accountEntity.gender == 0 ? "女" : "男") + " - " + accountEntity.birthday + " - " + accountEntity.address;
+    // userInfoView.innerHTML = accountEntity.name + " - " + accountEntity.telephone + " - " + (accountEntity.gender == 0 ? "女" : "男") + " - " + accountEntity.birthday + " - " + accountEntity.address;
     listViewContainer.appendChild(userInfoView);
 
     let line_H_level12 = document.createElement("hr");
