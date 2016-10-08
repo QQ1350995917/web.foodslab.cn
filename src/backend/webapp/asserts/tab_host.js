@@ -50,8 +50,8 @@ class Tab {
         this.callback = callback;
     }
 
-    onTabClick(){
-        this.callback();
+    onTabClick(params){
+        this.callback(params);
     }
 }
 

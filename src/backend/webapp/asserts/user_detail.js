@@ -2,24 +2,45 @@
  * Created by dingpengwei on 8/16/16.
  */
 
-function onOrderTabCallback() {
-    console.log("onOrderTabCallback");
+function onCartTabCallback(userEntity) {
+    let url = BASE_PATH + "/cart/mRetrieveByUser?p=" + JSON.stringify(userEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createCartView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
     createOrderView();
-}
-
-function onCartTabCallback() {
-    console.log("onCartTabCallback");
     createCartView();
 }
 
-function onMessageTabCallback() {
-    console.log("onMessageTabCallback");
-    createMessageView();
+function onOrderTabCallback(userEntity) {
+    let url = BASE_PATH + "/order/mRetrieveByUser?p=" + JSON.stringify(userEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createOrderView(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+    createOrderView();
 }
 
-function onAccountTabCallback() {
-    console.log("onAccountTabCallback");
+
+function onAccountTabCallback(userEntity) {
     createAccountView();
+}
+
+function onRequestReceiverCallback(userEntity) {
+    let url = BASE_PATH + "/receiver/mRetrieveByUser?p=" + JSON.stringify(userEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createReceiverContainer(jsonData.data);
+        }
+    }, onErrorCallback, onTimeoutCallback);
 }
 
 function showUserDetail(userEntity) {
@@ -44,18 +65,21 @@ function showUserDetail(userEntity) {
     titleView.style.backgroundColor = "red";
 
     let tabItems = new Array();
-    tabItems.push(new Tab("order", "订单", "horizontalSelected", onOrderTabCallback));
-    tabItems.push(new Tab("cart", "购物车", "horizontalNormal", onCartTabCallback));
-    tabItems.push(new Tab("message", "消息", "horizontalNormal", onMessageTabCallback));
+    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onCartTabCallback));
+    tabItems.push(new Tab("order", "订单", "horizontalNormal", onOrderTabCallback));
     tabItems.push(new Tab("account", "账户", "horizontalNormal", onAccountTabCallback));
-    createUserTitleTab(titleView, tabItems);
+    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onRequestReceiverCallback));
 
     titleViewContainer.appendChild(titleView);
 
-    createOrderView();
+    let requestUserEntity = new Object();
+    requestUserEntity.userId = userEntity.userId;
+    createUserTitleTab(titleView, tabItems, requestUserEntity);
+
+    onCartTabCallback(requestUserEntity);
 }
 
-function createUserTitleTab(container, tabItems) {
+function createUserTitleTab(container, tabItems, userEntity) {
     container.innerHTML = null;
     for (let index = 0; index < tabItems.length; index++) {
         let tabItem = tabItems[index];
@@ -69,21 +93,24 @@ function createUserTitleTab(container, tabItems) {
                 tabItems[i].className = "horizontalNormal";
             }
             tabItem.className = "horizontalSelected";
-            createUserTitleTab(container, tabItems);
-            tabItem.onTabClick();
+            createUserTitleTab(container, tabItems, userEntity);
+            tabItem.onTabClick(userEntity);
         };
         container.appendChild(tabView);
     }
 }
 
-function createOrderView() {
+function createOrderView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
     /**
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
      */
-    for (let index = 0; index < 1; index++) {
+    let length = orderEntities == undefined ? 0 : orderEntities.length;
+    for (let i = 0; i < length; i++) {
+        let orderEntity = orderEntities[i];
+
         /**
          * 最外层的容器根对象
          */
@@ -92,7 +119,7 @@ function createOrderView() {
         orderView.style.width = "1065px";
         orderView.style.height = "150px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
         orderView.style.borderWidth = "1px";
-        if (index > 0) {
+        if (i > 0) {
             orderView.style.borderTopWidth = "0px";
         }
 
@@ -108,7 +135,7 @@ function createOrderView() {
         orderTitleView.style.backgroundColor = "#F2F2F2";
         orderTitleView.style.lineHeight = "40px";
         orderTitleView.style.paddingLeft = "10px";
-        orderTitleView.innerHTML = "2016-06-30 14:22:42  订单号：20103205392";
+        orderTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId;
         orderView.appendChild(orderTitleView);
 
         /**
@@ -129,8 +156,10 @@ function createOrderView() {
         /**
          * 动态添加产品数量
          */
-        let size = 3;
-        for (let i = 0; i < size; i++) {
+        let formatEntities = orderEntity.formatEntities
+        let length = formatEntities == undefined ? 0 : formatEntities.length;
+        for (let i = 0; i < length; i++) {
+            let formatEntity = formatEntities[i];
             /**
              * 左右分为两个部分,做部分显示产品信息,右部分显示数量
              * @type {Element}
@@ -140,7 +169,7 @@ function createOrderView() {
             productView.style.width = "550px";
             productView.style.height = "30px";
             productView.style.borderWidth = "0px";
-            if (i != 0){
+            if (i != 0) {
                 productView.style.borderTopWidth = "1px";
             }
             /**
@@ -153,7 +182,7 @@ function createOrderView() {
             productNameView.style.marginLeft = "10px";
             productNameView.style.borderWidth = "0px";
             productNameView.style.lineHeight = "30px";
-            productNameView.innerHTML = "产品系列 + 产品型号 + 产品规格";
+            productNameView.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
             productView.appendChild(productNameView);
 
             /**
@@ -171,8 +200,8 @@ function createOrderView() {
 
             orderProductView.appendChild(productView);
         }
-        orderContentView.style.height = size * 31 + "px";// 高度根据产品数量动态设定
-        orderView.style.height = 40 + size * 31 + "px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
+        orderContentView.style.height = length * 31 + "px";// 高度根据产品数量动态设定
+        orderView.style.height = 40 + length * 31 + "px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
         orderContentView.appendChild(orderProductView);
 
         let orderReceiverView = document.createElement("div");
@@ -196,7 +225,16 @@ function createOrderView() {
         orderStatusView.style.width = "150px";
         orderStatusView.style.height = "100%";
         orderStatusView.style.textAlign = "center";
-        orderStatusView.innerHTML = "待支付|已支付待发货|已发货|已收货";
+        if (orderEntity.status == 1) {
+            orderStatusView.innerHTML = "已付款,待发货";
+        } else if (orderEntity.status == 2) {
+            orderStatusView.innerHTML = "已发货,待收货";
+        } else if (orderEntity.status == 3) {
+            orderStatusView.innerHTML = "已收货,已完成";
+        } else {
+            orderStatusView.innerHTML = "未知状态";
+        }
+
         orderContentView.appendChild(orderStatusView);
 
         /**
@@ -212,14 +250,16 @@ function createOrderView() {
 
 }
 
-function createCartView() {
+function createCartView(cartEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
     /**
      * 容器左右分为加入购物车的日期|产品名称|产品单价|产品数量|总金额五个区域
      */
-    for (let index = 0; index < 10; index++) {
+    let length = cartEntities == undefined ? 0 : cartEntities.length;
+    for (let i = 0; i < length; i++) {
+        let cartEntity = cartEntities[i];
         /**
          * 最外层的容器根对象
          */
@@ -228,7 +268,7 @@ function createCartView() {
         cartView.style.width = "1065px";
         cartView.style.height = "30px";
         cartView.style.borderWidth = "1px";
-        if (index > 0) {
+        if (i > 0) {
             cartView.style.borderTopWidth = "0px";
         }
 
@@ -246,7 +286,7 @@ function createCartView() {
         productView.style.width = "600px";
         productView.style.height = "100%";
         productView.style.paddingLeft = "10px";
-        productView.innerHTML = "产品系列 + 产品型号 + 产品规格";
+        productView.innerHTML = " " + cartEntity.formatEntity.parent.parent.label + " " + cartEntity.formatEntity.parent.label + " " + cartEntity.formatEntity.label + cartEntity.formatEntity.meta;
         cartView.appendChild(productView);
 
         let priceView = document.createElement("div");
@@ -254,7 +294,7 @@ function createCartView() {
         priceView.style.width = "100px";
         priceView.style.height = "100%";
         priceView.style.textAlign = "center";
-        priceView.innerHTML = "单价:100";
+        priceView.innerHTML = cartEntity.formatEntity.pricing + cartEntity.formatEntity.priceMeta;
         cartView.appendChild(priceView);
 
         let counterView = document.createElement("div");
@@ -262,7 +302,7 @@ function createCartView() {
         counterView.style.width = "100px";
         counterView.style.height = "100%";
         counterView.style.textAlign = "center";
-        counterView.innerHTML = "数量:5";
+        counterView.innerHTML = "数量:" + cartEntity.amount;
         cartView.appendChild(counterView);
 
         let moneyView = document.createElement("div");
@@ -270,22 +310,244 @@ function createCartView() {
         moneyView.style.width = "100px";
         moneyView.style.height = "100%";
         moneyView.style.textAlign = "center";
-        moneyView.innerHTML = "总金额:500";
+        moneyView.innerHTML = (cartEntity.amount * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
         cartView.appendChild(moneyView);
 
         contentViewContainer.appendChild(cartView);
     }
 }
 
-function createMessageView() {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-
-}
-
 function createAccountView() {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
+    contentViewContainer.appendChild(createPhoneAccountContainer());
+    contentViewContainer.appendChild(createAuthAccountContainer(0, "微信账号", "", "http://localhost:8080/foodslab/webapp/asserts/images/login_wx.png"));
+    contentViewContainer.appendChild(createAuthAccountContainer(1, "QQ账号", undefined, "http://localhost:8080/foodslab/webapp/asserts/images/login_qq.png"));
 }
 
+function createPhoneAccountContainer(data) {
+    let phoneAccountContainer = document.createElement("div");
+    phoneAccountContainer.className = "accountItemContainer";
+    let accountTitleView = document.createElement("div");
+    accountTitleView.className = "accountItem";
+    accountTitleView.innerHTML = "电话账号";
+    accountTitleView.style.height = "40px";
+    accountTitleView.style.lineHeight = "40px";
+    accountTitleView.style.textAlign = "center";
+    phoneAccountContainer.appendChild(accountTitleView);
 
+    /**
+     * 显示账号行
+     * @type {Element}
+     */
+    let accountContainer = document.createElement("div");
+    accountContainer.className = "accountItem";
+    let accountLabelLeft = document.createElement("div");
+    accountLabelLeft.className = "labelLeft";
+    accountLabelLeft.innerHTML = "账号:";
+    accountContainer.appendChild(accountLabelLeft);
+    let accountLabelContainer = document.createElement("div");
+    accountLabelContainer.className = "labelRight";
+    accountLabelContainer.style.borderWidth = "0px";
+    accountLabelContainer.innerHTML = "暂无";
+    accountContainer.appendChild(accountLabelContainer);
+    phoneAccountContainer.appendChild(accountContainer);
+
+    /**
+     * 显示昵称行
+     * @type {Element}
+     */
+    let nickNameContainer = document.createElement("div");
+    nickNameContainer.className = "accountItem";
+    let nickNameLabelLeft = document.createElement("div");
+    nickNameLabelLeft.className = "labelLeft";
+    nickNameLabelLeft.innerHTML = "昵称:";
+    nickNameContainer.appendChild(nickNameLabelLeft);
+    let accountNickNameView = document.createElement("div");
+    accountNickNameView.className = "labelRight";
+    accountNickNameView.style.borderWidth = "0px";
+    accountNickNameView.innerHTML = "暂无";
+    nickNameContainer.appendChild(accountNickNameView);
+    phoneAccountContainer.appendChild(nickNameContainer);
+    /**
+     * 显示性别行
+     * @type {Element}
+     */
+    let genderContainer = document.createElement("div");
+    genderContainer.className = "accountItem";
+    let genderLabelLeft = document.createElement("div");
+    genderLabelLeft.className = "labelLeft";
+    genderLabelLeft.innerHTML = "性别:";
+    genderContainer.appendChild(genderLabelLeft);
+
+    let maleLabelInput = document.createElement("div");
+    maleLabelInput.className = "labelRight";
+    maleLabelInput.innerHTML = "暂无";
+    maleLabelInput.style.borderWidth = "0px";
+    genderContainer.appendChild(maleLabelInput);
+
+    phoneAccountContainer.appendChild(genderContainer);
+    /**
+     * 创建头像行
+     * @type {Element}
+     */
+    let imageContainer = document.createElement("div");
+    imageContainer.className = "accountItem";
+    imageContainer.style.height = "120px";
+    let imageLabelLeft = document.createElement("div");
+    imageLabelLeft.className = "labelLeft";
+    imageLabelLeft.innerHTML = "头像:";
+    imageContainer.appendChild(imageLabelLeft);
+    let imageLabelInput = document.createElement("img");
+    imageLabelInput.className = "headerImage";
+    imageContainer.appendChild(imageLabelInput);
+    phoneAccountContainer.appendChild(imageContainer);
+    /**
+     * 创建地址行
+     * @type {Element}
+     */
+    let addressContainer = document.createElement("div");
+    addressContainer.className = "accountItem";
+    let addressLabelLeft = document.createElement("div");
+    addressLabelLeft.className = "labelLeft";
+    addressLabelLeft.innerHTML = "地址:";
+    addressContainer.appendChild(addressLabelLeft);
+    let addressLabelView = document.createElement("div");
+    addressLabelView.className = "labelRight";
+    addressLabelView.innerHTML = "暂无";
+    addressLabelView.style.borderWidth = "0px";
+    addressContainer.appendChild(addressLabelView);
+    phoneAccountContainer.appendChild(addressContainer);
+
+    return phoneAccountContainer;
+}
+
+function createAuthAccountContainer(index, title, data, link) {
+    let authAccountContainer = document.createElement("div");
+    authAccountContainer.className = "accountItemContainer";
+    if (index == 0) {
+        authAccountContainer.style.marginLeft = "5px";
+        authAccountContainer.style.marginRight = "5px";
+    }
+    let accountTitleView = document.createElement("div");
+    accountTitleView.className = "accountItem";
+    accountTitleView.style.height = "40px";
+    accountTitleView.style.lineHeight = "40px";
+    accountTitleView.style.textAlign = "center";
+    authAccountContainer.appendChild(accountTitleView);
+    if (data == undefined) {
+        accountTitleView.innerHTML = "扫码绑定" + title;
+        let scanner = document.createElement("img");
+        scanner.className = "scanner";
+        scanner.src = link;
+        authAccountContainer.appendChild(scanner);
+    } else {
+        accountTitleView.innerHTML = title;
+        /**
+         * 创建昵称行
+         * @type {Element}
+         */
+        let nickNameContainer = document.createElement("div");
+        nickNameContainer.className = "accountItem";
+        let nickNameLabelLeft = document.createElement("div");
+        nickNameLabelLeft.className = "labelLeft";
+        nickNameLabelLeft.innerHTML = "昵称:";
+        nickNameContainer.appendChild(nickNameLabelLeft);
+        let nickNameLabelInput = document.createElement("div");
+        nickNameLabelInput.className = "labelRight";
+        nickNameLabelInput.innerHTML = "微信绑定账号";
+        nickNameLabelInput.style.borderWidth = "0px";
+        nickNameContainer.appendChild(nickNameLabelInput);
+        authAccountContainer.appendChild(nickNameContainer);
+        /**
+         * 创建性别行
+         * @type {Element}
+         */
+        let genderContainer = document.createElement("div");
+        genderContainer.className = "accountItem";
+        let genderLabelLeft = document.createElement("div");
+        genderLabelLeft.className = "labelLeft";
+        genderLabelLeft.innerHTML = "性别:";
+        genderContainer.appendChild(genderLabelLeft);
+        let genderLabelInput = document.createElement("div");
+        genderLabelInput.className = "labelRight";
+        genderLabelInput.innerHTML = "男";
+        genderLabelInput.style.borderWidth = "0px";
+        genderContainer.appendChild(genderLabelInput);
+        authAccountContainer.appendChild(genderContainer);
+        /**
+         * 创建头像行
+         * @type {Element}
+         */
+        let imageContainer = document.createElement("div");
+        imageContainer.className = "accountItem";
+        imageContainer.style.height = "120px";
+        let imageLabelLeft = document.createElement("div");
+        imageLabelLeft.className = "labelLeft";
+        imageLabelLeft.innerHTML = "头像:";
+        imageContainer.appendChild(imageLabelLeft);
+        let imageLabelInput = document.createElement("img");
+        imageLabelInput.className = "headerImage";
+        imageLabelInput.src = "http://localhost:8080/foodslab/webapp/asserts/images/paywei.png";
+        imageContainer.appendChild(imageLabelInput);
+        authAccountContainer.appendChild(imageContainer);
+        /**
+         * 创建地址行
+         * @type {Element}
+         */
+        let addressContainer = document.createElement("div");
+        addressContainer.className = "accountItem";
+        let addressLabelLeft = document.createElement("div");
+        addressLabelLeft.className = "labelLeft";
+        addressLabelLeft.innerHTML = "地址:";
+        addressContainer.appendChild(addressLabelLeft);
+        let addressLabelInput = document.createElement("div");
+        addressLabelInput.className = "labelRight";
+        addressLabelInput.style.borderWidth = "0px";
+        addressLabelInput.innerHTML = "北京市 昌平区";
+        addressContainer.appendChild(addressLabelInput);
+        authAccountContainer.appendChild(addressContainer);
+    }
+    return authAccountContainer;
+}
+
+function createReceiverContainer(receiverEntities) {
+    console.log(receiverEntities);
+    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    mainView.innerHTML = null;
+
+    let length = receiverEntities == undefined ? 0:receiverEntities.length;
+    for (let i=0;i<length;i++){
+        let receiverEntity = receiverEntities[i];
+        let receiverItemContainer = document.createElement("div");
+        receiverItemContainer.className = "receiverItemContainer";
+        let connectLine1 = document.createElement("hr");
+        connectLine1.className = "connectLineH";
+        receiverItemContainer.appendChild(connectLine1);
+        let nameView = document.createElement("div");
+        nameView.className = "receiverLabel";
+        nameView.style.width = "151px";
+        nameView.innerHTML = receiverEntity.name;
+        receiverItemContainer.appendChild(nameView);
+        let connectLine2 = document.createElement("hr");
+        connectLine2.className = "connectLineH";
+        receiverItemContainer.appendChild(connectLine2);
+
+        let addressView = document.createElement("div");
+        addressView.className = "receiverLabel";
+        addressView.style.width = "780px";
+        addressView.style.textAlign = "left";
+        addressView.style.paddingLeft = "10px";
+        addressView.style.paddingRight = "10px";
+        addressView.innerHTML = receiverEntity.province + " " + receiverEntity.city + " " + receiverEntity.county + " " + receiverEntity.town + " " + receiverEntity.village
+            + " " + (receiverEntity.append == undefined ? "" : receiverEntity.append ) + " " + receiverEntity.phone0;
+        if (receiverEntity.status == 2) {
+            nameView.style.borderColor = "red";
+            addressView.style.borderColor = "red";
+            addressView.style.width = "784px";
+        }
+        receiverItemContainer.appendChild(addressView);
+        mainView.appendChild(receiverItemContainer);
+    }
+
+}

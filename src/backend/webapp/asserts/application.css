@@ -6,6 +6,12 @@ body, html {
 input:focus, textarea:focus,select:focus {
     outline: none;
 }
+
+div.clearFloat{
+    clear: both;
+}
+
+
 /*
 高度为31,是为了和按钮的35保持一致性
 同样高度的input要比div高出4px?

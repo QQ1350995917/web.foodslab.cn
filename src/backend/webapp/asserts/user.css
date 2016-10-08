@@ -1,0 +1,36 @@
+div.gridItemContainer {
+    float: left;
+    width: 25%;
+    height: 180px;
+}
+
+div.gridItemSubContainer {
+    width: 98%;
+    height: 98%;
+    text-align: center;
+    margin: 0px auto;
+    border: 1px solid #CCCCCC;
+}
+
+div.gridItemActionButton{
+    width: 48%;
+    margin: 2px 1%;
+}
+
+div.accountStatusActive{
+    width: 97%;
+    margin: 4px 1%;
+    background-color: transparent;
+    border: 0px solid #CCCCCC;
+    border-radius: 5px;
+    color: #000000;
+    cursor: default;
+}
+
+div.accountStatusNormal{
+    width: 98%;
+    margin: 4px 1%;
+    cursor: default;
+    background-color: transparent;
+    color: #CCCCCC;
+}
