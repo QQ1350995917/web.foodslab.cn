@@ -1,5 +1,17 @@
 # api of foodslab.cn
-# 后端接口
+
+
+## [收货人接口](domain/receiver.md)
+### [新建收货人](domain/receiver.md)
+### [修改收货人](domain/receiver.md)
+### [删除收货人](domain/receiver.md)
+### [设置默认收货人](domain/receiver.md)
+### [读取收货人](domain/receiver.md)
+### [管理员读取收货人](domain/receiver.md)
+
+# [用户接口](domain/user.md)
+##
+
 ## 登录接口
 - [管理员登录](backend/login.md)
 ## frame接口
