@@ -1,30 +1,48 @@
 # api of foodslab.cn
 
+## [产品接口](domain/product.md)
+- [系列接口](domain/product.md)
+- [类型接口](domain/product.md)
+- [规格接口](domain/product.md)
 
 ## [收货人接口](domain/receiver.md)
-### [新建收货人](domain/receiver.md)
-### [修改收货人](domain/receiver.md)
-### [删除收货人](domain/receiver.md)
-### [设置默认收货人](domain/receiver.md)
-### [读取收货人](domain/receiver.md)
-### [管理员读取收货人](domain/receiver.md)
+- [新建收货人](domain/receiver.md)
+- [修改收货人](domain/receiver.md)
+- [删除收货人](domain/receiver.md)
+- [设置默认收货人](domain/receiver.md)
+- [读取收货人](domain/receiver.md)
+- [管理员读取收货人](domain/receiver.md)
 
-# [用户接口](domain/user.md)
-##
+## [用户接口](domain/user.md)
+- [账户身份重复检测](domain/user.md)
+- [获取手机验证码](domain/user.md)
+- [创建账户](domain/user.md)
+- [账户登录](domain/user.md)
+- [读取用户下的账户](domain/user.md)
+- [忘记密码](domain/user.md)
+- [账户一般信息变更](domain/user.md)
+- [账户身份变更](domain/user.md)
+- [账户头像变更](domain/user.md)
+- [账户绑定](domain/user.md)
+- [账户解绑](domain/user.md)
+- [管理员读取用户](domain/user.md)
+- [管理员搜索用户](domain/user.md)
+- [管理员禁/启用用户](domain/user.md)
+- [管理员根据用户读取账户](domain/user.md)
 
 ## 登录接口
 - [管理员登录](backend/login.md)
 ## frame接口
-### [菜单接口](backend/frame.md)
+- [菜单接口](backend/frame.md)
 - 菜单列表
-### [退出接口](backend/frame.md)
+- [退出接口](backend/frame.md)
 - 管理员退出
-### [管理员接口](backend/frame_manager.md)
+- [管理员接口](backend/frame_manager.md)
 - 管理员列表
 - 重名检测
 - 新建管理员
 - 更新管理员
-### [产品接口](backend/frame_product.md)
+
 - 新建系列
 - 新建型号
 - 新建规格
@@ -35,39 +53,39 @@
 - 获取反转树
 - 交换权重
 - 更新权重
-### [链接接口](backend/frame_link.md)
+- [链接接口](backend/frame_link.md)
 - 新建链接
 - 读取链接
 - 更新链接
-### [海报接口](backend/frame_poster.md)
+- [海报接口](backend/frame_poster.md)
 - 创建海报
 - 读取海报
 - 更新海报
-### [用户接口](backend/frame_user.md)
+- [用户接口](backend/frame_user.md)
 - 读取用户
 
 
 # **前端接口**
 ## 页面接口
-### [显示页面](frontend/page.md)
+- [显示页面](frontend/page.md)
 
 ## 数据接口
-### [产品数据接口](frontend/product.md)
+- [产品数据接口](frontend/product.md)
 - 用户登录接口
 - 获取系列数据
 - 获取推荐数据
 - 获取类型数据
 - 获取搜索数据
-### [购物车数据接口](frontend/cart.md)
+- [购物车数据接口](frontend/cart.md)
 - 读取购物车
 - 添加新商品
 - 修改商品数量
 - 删除商品
-### [订单数据接口](frontend/order.md)
+- [订单数据接口](frontend/order.md)
 - 创建新订单
-### [收货人数据接口](frontend/receiver.md)
+- [收货人数据接口](frontend/receiver.md)
 - 新建收货人
-### [元数据接口](frontend/meta.md)
+- [元数据接口](frontend/meta.md)
 - 获取海报数据
 - 获取链接数据
 - 获取地址数据
