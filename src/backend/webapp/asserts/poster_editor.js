@@ -2,8 +2,8 @@
  * Created by dingpengwei on 8/15/16.
  */
 
-function posterEditor(poster,isCreate) {
-    initPosterEditorView(poster,isCreate);
+function posterEditor(posterEntity, isCreate) {
+    initPosterEditorView(posterEntity, isCreate);
 }
 
 function createPoster(pid, status, clickable, href) {
@@ -27,12 +27,11 @@ function onCreateDataCallback(data) {
 }
 
 
-function initPosterEditorView(poster, isCreate) {
+function initPosterEditorView(posterEntity, isCreate) {
     // 重置界面
     resetView();
     // 获取根元素对象
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     // 添加标题
     let titleView = document.createElement("div");
     titleView.innerHTML = "海报编辑";
@@ -40,13 +39,8 @@ function initPosterEditorView(poster, isCreate) {
     titleView.style.width = "100%";
     titleView.style.cursor = "pointer";
     titleViewContainer.appendChild(titleView);
-    titleViewContainer.style.cursor = "pointer";
-    titleViewContainer.onclick = function () {
-        poster();
-        titleViewContainer.onclick = null;
-        titleViewContainer.style.cursor = "default";
-    };
 
+    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     let imgViewContainer = document.createElement("div");
     imgViewContainer.className = "editorBlockView";
     imgViewContainer.style.height = "440px";
@@ -58,10 +52,10 @@ function initPosterEditorView(poster, isCreate) {
     let displayView = document.createElement("input");
     displayView.setAttribute("type", "checkbox");
     displayView.className = "formatDisplayCheckBox";
-    if (!isCreate){
-        if (poster.status == 0) {
+    if (!isCreate) {
+        if (posterEntity.status == 1) {
             displayView.checked = false;
-        } else if (poster.status == 1) {
+        } else if (posterEntity.status == 2) {
             displayView.checked = true;
         }
     }
@@ -79,10 +73,10 @@ function initPosterEditorView(poster, isCreate) {
     let linkedView = document.createElement("input");
     linkedView.setAttribute("type", "checkbox");
     linkedView.className = "formatDisplayCheckBox";
-    if (!isCreate){
-        if (poster.status == 0) {
+    if (!isCreate) {
+        if (posterEntity.clickable == 1) {
             linkedView.checked = false;
-        } else if (poster.status == 1) {
+        } else if (posterEntity.clickable == 2) {
             linkedView.checked = true;
         }
     }
@@ -110,8 +104,8 @@ function initPosterEditorView(poster, isCreate) {
     linkedEditor.style.height = "28px";
     linkedEditor.style.borderLeftWidth = "1px";
     linkedEditor.style.marginLeft = "10px";
-    if (!isCreate){
-        linkedEditor.value = poster.href;
+    if (!isCreate) {
+        linkedEditor.value = posterEntity.href;
     }
     linkedViewContainer.appendChild(linkedEditor);
     contentViewContainer.appendChild(linkedViewContainer);
@@ -140,12 +134,26 @@ function initPosterEditorView(poster, isCreate) {
     if (isCreate) {
         commitView.innerHTML = "提交";
         commitView.onclick = function () {
-            createPoster(poster.posterId, displayView.checked ? 1:0,linkedView.checked ? 1:0,linkedEditor.value)
+            let requestPosterEntity = new Object();
+            requestPosterEntity.href = linkedEditor.value;
+            // requestPosterEntity.start = posterEntity.start;
+            // requestPosterEntity.end = posterEntity.end;
+            requestPosterEntity.status = displayView.checked ? 2 : 1;
+            requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
+            requestCreatePoster(requestPosterEntity);
         };
     } else {
         commitView.innerHTML = "保存";
         commitView.onclick = function () {
-            updatePoster(poster.posterId, displayView.checked ? 1 : 0, linkedView.checked ? 1:0, linkedEditor.value);
+            let requestPosterEntity = new Object();
+            requestPosterEntity.posterId = posterEntity.posterId;
+            requestPosterEntity.href = posterEntity.href;
+            requestPosterEntity.fileId = posterEntity.fileId;
+            requestPosterEntity.start = posterEntity.start;
+            requestPosterEntity.end = posterEntity.end;
+            requestPosterEntity.status = displayView.checked ? 2 : 1;
+            requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
+            requestUpdatePoster(requestPosterEntity);
         };
     }
     buttonViewContainer.appendChild(commitView);

@@ -3,45 +3,69 @@
  */
 
 function posterInit() {
-    var indexUrl = BASE_PATH + "/poster/";
+    var indexUrl = BASE_PATH + "/poster/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
-        onPosterDataCallback(data);
-    }, onRequestError(), onRequestTimeout());
-}
-
-function updatePoster(posterId, status, clickable, href, start, end) {
-    var indexUrl = BASE_PATH + "/poster/update?posterId=" + posterId + "&status=" + status + "&clickable=" + clickable + "&href=" + href + "&start=" + start + "&end=" + end;
-    asyncRequestByGet(indexUrl, function (data) {
-        onUpdateDataCallback(data);
-    }, onRequestError(), onRequestTimeout());
-}
-
-function onPosterDataCallback(data) {
-    var result = checkResponseDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        initPosterView(parseData.data);
-    }
-}
-
-function onUpdateDataCallback(data) {
-    var result = checkResponseDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("保存成功");
-        } else {
-            new Toast().show("保存失败");
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            initPosterView(parseData.data);
         }
-    }
+    }, onRequestError(), onRequestTimeout());
 }
 
-function initPosterView(poster) {
+function requestCreatePoster(posterEntity) {
+    var indexUrl = BASE_PATH + "/poster/mCreate?p="  + JSON.stringify(posterEntity);;
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+                posterInit();
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function requestUpdatePoster(posterEntity) {
+    var indexUrl = BASE_PATH + "/poster/mUpdate?p="  + JSON.stringify(posterEntity);;
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+                posterInit();
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function requestUpdatePosterStatus(posterEntity) {
+    var indexUrl = BASE_PATH + "/poster/mMark?p="  + JSON.stringify(posterEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("保存成功");
+                posterInit();
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function initPosterView(posterEntities) {
     // 重置界面
     resetView();
     // 获取根元素对象
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     // 添加标题
     let titleView = document.createElement("div");
     titleView.innerHTML = "海报管理";
@@ -49,159 +73,98 @@ function initPosterView(poster) {
     titleView.style.width = "100%";
     titleViewContainer.appendChild(titleView);
 
-    let posterTitleContainer = document.createElement("div");
-    posterTitleContainer.style.width = "100%";
-    posterTitleContainer.style.height = "30px";
-    let displayView = document.createElement("input");
-    displayView.setAttribute("type", "checkbox");
-    displayView.className = "formatDisplayCheckBox";
-    displayView.style.marginLeft = "10px";
-    displayView.style.cursor = "pointer";
-    if (poster.status == 0) {
-        displayView.checked = false;
-    } else if (poster.status == 1) {
-        displayView.checked = true;
-    }
-    posterTitleContainer.appendChild(displayView);
-
-    let displayViewText1 = document.createElement("div");
-    displayViewText1.style.float = "left";
-    displayViewText1.style.height = "28px";
-    displayViewText1.style.lineHeight = "30px";
-    displayViewText1.style.fontSize = "14px";
-    displayViewText1.innerHTML = "是否显示&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;从";
-    posterTitleContainer.appendChild(displayViewText1);
-
-    let startTimeView = document.createElement("input");
-    startTimeView.className = "posterItemContainer";
-    startTimeView.readOnly = true;
-    startTimeView.style.paddingLeft = "10px";
-    startTimeView.style.margin = "0px";
-    startTimeView.style.width = "245px";
-    startTimeView.style.height = "28px";
-    startTimeView.style.lineHeight = "30px";
-    startTimeView.style.fontSize = "14px";
-    startTimeView.style.borderWidth = "1px";
-    new Pikaday({
-        field: startTimeView,
-        firstDay: 1,
-        minDate: new Date('2015-01-01'),
-        maxDate: new Date('2020-12-31'),
-        yearRange: [2015, 2020]
-    });
-    if (poster.start != undefined) {
-        startTimeView.value = poster.start;
-    }
-    posterTitleContainer.appendChild(startTimeView);
-
-    let displayViewText2 = document.createElement("div");
-    displayViewText2.style.float = "left";
-    displayViewText2.style.width = "15px";
-    displayViewText2.style.height = "28px";
-    displayViewText2.style.lineHeight = "30px";
-    displayViewText2.style.fontSize = "14px";
-    displayViewText2.innerHTML = "到";
-    posterTitleContainer.appendChild(displayViewText2);
-
-    let endTimeView = document.createElement("input");
-    endTimeView.className = "posterItemContainer";
-    endTimeView.readOnly = true;
-    endTimeView.style.paddingLeft = "10px";
-    endTimeView.style.margin = "0px";
-    endTimeView.style.width = "245px";
-    endTimeView.style.height = "28px";
-    endTimeView.style.lineHeight = "30px";
-    endTimeView.style.fontSize = "14px";
-    endTimeView.style.borderWidth = "1px";
-    new Pikaday({
-        field: endTimeView,
-        firstDay: 1,
-        minDate: new Date('2015-01-01'),
-        maxDate: new Date('2020-12-31'),
-        yearRange: [2015, 2020]
-    });
-    if (poster.end != undefined) {
-        endTimeView.value = poster.end;
-    }
-    posterTitleContainer.appendChild(endTimeView);
-
-    let displayViewText3 = document.createElement("div");
-    displayViewText3.style.float = "left";
-    displayViewText3.style.width = "60px";
-    displayViewText3.style.height = "28px";
-    displayViewText3.style.lineHeight = "30px";
-    displayViewText3.style.fontSize = "14px";
-    displayViewText3.innerHTML = "显示海报";
-    posterTitleContainer.appendChild(displayViewText3);
-
-    let save = document.createElement("div");
-    save.className = "B_B_D";
-    save.style.float = "right";
-    save.style.marginRight = "15px";
-    save.innerHTML = "保存";
-    save.onclick = function () {
-        if (displayView.checked ? 1 : 0  == poster.status && poster.start == startTimeView.value && poster.end == endTimeView.value) {
-            new Toast().show("无需保存");
-        } else {
-            updatePoster(poster.posterId, displayView.checked ? 1 : 0, 0, "", startTimeView.value, endTimeView.value);
-        }
-    };
-    posterTitleContainer.appendChild(save);
-
-    contentViewContainer.appendChild(posterTitleContainer);
-    let postersViewContainer = document.createElement("div");
-    postersViewContainer.style.width = "100%";
-
-    let posterSize = poster.children == undefined ? 0 :poster.children.length;
-    for (let index = 0; index < posterSize; index++) {
+    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    let length = posterEntities == undefined ? 0 :posterEntities.length;
+    for (let index = 0; index < length; index++) {
         if (index % 2 == 0) {
             let clear = document.createElement("div");
             clear.className = "clearFloat";
-            postersViewContainer.appendChild(clear);
+            mainView.appendChild(clear);
         }
-        createPosterItemWidget(postersViewContainer,poster.children[index]);
+        createPosterItemWidget(mainView,posterEntities[index]);
     }
-    createAddNewPosterWidget(postersViewContainer,poster);
-    contentViewContainer.appendChild(postersViewContainer);
+    createAddNewPosterWidget(mainView,posterEntities);
 }
 
-function createPosterItemWidget(container, poster) {
+function createPosterItemWidget(container, posterEntity) {
     let posterItemContainer = document.createElement("div");
     posterItemContainer.className = "posterItemContainer";
     let posterItemImg = document.createElement("img");
     posterItemImg.className = "posterSnap";
     posterItemContainer.appendChild(posterItemImg);
-    let posterButtonContainer = document.createElement("div");
-    posterButtonContainer.className = "posterButtonContainer";
+    let posterActionBar = document.createElement("div");
+    posterActionBar.className = "posterButtonContainer";
     let display = document.createElement("div");
     display.className = "posterButton";
-    display.innerHTML = "显示";
-    posterButtonContainer.appendChild(display);
+    if (posterEntity.status == 2){
+        display.innerHTML = "禁止显示";
+    } else if (posterEntity.status == 1){
+        display.innerHTML = "启用显示";
+    }
+    display.onclick = function () {
+        if (posterEntity.status == 2){
+            let requestPosterEntity = new Object();
+            requestPosterEntity.posterId = posterEntity.posterId;
+            requestPosterEntity.status = 1;
+            requestUpdatePosterStatus(requestPosterEntity);
+        } else if (posterEntity.status == 1){
+            let requestPosterEntity = new Object();
+            requestPosterEntity.posterId = posterEntity.posterId;
+            requestPosterEntity.status = 2;
+            requestUpdatePosterStatus(requestPosterEntity);
+        }
+    }
+    posterActionBar.appendChild(display);
     let displayHL = document.createElement("hr");
     displayHL.className = "posterButtonHL";
-    posterButtonContainer.appendChild(displayHL);
+    posterActionBar.appendChild(displayHL);
     let clickAble = document.createElement("div");
     clickAble.className = "posterButton";
-    clickAble.innerHTML = "可点击";
-    posterButtonContainer.appendChild(clickAble);
+    if (posterEntity.clickable == 2){
+        clickAble.innerHTML = "禁用点击";
+    } else if (posterEntity.clickable == 1){
+        clickAble.innerHTML = "启用点击";
+    }
+    clickAble.onclick = function () {
+        let requestPosterEntity = new Object();
+        requestPosterEntity.posterId = posterEntity.posterId;
+        requestPosterEntity.href = posterEntity.href;
+        requestPosterEntity.fileId = posterEntity.fileId;
+        requestPosterEntity.start = posterEntity.start;
+        requestPosterEntity.end = posterEntity.end;
+        requestPosterEntity.status = posterEntity.status;
+        if (posterEntity.clickable == 2){
+            requestPosterEntity.clickable = 1;
+        } else if (posterEntity.clickable == 1){
+            requestPosterEntity.clickable = 2;
+        }
+        requestUpdatePoster(requestPosterEntity);
+    }
+    posterActionBar.appendChild(clickAble);
     let clickAbleHL = document.createElement("hr");
     clickAbleHL.className = "posterButtonHL";
-    posterButtonContainer.appendChild(clickAbleHL);
+    posterActionBar.appendChild(clickAbleHL);
     let deletePoster = document.createElement("div");
     deletePoster.className = "posterButton";
     deletePoster.innerHTML = "删除";
-    posterButtonContainer.appendChild(deletePoster);
+    deletePoster.onclick = function () {
+        let requestPosterEntity = new Object();
+        requestPosterEntity.posterId = posterEntity.posterId;
+        requestPosterEntity.status = -1;
+        requestUpdatePosterStatus(requestPosterEntity);
+    }
+    posterActionBar.appendChild(deletePoster);
     let deletePosterHL = document.createElement("hr");
     deletePosterHL.className = "posterButtonHL";
-    posterButtonContainer.appendChild(deletePosterHL);
+    posterActionBar.appendChild(deletePosterHL);
     let editor = document.createElement("div");
     editor.className = "posterButton";
     editor.innerHTML = "编辑";
     editor.onclick = function () {
-        posterEditor(poster,false);
+        posterEditor(posterEntity,false);
     };
-    posterButtonContainer.appendChild(editor);
-    posterItemContainer.appendChild(posterButtonContainer);
+    posterActionBar.appendChild(editor);
+    posterItemContainer.appendChild(posterActionBar);
     container.appendChild(posterItemContainer);
 }
 

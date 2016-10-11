@@ -5,11 +5,195 @@
  * 请求link数据
  */
 function link() {
-    let indexUrl = BASE_PATH + "/link";
+    let indexUrl = BASE_PATH + "/link/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
-        onLinkDataCallback(data);
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            // initLinkRootView(parseData.data);
+            createGridContainer(parseData.data);
+        }
     }, onRequestError(), onRequestTimeout());
 }
+
+function requestSubLink(lineEntity) {
+
+}
+
+function requestLinkUpdate(linkEntity) {
+    let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.data.linkId == parseData.data.pid){
+                
+            }
+            createGridContainer(parseData.data);
+        }
+    }, onRequestError(), onRequestTimeout());
+}
+
+function createGridContainer(linkEntities) {
+    console.log(linkEntities);
+    // 重置界面
+    resetView();
+    // 获取根元素对象
+    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
+    // 添加标题
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "链接管理";
+    titleView.className = "horizontalSelected";
+    titleView.style.width = "100%";
+    titleViewContainer.appendChild(titleView);
+
+    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    let length = linkEntities == undefined ? 0 : linkEntities.length;
+    for (let index = 0; index < length; index++) {
+        let linkEntity = linkEntities[index];
+        let linkEntityContainer = document.createElement("div");
+        linkEntityContainer.className = "productItemContainer";
+        let linkEntitySubContainer = document.createElement("div");
+        linkEntitySubContainer.className = "productItemSubContainer";
+        if (linkEntity.status == 1) {
+            linkEntitySubContainer.style.borderColor = "#FF0000";
+        }
+        attachLinkGridViewToContainer(linkEntitySubContainer,linkEntity);
+        linkEntityContainer.appendChild(linkEntitySubContainer);
+        mainView.appendChild(linkEntityContainer);
+    }
+
+}
+
+function attachLinkGridViewToContainer(container, linkEntity) {
+    container.innerHTML = null;
+    container.style.cursor = "pointer";
+    let seriesLabelInput = document.createElement("input");
+    seriesLabelInput.className = "labelNameEditor";
+    seriesLabelInput.readOnly = true;
+    seriesLabelInput.value = linkEntity.label;
+    container.appendChild(seriesLabelInput);
+    seriesLabelInput.onclick = function () {
+        convertLinkContainerToEditor(container, linkEntity);
+    }
+    container.onclick = function () {
+        requestSubLink(linkEntity);
+    }
+}
+
+function convertLinkContainerToEditor(linkContainer, linkEntity) {
+    linkContainer.innerHTML = null;
+    linkContainer.onclick = null;
+    linkContainer.ondblclick = null;
+    linkContainer.style.cursor = "default";
+    let linkLabelInput = document.createElement("input");
+    linkLabelInput.className = "labelNameEditor";
+    linkLabelInput.style.cursor = "text";
+    linkContainer.appendChild(linkLabelInput);
+    let linkEditorActionBar = document.createElement("div");
+    linkEditorActionBar.className = "actionBar";
+    linkContainer.appendChild(linkEditorActionBar);
+    if (linkEntity == undefined) {
+        //添加新系列
+        linkLabelInput.placeholder = "请输入产品系列名称";
+        linkLabelInput.focus();
+
+        let cancelAction = document.createElement("div");
+        cancelAction.className = "actionButton";
+        cancelAction.style.width = "48%";
+        cancelAction.innerHTML = "取消";
+        linkEditorActionBar.appendChild(cancelAction);
+
+        let saveAction = document.createElement("div");
+        saveAction.className = "actionButton";
+        saveAction.style.width = "48%";
+        saveAction.innerHTML = "保存";
+        linkEditorActionBar.appendChild(saveAction);
+
+        cancelAction.onclick = function () {
+            // addNewSeriesToContainer(linkContainer);
+        }
+
+        saveAction.onclick = function () {
+            let label = linkLabelInput.value;
+            if (label == undefined || label == null || label == "") {
+                new Toast().show("名称不能为空");
+            } else {
+                let requestLinkEntity = new Object();
+                requestLinkEntity.sessionId = "admin";
+                requestLinkEntity.label = label;
+                // requestCreateSeries(requestSeriesEntity);
+            }
+        }
+
+    } else {
+        //编辑旧系列
+        linkLabelInput.value = linkEntity.label;
+        linkLabelInput.focus();
+        let backAction = document.createElement("div");
+        backAction.className = "actionButton";
+        backAction.innerHTML = "返回";
+        linkEditorActionBar.appendChild(backAction);
+
+        let saveAction = document.createElement("div");
+        saveAction.className = "actionButton";
+        saveAction.innerHTML = "保存";
+        linkEditorActionBar.appendChild(saveAction);
+
+        let blockAction = document.createElement("div");
+        blockAction.className = "actionButton";
+        if (linkEntity.status == 1) {
+            blockAction.innerHTML = "启用";
+        } else if (linkEntity.status == 2){
+            blockAction.innerHTML = "禁用";
+        }
+        linkEditorActionBar.appendChild(blockAction);
+        let deleteAction = document.createElement("div");
+        deleteAction.className = "actionButton";
+        deleteAction.innerHTML = "删除";
+        linkEditorActionBar.appendChild(deleteAction);
+
+        backAction.onclick = function () {
+            attachLinkGridViewToContainer(linkContainer, linkEntity);
+        }
+
+        saveAction.onclick = function () {
+            let label = linkLabelInput.value;
+            if (label == undefined || label == null || label == "") {
+                new Toast().show("名称不能为空");
+            } else if (label == linkEntity.label) {
+                new Toast().show("名称没有变化,无需更改");
+            } else {
+                let requestLinkEntity = new Object();
+                requestLinkEntity.sessionId = "admin";
+                requestLinkEntity.seriesId = linkEntity.seriesId;
+                requestLinkEntity.label = label;
+                requestRenameSeries(requestLinkEntity);
+            }
+        }
+
+        blockAction.onclick = function () {
+            let requestLinkEntity = new Object();
+            requestLinkEntity.sessionId = "admin";
+            requestLinkEntity.seriesId = linkEntity.seriesId;
+            if (linkEntity.status == 0) {
+                requestLinkEntity.status = 1;
+            } else if (linkEntity.status == 1) {
+                requestLinkEntity.status = 0;
+            }
+            //requestMarkSeries(requestLinkEntity);
+        }
+
+        deleteAction.onclick = function () {
+            let requestLinkEntity = new Object();
+            requestLinkEntity.sessionId = "admin";
+            requestLinkEntity.seriesId = linkEntity.seriesId;
+            requestLinkEntity.status = -1;
+            //requestMarkSeries(requestLinkEntity);
+        }
+    }
+}
+
 
 /**
  * 请求创建link数据
@@ -38,18 +222,6 @@ function updateLink(subLinkItemRootView, deleteView, linkId, pid, label, href, s
         asyncRequestByGet(indexUrl, function (data) {
             onUpdateLinkDataCallback(subLinkItemRootView, deleteView, data, status);
         }, onRequestError(), onRequestTimeout());
-    }
-}
-
-/**
- * 处理请求link后,服务器返回的数据
- * @param data
- */
-function onLinkDataCallback(data) {
-    var result = checkResponseDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        initLinkRootView(parseData.data);
     }
 }
 
@@ -98,6 +270,7 @@ function onUpdateLinkDataCallback(subLinkItemRootView, deleteView, data, status)
         }
     }
 }
+
 
 function initLinkRootView(linkEntities) {
     // 重置界面
@@ -163,6 +336,7 @@ function initLinkRootView(linkEntities) {
         contentViewContainer.appendChild(linkItemRootView);
     }
 }
+
 
 function createLinkItemView(pid, subLinkItemRootView, linkEntity) {
     let linkItemRootView = document.createElement("div");
