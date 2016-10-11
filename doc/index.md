@@ -5,14 +5,6 @@
 - [类型接口](domain/product.md)
 - [规格接口](domain/product.md)
 
-## [收货人接口](domain/receiver.md)
-- [新建收货人](domain/receiver.md)
-- [修改收货人](domain/receiver.md)
-- [删除收货人](domain/receiver.md)
-- [设置默认收货人](domain/receiver.md)
-- [读取收货人](domain/receiver.md)
-- [管理员读取收货人](domain/receiver.md)
-
 ## [用户接口](domain/user.md)
 - [账户身份重复检测](domain/user.md)
 - [获取手机验证码](domain/user.md)
@@ -29,6 +21,30 @@
 - [管理员搜索用户](domain/user.md)
 - [管理员禁/启用用户](domain/user.md)
 - [管理员根据用户读取账户](domain/user.md)
+
+## [收货人接口](domain/receiver.md)
+- [新建收货人](domain/receiver.md)
+- [修改收货人](domain/receiver.md)
+- [删除收货人](domain/receiver.md)
+- [设置默认收货人](domain/receiver.md)
+- [读取收货人](domain/receiver.md)
+- [管理员读取收货人](domain/receiver.md)
+
+## [链接接口]()
+- [用户读取链接树集合](domain/link.md)
+- [管理员新建链接](domain/link.md)
+- [管理员修改链接](domain/link.md)
+- [管理员禁/启/删链接](domain/link.md)
+- [管理员交换链接排序](domain/link.md)
+- [管理员读取链接集合](domain/link.md)
+
+## [海报接口](domain/poster.md)
+- [用户读取海报结合](domain/poster.md)
+- [管理员新建海报](domain/poster.md)
+- [管理员修改海报](domain/poster.md)
+- [管理员禁/启/删海报](domain/poster.md)
+- [管理员交换海报排序](domain/poster.md)
+- [管理员读取海报集合](domain/link.md)
 
 ## 登录接口
 - [管理员登录](backend/login.md)
