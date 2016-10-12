@@ -5,12 +5,16 @@
  * 请求link数据
  */
 function link() {
-    let indexUrl = BASE_PATH + "/link/mRetrieves";
+    requestTopLink();
+}
+
+function requestTopLink() {
+    let linkEntity = new Object();
+    let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            // initLinkRootView(parseData.data);
             createGridContainer(parseData.data);
         }
     }, onRequestError(), onRequestTimeout());
@@ -20,14 +24,41 @@ function requestSubLink(lineEntity) {
 
 }
 
+function onReqeustTopLinkCallback(linkEntities) {
+    resetView();
+    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "链接管理";
+    titleView.className = "horizontalSelected";
+    titleView.style.width = "100%";
+    titleViewContainer.appendChild(titleView);
+
+    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    let length = linkEntities == undefined ? 0 : linkEntities.length;
+    for (let index = 0; index < length; index++) {
+        let linkEntity = linkEntities[index];
+        let linkEntityContainer = document.createElement("div");
+        linkEntityContainer.className = "productItemContainer";
+        let linkEntitySubContainer = document.createElement("div");
+        linkEntitySubContainer.className = "productItemSubContainer";
+        if (linkEntity.status == 1) {
+            linkEntitySubContainer.style.borderColor = "#FF0000";
+        }
+        attachLinkGridViewToContainer(linkEntitySubContainer, linkEntity);
+        linkEntityContainer.appendChild(linkEntitySubContainer);
+        mainView.appendChild(linkEntityContainer);
+    }
+}
+
+
 function requestLinkUpdate(linkEntity) {
     let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.data.linkId == parseData.data.pid){
-                
+            if (parseData.data.linkId == parseData.data.pid) {
+
             }
             createGridContainer(parseData.data);
         }
@@ -58,7 +89,7 @@ function createGridContainer(linkEntities) {
         if (linkEntity.status == 1) {
             linkEntitySubContainer.style.borderColor = "#FF0000";
         }
-        attachLinkGridViewToContainer(linkEntitySubContainer,linkEntity);
+        attachLinkGridViewToContainer(linkEntitySubContainer, linkEntity);
         linkEntityContainer.appendChild(linkEntitySubContainer);
         mainView.appendChild(linkEntityContainer);
     }
@@ -144,7 +175,7 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
         blockAction.className = "actionButton";
         if (linkEntity.status == 1) {
             blockAction.innerHTML = "启用";
-        } else if (linkEntity.status == 2){
+        } else if (linkEntity.status == 2) {
             blockAction.innerHTML = "禁用";
         }
         linkEditorActionBar.appendChild(blockAction);

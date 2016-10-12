@@ -22,6 +22,12 @@
 - [管理员禁/启用用户](domain/user.md)
 - [管理员根据用户读取账户](domain/user.md)
 
+## [购物车接口](domain/cart.md)
+- [用户添加产品到购物车]()
+- [用户修改购物车产品数量]()
+- [用户删除购物车产品]()
+- [用户读取购物车产品]()
+
 ## [收货人接口](domain/receiver.md)
 - [新建收货人](domain/receiver.md)
 - [修改收货人](domain/receiver.md)
@@ -29,6 +35,19 @@
 - [设置默认收货人](domain/receiver.md)
 - [读取收货人](domain/receiver.md)
 - [管理员读取收货人](domain/receiver.md)
+
+## [支付接口](domain/billing.md)
+
+
+## [订单接口](domain/order.md)
+- [用户生成订单]()
+- [用户分页分状态读取订单集合]()
+- [匿名用户订单查询]()
+- [用户收货]()
+- [管理员根据用户分页分状态读取集合]()
+- [管理员分页分状态读取全部订单集合]()
+- [管理员按订单发货]()
+
 
 ## [链接接口]()
 - [用户读取链接树集合](domain/link.md)
@@ -38,6 +57,7 @@
 - [管理员交换链接排序](domain/link.md)
 - [管理员读取链接集合](domain/link.md)
 
+
 ## [海报接口](domain/poster.md)
 - [用户读取海报结合](domain/poster.md)
 - [管理员新建海报](domain/poster.md)
@@ -45,6 +65,7 @@
 - [管理员禁/启/删海报](domain/poster.md)
 - [管理员交换海报排序](domain/poster.md)
 - [管理员读取海报集合](domain/link.md)
+
 
 ## 登录接口
 - [管理员登录](backend/login.md)
@@ -59,28 +80,6 @@
 - 新建管理员
 - 更新管理员
 
-- 新建系列
-- 新建型号
-- 新建规格
-- 获取产品树
-- 获取系列树
-- 获取类型树
-- 获取规格树
-- 获取反转树
-- 交换权重
-- 更新权重
-- [链接接口](backend/frame_link.md)
-- 新建链接
-- 读取链接
-- 更新链接
-- [海报接口](backend/frame_poster.md)
-- 创建海报
-- 读取海报
-- 更新海报
-- [用户接口](backend/frame_user.md)
-- 读取用户
-
-
 # **前端接口**
 ## 页面接口
 - [显示页面](frontend/page.md)
@@ -88,19 +87,10 @@
 ## 数据接口
 - [产品数据接口](frontend/product.md)
 - 用户登录接口
-- 获取系列数据
-- 获取推荐数据
-- 获取类型数据
-- 获取搜索数据
-- [购物车数据接口](frontend/cart.md)
-- 读取购物车
-- 添加新商品
-- 修改商品数量
-- 删除商品
+
 - [订单数据接口](frontend/order.md)
 - 创建新订单
-- [收货人数据接口](frontend/receiver.md)
-- 新建收货人
+
 - [元数据接口](frontend/meta.md)
 - 获取海报数据
 - 获取链接数据
