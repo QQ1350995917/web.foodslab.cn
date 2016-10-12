@@ -15,16 +15,12 @@ function requestTopLink() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            createGridContainer(parseData.data);
+            onRequestTopLinkCallback(parseData.data);
         }
     }, onRequestError(), onRequestTimeout());
 }
 
-function requestSubLink(lineEntity) {
-
-}
-
-function onReqeustTopLinkCallback(linkEntities) {
+function onRequestTopLinkCallback(linkEntities) {
     resetView();
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
     let titleView = document.createElement("div");
@@ -35,14 +31,23 @@ function onReqeustTopLinkCallback(linkEntities) {
 
     let mainView = document.getElementById(MAIN_CONTENT_ID);
     let length = linkEntities == undefined ? 0 : linkEntities.length;
-    for (let index = 0; index < length; index++) {
-        let linkEntity = linkEntities[index];
+    for (let i = 0; i <= length; i++) {
+        if (i % 4 == 0) {
+            let clearFloat = document.createElement("div");
+            clearFloat.className = "clearFloat";
+            mainView.appendChild(clearFloat);
+        }
+
         let linkEntityContainer = document.createElement("div");
         linkEntityContainer.className = "productItemContainer";
         let linkEntitySubContainer = document.createElement("div");
         linkEntitySubContainer.className = "productItemSubContainer";
-        if (linkEntity.status == 1) {
-            linkEntitySubContainer.style.borderColor = "#FF0000";
+        let linkEntity = undefined;
+        if (i < length) {
+            linkEntity = linkEntities[i];
+            if (linkEntity.status == 1) {
+                linkEntitySubContainer.style.borderColor = "#FF0000";
+            }
         }
         attachLinkGridViewToContainer(linkEntitySubContainer, linkEntity);
         linkEntityContainer.appendChild(linkEntitySubContainer);
@@ -50,66 +55,224 @@ function onReqeustTopLinkCallback(linkEntities) {
     }
 }
 
-
-function requestLinkUpdate(linkEntity) {
-    let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
+function requestSubLink(pLinkEntity) {
+    let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(pLinkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.data.linkId == parseData.data.pid) {
-
-            }
-            createGridContainer(parseData.data);
+            onRequestSubLinkCallback(pLinkEntity, parseData.data);
         }
     }, onRequestError(), onRequestTimeout());
 }
 
-function createGridContainer(linkEntities) {
-    console.log(linkEntities);
-    // 重置界面
+
+function onRequestSubLinkCallback(pLinkEntity, linkEntities) {
     resetView();
-    // 获取根元素对象
     let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    // 添加标题
     let titleView = document.createElement("div");
-    titleView.innerHTML = "链接管理";
+    titleView.innerHTML = "链接管理 >> " + pLinkEntity.label;
     titleView.className = "horizontalSelected";
     titleView.style.width = "100%";
+    titleViewContainer.style.cursor = "pointer";
+    titleViewContainer.onclick = function () {
+        requestTopLink();
+    }
     titleViewContainer.appendChild(titleView);
 
     let mainView = document.getElementById(MAIN_CONTENT_ID);
     let length = linkEntities == undefined ? 0 : linkEntities.length;
-    for (let index = 0; index < length; index++) {
-        let linkEntity = linkEntities[index];
-        let linkEntityContainer = document.createElement("div");
-        linkEntityContainer.className = "productItemContainer";
-        let linkEntitySubContainer = document.createElement("div");
-        linkEntitySubContainer.className = "productItemSubContainer";
-        if (linkEntity.status == 1) {
-            linkEntitySubContainer.style.borderColor = "#FF0000";
-        }
-        attachLinkGridViewToContainer(linkEntitySubContainer, linkEntity);
-        linkEntityContainer.appendChild(linkEntitySubContainer);
-        mainView.appendChild(linkEntityContainer);
-    }
+    for (let index = 0; index <= length; index++) {
+        if (index < length) {
+            let subLinkEntity = linkEntities[index];
+            let recommendItemRootViewContainer = document.createElement("div");
+            recommendItemRootViewContainer.className = "SS_IC";
+            recommendItemRootViewContainer.style.height = "40px";
+            recommendItemRootViewContainer.style.width = "100%";
 
+            let recommendItemRootView = document.createElement("div");
+            recommendItemRootView.className = "SS_IC";
+            recommendItemRootView.style.height = "32px";
+            recommendItemRootView.style.width = "100%";
+            recommendItemRootView.style.borderWidth = "0px";
+
+            //系列连接线横线
+            let line_H_level11 = document.createElement("hr");
+            line_H_level11.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level11);
+
+            // 显示系列名称的容器对象
+            let seriesLabel = document.createElement("div");
+            seriesLabel.className = "SS_IC_LABEL";
+            seriesLabel.style.borderLeftWidth = "1px";
+            seriesLabel.style.cursor = "move";
+            seriesLabel.innerHTML = subLinkEntity.label;
+            if (subLinkEntity.status == 1) {
+                seriesLabel.style.borderColor = "red";
+            }
+            recommendItemRootView.appendChild(seriesLabel);
+
+            //系列连接线横线
+            let line_H_level13 = document.createElement("hr");
+            line_H_level13.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level13);
+
+            // 显示规格名称的容器对象
+            let formatLabel = document.createElement("div");
+            formatLabel.className = "SS_IC_LABEL";
+            formatLabel.style.borderLeftWidth = "1px";
+            formatLabel.style.width = "67%";
+            formatLabel.style.cursor = "move";
+            formatLabel.innerHTML = subLinkEntity.href;
+            if (subLinkEntity.status == 1) {
+                formatLabel.style.borderColor = "red";
+            }
+            recommendItemRootView.appendChild(formatLabel);
+
+            //系列连接线横线
+            let line_H_level14 = document.createElement("hr");
+            line_H_level14.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level14);
+            // 显示规格名称的容器对象
+            let actionEditor = document.createElement("div");
+            actionEditor.className = "SS_IC_LABEL";
+            actionEditor.style.borderLeftWidth = "1px";
+            actionEditor.style.width = "5%";
+            actionEditor.style.cursor = "pointer";
+            actionEditor.innerHTML = "编辑";
+            if (subLinkEntity.status == 1) {
+                actionEditor.style.borderColor = "red";
+            }
+            recommendItemRootView.appendChild(actionEditor);
+
+            //系列连接线横线
+            let line_H_level15 = document.createElement("hr");
+            line_H_level15.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level15);
+            // 显示规格名称的容器对象
+            let actionBlock = document.createElement("div");
+            actionBlock.className = "SS_IC_LABEL";
+            actionBlock.style.borderLeftWidth = "1px";
+            actionBlock.style.width = "5%";
+            actionBlock.style.cursor = "pointer";
+
+            if (subLinkEntity.status == 1) {
+                actionBlock.innerHTML = "启用";
+                actionBlock.style.borderColor = "red";
+            } else if (subLinkEntity.status == 2) {
+                actionBlock.innerHTML = "禁用";
+            }
+
+            actionBlock.onclick = function () {
+                let requestLinkEntity = new Object();
+                requestLinkEntity.pid = subLinkEntity.pid;
+                requestLinkEntity.linkId = subLinkEntity.linkId;
+                if (subLinkEntity.status == 1) {
+                    requestLinkEntity.status = 2;
+                } else if (subLinkEntity.status = 2) {
+                    requestLinkEntity.status = 1;
+                }
+                requestMarkLink(pLinkEntity,requestLinkEntity);
+            }
+            recommendItemRootView.appendChild(actionBlock);
+
+            //系列连接线横线
+            let line_H_level16 = document.createElement("hr");
+            line_H_level16.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level16);
+            // 显示规格名称的容器对象
+            let actionDelete = document.createElement("div");
+            actionDelete.className = "SS_IC_LABEL";
+            actionDelete.style.borderLeftWidth = "1px";
+            actionDelete.style.width = "5%";
+            actionDelete.style.cursor = "pointer";
+            actionDelete.innerHTML = "删除";
+            if (subLinkEntity.status == 1) {
+                actionDelete.style.borderColor = "red";
+            }
+            actionDelete.onclick = function () {
+                let requestLinkEntity = new Object();
+                requestLinkEntity.pid = subLinkEntity.pid;
+                requestLinkEntity.linkId = subLinkEntity.linkId;
+                requestLinkEntity.status = -1;
+                requestMarkLink(pLinkEntity,requestLinkEntity);
+            }
+            recommendItemRootView.appendChild(actionDelete);
+
+            recommendItemRootView.id = subLinkEntity.linkId;
+            recommendItemRootView.pid = subLinkEntity.pid;
+            recommendItemRootView.weight = subLinkEntity.weight;
+            recommendItemRootView.draggable = "true";
+            recommendItemRootView.style.cursor = "move";
+            recommendItemRootView.addEventListener("dragstart", onLinkDragStart);
+            recommendItemRootView.addEventListener("dragover", onLinkDragOver);
+            recommendItemRootView.addEventListener("drop", onLinkDrop);
+            recommendItemRootView.addEventListener("dragend", onLinkDragEnd);
+
+            recommendItemRootViewContainer.appendChild(recommendItemRootView);
+            mainView.appendChild(recommendItemRootViewContainer);
+        } else {
+            let recommendItemRootViewContainer = document.createElement("div");
+            recommendItemRootViewContainer.className = "SS_IC";
+            recommendItemRootViewContainer.style.height = "40px";
+            recommendItemRootViewContainer.style.width = "100%";
+
+            let recommendItemRootView = document.createElement("div");
+            recommendItemRootView.className = "SS_IC";
+            recommendItemRootView.style.height = "32px";
+            recommendItemRootView.style.width = "100%";
+            recommendItemRootView.style.borderWidth = "0px";
+
+            //系列连接线横线
+            let line_H_level11 = document.createElement("hr");
+            line_H_level11.className = "SS_IC_HL";
+            recommendItemRootView.appendChild(line_H_level11);
+
+            // 显示系列名称的容器对象
+            let seriesLabel = document.createElement("div");
+            seriesLabel.className = "SS_IC_LABEL";
+            seriesLabel.style.borderLeftWidth = "1px";
+            seriesLabel.innerHTML = "+";
+            seriesLabel.style.width = "97.6%";
+
+            seriesLabel.onclick = function () {
+
+            }
+            recommendItemRootView.appendChild(seriesLabel);
+            recommendItemRootViewContainer.appendChild(recommendItemRootView);
+            mainView.appendChild(recommendItemRootViewContainer);
+        }
+
+    }
 }
+
 
 function attachLinkGridViewToContainer(container, linkEntity) {
     container.innerHTML = null;
-    container.style.cursor = "pointer";
-    let seriesLabelInput = document.createElement("input");
-    seriesLabelInput.className = "labelNameEditor";
-    seriesLabelInput.readOnly = true;
-    seriesLabelInput.value = linkEntity.label;
-    container.appendChild(seriesLabelInput);
-    seriesLabelInput.onclick = function () {
-        convertLinkContainerToEditor(container, linkEntity);
+    if (linkEntity != undefined) {
+        let seriesLabelInput = document.createElement("input");
+        seriesLabelInput.className = "labelNameEditor";
+        seriesLabelInput.readOnly = true;
+        seriesLabelInput.value = linkEntity.label;
+        container.appendChild(seriesLabelInput);
+        seriesLabelInput.onclick = function () {
+            convertLinkContainerToEditor(container, linkEntity);
+        }
+    } else {
+        let addLabel = document.createElement("div");
+        addLabel.innerHTML = "+";
+        addLabel.style.fontSize = "150px";
+        addLabel.style.cursor = "pointer";
+        container.appendChild(addLabel);
     }
     container.onclick = function () {
-        requestSubLink(linkEntity);
+        if (linkEntity != undefined) {
+            requestSubLink(linkEntity);
+        } else {
+            convertLinkContainerToEditor(container, linkEntity);
+        }
     }
+    container.style.cursor = "pointer";
 }
 
 function convertLinkContainerToEditor(linkContainer, linkEntity) {
@@ -126,7 +289,7 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
     linkContainer.appendChild(linkEditorActionBar);
     if (linkEntity == undefined) {
         //添加新系列
-        linkLabelInput.placeholder = "请输入产品系列名称";
+        linkLabelInput.placeholder = "请输入链接分类";
         linkLabelInput.focus();
 
         let cancelAction = document.createElement("div");
@@ -142,7 +305,8 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
         linkEditorActionBar.appendChild(saveAction);
 
         cancelAction.onclick = function () {
-            // addNewSeriesToContainer(linkContainer);
+            window.event.cancelBubble = true
+            attachLinkGridViewToContainer(linkContainer, linkEntity);
         }
 
         saveAction.onclick = function () {
@@ -153,7 +317,7 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
                 let requestLinkEntity = new Object();
                 requestLinkEntity.sessionId = "admin";
                 requestLinkEntity.label = label;
-                // requestCreateSeries(requestSeriesEntity);
+                requestCreateLink(requestLinkEntity);
             }
         }
 
@@ -185,6 +349,7 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
         linkEditorActionBar.appendChild(deleteAction);
 
         backAction.onclick = function () {
+            window.event.cancelBubble = true
             attachLinkGridViewToContainer(linkContainer, linkEntity);
         }
 
@@ -197,30 +362,35 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
             } else {
                 let requestLinkEntity = new Object();
                 requestLinkEntity.sessionId = "admin";
-                requestLinkEntity.seriesId = linkEntity.seriesId;
+                requestLinkEntity.linkId = linkEntity.linkId;
+                requestLinkEntity.pid = linkEntity.pid;
                 requestLinkEntity.label = label;
-                requestRenameSeries(requestLinkEntity);
+                requestUpdateLink(requestLinkEntity);
             }
         }
 
         blockAction.onclick = function () {
+            window.event.cancelBubble = true;
             let requestLinkEntity = new Object();
             requestLinkEntity.sessionId = "admin";
-            requestLinkEntity.seriesId = linkEntity.seriesId;
-            if (linkEntity.status == 0) {
+            requestLinkEntity.linkId = linkEntity.linkId;
+            requestLinkEntity.pid = linkEntity.pid;
+            if (linkEntity.status == 1) {
+                requestLinkEntity.status = 2;
+            } else if (linkEntity.status == 2) {
                 requestLinkEntity.status = 1;
-            } else if (linkEntity.status == 1) {
-                requestLinkEntity.status = 0;
             }
-            //requestMarkSeries(requestLinkEntity);
+            requestMarkLink(requestLinkEntity,requestLinkEntity);
         }
 
         deleteAction.onclick = function () {
+            window.event.cancelBubble = true;
             let requestLinkEntity = new Object();
             requestLinkEntity.sessionId = "admin";
-            requestLinkEntity.seriesId = linkEntity.seriesId;
+            requestLinkEntity.linkId = linkEntity.linkId;
+            requestLinkEntity.pid = linkEntity.pid;
             requestLinkEntity.status = -1;
-            //requestMarkSeries(requestLinkEntity);
+            requestMarkLink(requestLinkEntity,requestLinkEntity);
         }
     }
 }
@@ -228,213 +398,91 @@ function convertLinkContainerToEditor(linkContainer, linkEntity) {
 
 /**
  * 请求创建link数据
- * @param pid
- * @param label
- * @param href
  */
-function createLink(subLinkItemRootView, pid, label, href) {
-    let indexUrl = BASE_PATH + "/link/create?pid=" + pid + "&label=" + label + "&href=" + href;
+function requestCreateLink(linkEntity) {
+    let indexUrl = BASE_PATH + "/link/mCreate?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
-        onCreateLinkDataCallback(pid, subLinkItemRootView, data);
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("创建成功");
+                if (parseData.data.linkId == parseData.data.pid) {
+                    requestTopLink();
+                } else {
+                    let requestLinkEntity = new Object();
+                    requestLinkEntity.linkId = linkEntity.pid;
+                    requestLinkEntity.pid = linkEntity.pid;
+                    requestSubLink(requestLinkEntity);
+                }
+            } else {
+                new Toast().show("创建失败");
+            }
+        }
     }, onRequestError(), onRequestTimeout());
 }
 
-function updateLink(subLinkItemRootView, deleteView, linkId, pid, label, href, status) {
-    let indexUrl = undefined;
-    if (status == undefined) {
-        indexUrl = BASE_PATH + "/link/update?linkId=" + linkId + "&pid=" + pid + "&label=" + label + "&href=" + href + "&status=1";
-    } else {
-        indexUrl = BASE_PATH + "/link/update?linkId=" + linkId + "&pid=" + pid + "&label=" + label + "&href=" + href + "&status=-1";
-    }
-
-    if (indexUrl == undefined) {
-        new Toast().show("信息缺失,无法提交");
-    } else {
-        asyncRequestByGet(indexUrl, function (data) {
-            onUpdateLinkDataCallback(subLinkItemRootView, deleteView, data, status);
-        }, onRequestError(), onRequestTimeout());
-    }
-}
-
-/**
- * 处理请求创建link的服务器返回的数据
- * @param data
- */
-function onCreateLinkDataCallback(pid, subLinkItemRootView, data) {
-    var result = checkResponseDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("创建成功");
-            subLinkItemRootView.removeChild(subLinkItemRootView.lastChild);
-            subLinkItemRootView.style.height = subLinkItemRootView.clientHeight + 50 + "px";
-            subLinkItemRootView.parentNode.style.height = subLinkItemRootView.parentNode.clientHeight + 50 + "px";
-            createLinkItemView(pid, subLinkItemRootView, parseData.data);
-            createLinkItemView(pid, subLinkItemRootView, undefined);
-        } else {
-            new Toast().show("创建失败");
-        }
-    }
-}
-
-/**
- * 处理更新返回的数据
- * @param subLinkItemRootView
- * @param deleteView
- * @param data
- */
-function onUpdateLinkDataCallback(subLinkItemRootView, deleteView, data, status) {
-    var result = checkResponsDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("更新成功");
-            if (status) {
-                subLinkItemRootView.removeChild(deleteView);
-                subLinkItemRootView.style.height = subLinkItemRootView.clientHeight - 50 + "px";
-                subLinkItemRootView.parentNode.style.height = subLinkItemRootView.parentNode.clientHeight - 50 + "px";
+function requestMarkLink(pLinkEntity,linkEntity) {
+    let indexUrl = BASE_PATH + "/link/mMark?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("操作成功");
+                if (parseData.data.linkId == parseData.data.pid) {
+                    requestTopLink();
+                } else {
+                    requestSubLink(pLinkEntity);
+                }
             } else {
-
+                new Toast().show("操作失败");
             }
-        } else {
-            new Toast().show("更新失败");
         }
-    }
+    }, onRequestError(), onRequestTimeout());
+
 }
 
-
-function initLinkRootView(linkEntities) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "链接管理";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
-    let formatSize = linkEntities == undefined ? 0 : linkEntities.length;
-    for (let index = 0; index < formatSize; index++) {
-        let linkEntity = linkEntities[index];
-        let linkItemRootView = document.createElement("div");
-        linkItemRootView.className = "SS_IC";
-        linkItemRootView.style.height = "60px";
-        linkItemRootView.style.width = "100%";
-
-        //连接容器
-        let linkConnectorView = document.createElement("div");
-        linkConnectorView.className = "SS_IC";
-        linkConnectorView.style.height = "40px";
-        linkConnectorView.style.width = "122px";
-        linkConnectorView.style.borderLeftWidth = "0px";
-        // 连接线横线
-        let line_H_level11 = document.createElement("hr");
-        line_H_level11.className = "SS_IC_HL";
-        line_H_level11.style.marginTop = "20px";
-        linkConnectorView.appendChild(line_H_level11);
-        // 一级名称的容器对象
-        let linkLevel1Label = document.createElement("div");
-        linkLevel1Label.className = "SS_IC_LABEL";
-        linkLevel1Label.style.borderLeftWidth = "1px";
-        linkLevel1Label.style.marginTop = "5px";
-        linkLevel1Label.innerHTML = linkEntity.label;
-        linkLevel1Label.style.cursor = "default";
-        linkConnectorView.appendChild(linkLevel1Label);
-        // 连接线横线
-        let line_H_level12 = document.createElement("hr");
-        line_H_level12.className = "SS_IC_HL";
-        line_H_level12.style.marginTop = "20px";
-        linkConnectorView.appendChild(line_H_level12);
-        linkItemRootView.appendChild(linkConnectorView);
-
-        let subLinkItemRootView = document.createElement("div");
-        subLinkItemRootView.className = "SS_IC";
-        subLinkItemRootView.style.width = "900px";
-
-        let linkSize = linkEntity.children == undefined ? 0 : linkEntity.children.length;
-        for (let index = 0; index < linkSize; index++) {
-            let subLinkEntity = linkEntity.children[index];
-            createLinkItemView(linkEntity.linkId, subLinkItemRootView, subLinkEntity);
+function requestUpdateLink(linkEntity) {
+    let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("操作成功");
+                if (parseData.data.linkId == parseData.data.pid) {
+                    requestTopLink();
+                } else {
+                    let requestLinkEntity = new Object();
+                    requestLinkEntity.linkId = linkEntity.pid;
+                    requestLinkEntity.pid = linkEntity.pid;
+                    requestSubLink(requestLinkEntity);
+                }
+            } else {
+                new Toast().show("操作失败");
+            }
         }
-        createLinkItemView(linkEntity.linkId, subLinkItemRootView, undefined);
-        linkItemRootView.appendChild(subLinkItemRootView);
-
-        subLinkItemRootView.style.height = (linkSize + 1) * 40 + "px";
-        subLinkItemRootView.parentNode.style.height = (linkSize + 1) * 40 + 20 + "px";
-        contentViewContainer.appendChild(linkItemRootView);
-    }
+    }, onRequestError(), onRequestTimeout());
 }
 
-
-function createLinkItemView(pid, subLinkItemRootView, linkEntity) {
-    let linkItemRootView = document.createElement("div");
-    linkItemRootView.className = "SS_IC";
-    linkItemRootView.style.width = "100%";
-    linkItemRootView.style.height = "30px";
-    linkItemRootView.style.marginBottom = "10px";
-    linkItemRootView.style.borderLeftWidth = "0px";
-    // 连接线横线
-    let line_H_level2 = document.createElement("hr");
-    line_H_level2.className = "SS_IC_HL";
-    line_H_level2.style.marginTop = "20px";
-    linkItemRootView.appendChild(line_H_level2);
-
-    let linkConvertView = document.createElement("div");
-    linkConvertView.className = "SS_IC";
-    linkConvertView.style.width = "870px";
-    linkConvertView.style.height = "30px";
-    linkConvertView.style.borderLeftWidth = "0px";
-    linkItemRootView.appendChild(linkConvertView);
-
-    if (linkEntity == undefined) {
-        let addNewLinkLabel = document.createElement("div");
-        addNewLinkLabel.className = "SS_IC_LABEL";
-        addNewLinkLabel.style.width = "870px";
-        addNewLinkLabel.style.height = "30px";
-        addNewLinkLabel.style.marginTop = "5px";
-        addNewLinkLabel.style.borderLeftWidth = "1px";
-        addNewLinkLabel.innerHTML = "+";
-        addNewLinkLabel.onclick = function () {
-            onAddNewLinkViewClick(subLinkItemRootView, pid, linkConvertView, undefined);
-        };
-        linkConvertView.appendChild(addNewLinkLabel);
-        linkItemRootView.appendChild(linkConvertView);
-    } else {
-        let linkNameLabel = document.createElement("div");
-        linkNameLabel.className = "SS_IC_LABEL";
-        linkNameLabel.style.width = "100px";
-        linkNameLabel.style.height = "30px";
-        linkNameLabel.style.marginTop = "5px";
-        linkNameLabel.style.borderLeftWidth = "1px";
-        linkNameLabel.innerHTML = linkEntity.label;
-        linkNameLabel.ondblclick = function () {
-            onAddNewLinkViewClick(subLinkItemRootView, pid, linkConvertView, linkEntity);
-        };
-        linkConvertView.appendChild(linkNameLabel);
-
-        let line_H_level23 = document.createElement("hr");
-        line_H_level23.className = "SS_IC_HL";
-        line_H_level23.style.marginTop = "20px";
-        linkConvertView.appendChild(line_H_level23);
-
-        let linkHrefLabel = document.createElement("div");
-        linkHrefLabel.className = "SS_IC_LABEL";
-        linkHrefLabel.style.width = "736px";
-        linkHrefLabel.style.height = "30px";
-        linkHrefLabel.style.marginTop = "5px";
-        linkHrefLabel.style.borderLeftWidth = "1px";
-        linkHrefLabel.style.textAlign = "left";
-        linkHrefLabel.style.paddingLeft = "10px";
-        linkHrefLabel.innerHTML = linkEntity.href;
-        linkHrefLabel.ondblclick = function () {
-            onAddNewLinkViewClick(subLinkItemRootView, pid, linkConvertView, linkEntity);
-        };
-        linkConvertView.appendChild(linkHrefLabel);
-    }
-    subLinkItemRootView.appendChild(linkItemRootView);
+function requestSwapSubLinkWeight(linkEntity) {
+    let indexUrl = BASE_PATH + "/link/mSwap?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(indexUrl, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RESPONSE_SUCCESS) {
+                new Toast().show("操作成功");
+                let requestLinkEntity = new Object();
+                requestLinkEntity.linkId = linkEntity.pid;
+                requestLinkEntity.pid = linkEntity.pid;
+                requestSubLink(requestLinkEntity);
+            } else {
+                new Toast().show("操作失败");
+            }
+        }
+    }, onRequestError(), onRequestTimeout());
 }
 
 function onAddNewLinkViewClick(subLinkItemRootView, pid, convertView, linkEntity) {
@@ -538,9 +586,8 @@ function onAddNewLinkViewClick(subLinkItemRootView, pid, convertView, linkEntity
             new Toast().show("请输入完整信息");
         } else {
             if (linkEntity == undefined) {
-                createLink(subLinkItemRootView, pid, addLabel.value, addHref.value);
+
             } else {
-                updateLink(subLinkItemRootView, convertView.parentNode, linkEntity.linkId, linkEntity.pid, addLabel.value, addHref.value, undefined);
                 convertView.innerHTML = null;
                 let linkNameLabel = document.createElement("div");
                 linkNameLabel.className = "SS_IC_LABEL";
@@ -584,8 +631,54 @@ function onAddNewLinkViewClick(subLinkItemRootView, pid, convertView, linkEntity
         del.style.height = "33px";
         del.innerHTML = "删除";
         del.onclick = function () {
-            updateLink(subLinkItemRootView, convertView.parentNode, linkEntity.linkId, linkEntity.pid, linkEntity.label, linkEntity.href, -1);
+
         };
         convertView.appendChild(del);
     }
+}
+
+function onLinkDragStart(event) {
+    event.dataTransfer.setData("linkId", event.target.id);
+    event.dataTransfer.setData("pid", event.target.pid);
+    event.dataTransfer.setData("weight", event.target.weight);
+}
+
+function onLinkDragOver(event) {
+    event.preventDefault();
+}
+
+function onLinkDrop(event) {
+    event.preventDefault();
+    let sourceLinkId = event.dataTransfer.getData("linkId");
+    let sourceLinkPid = event.dataTransfer.getData("pid");
+    let sourceWeight = event.dataTransfer.getData("weight");
+    let targetLinkId = (event.target.id == "" || event.target.id == undefined) ? event.target.parentNode.id : event.target.id;
+    let targetWeight = (event.target.weight == "" || event.target.weight == undefined) ? event.target.parentNode.weight : event.target.weight;
+    let targetIdElement = document.getElementById(targetLinkId);
+    let sourceIdElement = document.getElementById(sourceLinkId);
+    let tempInnerHtml = targetIdElement.innerHTML;
+    targetIdElement.innerHTML = sourceIdElement.innerHTML;
+    sourceIdElement.innerHTML = tempInnerHtml;
+
+    event.dataTransfer.setData("sourceLinkId", sourceLinkId);
+    event.dataTransfer.setData("sourceWeight", sourceWeight);
+
+    event.dataTransfer.setData("targetLinkId", targetLinkId);
+    event.dataTransfer.setData("targetWeight", targetWeight);
+
+    let requestLinkEntity = new Object();
+    requestLinkEntity.pid = sourceLinkPid;
+    requestLinkEntity.linkId1 = sourceLinkId;
+    requestLinkEntity.weight1 = sourceWeight;
+    requestLinkEntity.linkId2 = targetLinkId;
+    requestLinkEntity.weight2 = targetWeight;
+    requestSwapSubLinkWeight(requestLinkEntity);
+}
+
+function onLinkDragEnd(event) {
+    let sourceLinkId = event.dataTransfer.getData("sourceLinkId");
+    let sourceWeight = event.dataTransfer.getData("sourceWeight");
+    let targetLinkId = event.dataTransfer.getData("targetLinkId");
+    let targetWeight = event.dataTransfer.getData("targetWeight");
+    event.dataTransfer.clearData();
 }
