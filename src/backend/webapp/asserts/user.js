@@ -2,7 +2,7 @@
  * Created by dingpengwei on 8/16/16.
  */
 function showUsers() {
-    var indexUrl = BASE_PATH + "/account/mRetrieve";
+    var indexUrl = BASE_PATH + "/account/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

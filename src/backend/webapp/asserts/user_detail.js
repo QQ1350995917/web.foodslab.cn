@@ -3,7 +3,7 @@
  */
 
 function onCartTabCallback(userEntity) {
-    let url = BASE_PATH + "/cart/mRetrieveByUser?p=" + JSON.stringify(userEntity);
+    let url = BASE_PATH + "/cart/mRetrieve?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -16,11 +16,12 @@ function onCartTabCallback(userEntity) {
 }
 
 function onOrderTabCallback(userEntity) {
-    let url = BASE_PATH + "/order/mRetrieveByUser?p=" + JSON.stringify(userEntity);
+    let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
+            console.log(jsonData);
             createOrderView(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
@@ -512,7 +513,6 @@ function createAuthAccountContainer(index, title, data, link) {
 }
 
 function createReceiverContainer(receiverEntities) {
-    console.log(receiverEntities);
     let mainView = document.getElementById(MAIN_CONTENT_ID);
     mainView.innerHTML = null;
 
