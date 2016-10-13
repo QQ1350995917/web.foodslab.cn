@@ -43,7 +43,9 @@ function createOrderTitleTab(containerView, tabItems, index, callback) {
 }
 
 function onUnExpressTabCallback() {
-    const url = BASE_PATH + "/order/mRetrieveUnExpress";
+    let orderEntity = new Object();
+    orderEntity.status = 1;
+    const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -54,7 +56,9 @@ function onUnExpressTabCallback() {
 }
 
 function onExpressingTabCallback() {
-    const url = BASE_PATH + "/order/mRetrieveExpressing";
+    let orderEntity = new Object();
+    orderEntity.status = 2;
+    const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -65,7 +69,9 @@ function onExpressingTabCallback() {
 }
 
 function onExpressedTabCallback() {
-    const url = BASE_PATH + "/order/mRetrieveExpressed";
+    let orderEntity = new Object();
+    orderEntity.status = 3;
+    const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -76,7 +82,9 @@ function onExpressedTabCallback() {
 }
 
 function onAllTabCallback() {
-    const url = BASE_PATH + "/order/mRetrieveAll";
+    let orderEntity = new Object();
+    orderEntity.status = 0;
+    const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -109,25 +117,10 @@ function createUnExpressView(orderEntities) {
 function createUnExpressTitleContainer() {
     let unExpressTitleView = document.createElement("div");
     unExpressTitleView.className = "orderExpressTitle";
-    let exportView = document.createElement("div");
-    exportView.className = "actionButton";
-    exportView.style.width = "15%";
-    exportView.innerHTML = "导出发货信息";
-    unExpressTitleView.appendChild(exportView);
-
-    let importView = document.createElement("div");
-    importView.className = "actionButton";
-    importView.style.width = "15%";
-    importView.style.marginLeft = "1%";
-    importView.innerHTML = "导入发货信息";
-    unExpressTitleView.appendChild(importView);
-
-    let searchView = createSearchWidget("68%", function (data) {
+    let searchView = createSearchWidget("100%", function (data) {
         console.log(data);
     });
-
     searchView.style.float = "left";
-    searchView.style.marginLeft = "1%";
     unExpressTitleView.appendChild(searchView);
     return unExpressTitleView;
 }
@@ -325,14 +318,14 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
 
 function requestExpress(orderEntity) {
     console.log(orderEntity);
-    const url = BASE_PATH + "/order/mUpdateExpress?p=" + JSON.stringify(orderEntity);
-    ;
+    const url = BASE_PATH + "/order/mExpressing?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
             if (jsonData.code == RESPONSE_SUCCESS) {
                 showOrderView();
+                new Toast().show("发货成功");
             } else {
                 new Toast().show("发货失败");
             }
