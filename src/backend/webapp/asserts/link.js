@@ -162,7 +162,7 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
         linkEditorActionBar.appendChild(saveAction);
 
         cancelAction.onclick = function () {
-            window.event.cancelBubble = true
+            window.event.cancelBubble = true;
             attachLinkGridViewToContainer(linkContainer, linkEntity);
         }
 
@@ -206,7 +206,7 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
         linkEditorActionBar.appendChild(deleteAction);
 
         backAction.onclick = function () {
-            window.event.cancelBubble = true
+            window.event.cancelBubble = true;
             attachLinkGridViewToContainer(linkContainer, linkEntity);
         }
 

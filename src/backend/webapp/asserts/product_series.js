@@ -69,7 +69,7 @@ function createSeriesContainer(seriesEntity) {
     seriesEntityContainer.className = "productItemContainer";
     let seriesEntitySubContainer = document.createElement("div");
     seriesEntitySubContainer.className = "productItemSubContainer";
-    if (seriesEntity.status == 0) {
+    if (seriesEntity.status == 1) {
         seriesEntitySubContainer.style.borderColor = "#FF0000";
     }
     addSeriesToContainer(seriesEntitySubContainer, seriesEntity);
@@ -124,10 +124,12 @@ function convertSeriesContainerToEditor(seriesContainer, seriesEntity) {
         seriesEditorActionBar.appendChild(saveAction);
 
         cancelAction.onclick = function () {
+            window.event.cancelBubble = true;
             addNewSeriesToContainer(seriesContainer);
         }
 
         saveAction.onclick = function () {
+            window.event.cancelBubble = true;
             let label = seriesLabelInput.value;
             if (label == undefined || label == null || label == "") {
                 new Toast().show("系列名称不能为空");
@@ -155,9 +157,9 @@ function convertSeriesContainerToEditor(seriesContainer, seriesEntity) {
 
         let blockAction = document.createElement("div");
         blockAction.className = "actionButton";
-        if (seriesEntity.status == 0) {
+        if (seriesEntity.status == 1) {
             blockAction.innerHTML = "启用";
-        } else if (seriesEntity.status == 1){
+        } else if (seriesEntity.status == 2){
             blockAction.innerHTML = "禁用";
         }
         seriesEditorActionBar.appendChild(blockAction);
@@ -167,10 +169,12 @@ function convertSeriesContainerToEditor(seriesContainer, seriesEntity) {
         seriesEditorActionBar.appendChild(deleteAction);
 
         backAction.onclick = function () {
+            window.event.cancelBubble = true;
             addSeriesToContainer(seriesContainer, seriesEntity);
         }
 
         saveAction.onclick = function () {
+            window.event.cancelBubble = true;
             let label = seriesLabelInput.value;
             if (label == undefined || label == null || label == "") {
                 new Toast().show("系列名称不能为空");
@@ -186,18 +190,20 @@ function convertSeriesContainerToEditor(seriesContainer, seriesEntity) {
         }
 
         blockAction.onclick = function () {
+            window.event.cancelBubble = true;
             let requestSeriesEntity = new Object();
             requestSeriesEntity.sessionId = "admin";
             requestSeriesEntity.seriesId = seriesEntity.seriesId;
-            if (seriesEntity.status == 0) {
+            if (seriesEntity.status == 1) {
+                requestSeriesEntity.status = 2;
+            } else if (seriesEntity.status == 2) {
                 requestSeriesEntity.status = 1;
-            } else if (seriesEntity.status == 1) {
-                requestSeriesEntity.status = 0;
             }
             requestMarkSeries(requestSeriesEntity);
         }
 
         deleteAction.onclick = function () {
+            window.event.cancelBubble = true;
             let requestSeriesEntity = new Object();
             requestSeriesEntity.sessionId = "admin";
             requestSeriesEntity.seriesId = seriesEntity.seriesId;
@@ -240,6 +246,7 @@ function requestRenameSeries(seriesEntity) {
 }
 
 function requestMarkSeries(seriesEntity) {
+    console.log(seriesEntity);
     var indexUrl = BASE_PATH + "/series/mMark?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);

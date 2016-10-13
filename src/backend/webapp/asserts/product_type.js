@@ -71,7 +71,7 @@ function createTypeContainer(seriesEntity, typeEntity) {
     typeEntityContainer.className = "productItemContainer";
     let typeEntitySubContainer = document.createElement("div");
     typeEntitySubContainer.className = "productItemSubContainer";
-    if (typeEntity.status == 0) {
+    if (typeEntity.status == 1) {
         typeEntitySubContainer.style.borderColor = "#FF0000";
     }
     addTypeToContainer(typeEntitySubContainer, seriesEntity, typeEntity);
@@ -158,9 +158,9 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
 
         let blockAction = document.createElement("div");
         blockAction.className = "actionButton";
-        if (typeEntity.status == 0) {
+        if (typeEntity.status == 1) {
             blockAction.innerHTML = "启用";
-        } else if (typeEntity.status == 1) {
+        } else if (typeEntity.status == 2) {
             blockAction.innerHTML = "禁用";
         }
         typeEditorActionBar.appendChild(blockAction);
@@ -187,10 +187,10 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
             requestTypeEntity.sessionId = "admin";
             requestTypeEntity.seriesId = seriesEntity.seriesId;
             requestTypeEntity.typeId = typeEntity.typeId;
-            if (typeEntity.status == 0) {
+            if (typeEntity.status == 1) {
+                requestTypeEntity.status = 2;
+            } else if (typeEntity.status == 2) {
                 requestTypeEntity.status = 1;
-            } else if (typeEntity.status == 1) {
-                requestTypeEntity.status = 0;
             }
             requestMarkType(seriesEntity,requestTypeEntity);
         }
@@ -412,6 +412,7 @@ function requestCreateType(seriesEntity,typeEntity) {
 }
 
 function requestRenameType(seriesEntity,typeEntity) {
+    console.log(typeEntity);
     asyncRequestByGet(BASE_PATH + "/type/mUpdate?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
