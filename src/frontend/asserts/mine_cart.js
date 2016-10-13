@@ -6,7 +6,7 @@ function requestCart(accountId) {
     cartEntity.sessionId = accountId;
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
-    let url = BASE_PATH + "cart/retrieve?p=" + JSON.stringify(cartEntity);
+    let url = BASE_PATH + "cart/retrieves?p=" + JSON.stringify(cartEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

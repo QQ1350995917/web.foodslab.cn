@@ -6,7 +6,7 @@ function requestOrder(accountId) {
     tempAccountId = accountId;
     let orderEntity = new Object();
     orderEntity.sessionId = accountId;
-    let url = BASE_PATH + "order/retrieve?p=" + JSON.stringify(orderEntity);
+    let url = BASE_PATH + "order/retrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
