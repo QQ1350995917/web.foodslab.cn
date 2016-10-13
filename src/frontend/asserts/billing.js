@@ -16,7 +16,7 @@ function requestBillingByAnonymous() {
     let formatIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
     let formatEntity = new Object();
     formatEntity.formatId = formatIds;
-    let url = BASE_PATH + "format/retrieveInversionTree?p=" + JSON.stringify(formatEntity);
+    let url = BASE_PATH + "format/retrieveTreeInversion?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

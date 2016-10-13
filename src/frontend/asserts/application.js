@@ -67,7 +67,7 @@ function initTitleView() {
 }
 
 function requestLinker() {
-    let url = BASE_PATH + "link";
+    let url = BASE_PATH + "link/retrieves";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

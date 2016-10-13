@@ -12,7 +12,7 @@ window.onload = function () {
 };
 
 function requestType(typeEntity) {
-    let url = BASE_PATH + "type/retrieveTree?p=" + JSON.stringify(typeEntity);
+    let url = BASE_PATH + "type/retrieve?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -96,7 +96,7 @@ function createTypeMainView(typeEntity) {
 
     let formatEntitiesView = document.createElement("div");
     formatEntitiesView.style.height = "251px";
-    createFormatView(formatEntitiesView, typeEntity.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
+    //createFormatView(formatEntitiesView, typeEntity.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
     typeMainTopRight.appendChild(formatEntitiesView);
 
     typeMainTopView.appendChild(typeMainTopRight);
