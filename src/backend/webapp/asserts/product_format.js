@@ -100,7 +100,7 @@ function attachFormatTitleContainer(titleContainer, formatEntities, selectedInde
                 tabView.innerHTML = "新规格";
             } else {
                 tabView.innerHTML = formatEntity.label;
-                if (formatEntity.status == 0) {
+                if (formatEntity.status == 1) {
                     tabView.style.color = "red";
                 }
             }
@@ -144,9 +144,9 @@ function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEnti
     if (formatEntity == undefined) {
         displayStatus.checked = false;
     } else {
-        if (formatEntity.status == 0) {
+        if (formatEntity.status == 1) {
             displayStatus.checked = false;
-        } else if (formatEntity.status == 1) {
+        } else if (formatEntity.status == 2) {
             displayStatus.checked = true;
         }
     }
@@ -196,9 +196,9 @@ function attachFormatDiscountContainer(discountContainer, formatEntity) {
     if (formatEntity == undefined) {
         display.checked = false;
     } else {
-        if (formatEntity.pricingStatus == 0) {
+        if (formatEntity.pricingStatus == 1) {
             display.checked = false;
-        } else if (formatEntity.pricingStatus == 1) {
+        } else if (formatEntity.pricingStatus == 2) {
             display.checked = true;
         }
     }
@@ -225,9 +225,9 @@ function attachFormatPostageContainer(postageContainer, formatEntity) {
     if (formatEntity == undefined) {
         display.checked = false;
     } else {
-        if (formatEntity.expressStatus == 0) {
+        if (formatEntity.expressStatus == 1) {
             display.checked = false;
-        } else if (formatEntity.expressStatus == 1) {
+        } else if (formatEntity.expressStatus == 2) {
             display.checked = true;
         }
     }
@@ -249,9 +249,9 @@ function attachFormatGiftContainer(giftContainer, formatEntity) {
     if (formatEntity == undefined) {
         display.checked = false;
     } else {
-        if (formatEntity.giftStatus == 0) {
+        if (formatEntity.giftStatus == 1) {
             display.checked = false;
-        } else if (formatEntity.giftStatus == 1) {
+        } else if (formatEntity.giftStatus == 2) {
             display.checked = true;
         }
     }
@@ -400,7 +400,7 @@ function saveFormat(typeEntity, formatEntity) {
     let requestFormatEntity = new Object();
     requestFormatEntity.typeId = typeEntity.typeId;
 
-    requestFormatEntity.status = (formatStatus.checked == true ? 1 : 0);
+    requestFormatEntity.status = (formatStatus.checked == true ? 2 : 1);
     requestFormatEntity.label = formatLabel.value;
     requestFormatEntity.meta = formatLabelUnit.options[formatLabelUnit.selectedIndex].text;
     requestFormatEntity.amount = formatMount.value;
@@ -410,7 +410,7 @@ function saveFormat(typeEntity, formatEntity) {
     requestFormatEntity.postage = formatPostage.value;
     requestFormatEntity.postageMeta = formatPostageUnit.options[formatPostageUnit.selectedIndex].text;
 
-    requestFormatEntity.pricingStatus = (formatPricingStatus.checked == true ? 1 : 0);
+    requestFormatEntity.pricingStatus = (formatPricingStatus.checked == true ? 2 : 1);
     requestFormatEntity.pricingDiscount = formatPricingDiscount.value;
     requestFormatEntity.pricing = formatPricing.value;
     requestFormatEntity.pricingStart = new Date(formatPricingDiscountStart.value).getTime();
