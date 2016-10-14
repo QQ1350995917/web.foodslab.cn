@@ -509,25 +509,27 @@ function onPayActionClick() {
         let senderPhone = document.getElementById("senderPhone").value;
         showPaymentView(function () {
             let orderEntity = new Object();
-            orderEntity.productIds = productIds;
+            orderEntity.productIds = productIds.split(",");
+            let receiver = new Object();
             orderEntity.senderName = senderName;
             orderEntity.senderPhone = senderPhone;
-            orderEntity.name = name;
-            orderEntity.phone0 = phone0;
-            orderEntity.phone1 = phone1;
-            orderEntity.province = province;
-            orderEntity.city = city;
-            orderEntity.county = county;
-            orderEntity.town = town;
-            orderEntity.village = village;
-            orderEntity.append = append;
+            receiver.name = name;
+            receiver.phone0 = phone0;
+            receiver.phone1 = phone1;
+            receiver.province = province;
+            receiver.city = city;
+            receiver.county = county;
+            receiver.town = town;
+            receiver.village = village;
+            receiver.append = append;
+            orderEntity.receiver = receiver;
             requestCreateOrder(orderEntity);
         });
     } else {
         showPaymentView(function () {
             let orderEntity = new Object();
             orderEntity.sessionId = accountId;
-            orderEntity.productIds = productIds;
+            orderEntity.productIds = productIds.split(",");
             orderEntity.receiverId = "50cbf344-c92c-43ce-88f7-7fbe21e8e478";
             requestCreateOrder(orderEntity);
         });

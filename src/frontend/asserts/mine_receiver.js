@@ -18,10 +18,8 @@ function requestReceiver(accountId) {
  * 请求创建新收货人
  * @param data
  */
-function requestCreateReceiver(data) {
-    let url = BASE_PATH + "receiver/create?accountId=" + data.accountId + "&name=" + data.name + "&phone0=" + data.phone0
-        + "&phone1=" + data.phone1 + "&province=" + data.province + "&city=" + data.city + "&county=" + data.county
-        + "&town=" + data.town + "&village=" + data.village;
+function requestCreateReceiver(receiverEntity) {
+    let url = BASE_PATH + "receiver/create?p="  + JSON.stringify(receiverEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -35,27 +33,35 @@ function requestCreateReceiver(data) {
  * 更新收货人地址
  * @param data
  */
-function requestUpdateReceiver(data, nameView, addressView) {
-    let url = BASE_PATH + "receiver/update?accountId=" + data.accountId + "&receiverId=" + data.receiverId
-        + "&name=" + data.name + "&phone0=" + data.phone0 + "&phone1=" + data.phone1
-        + "&province=" + data.province + "&city=" + data.city + "&county=" + data.county
-        + "&town=" + data.town + "&village=" + data.village + "&status=" + (data.status == 3 ? 2 : 1);
+function requestUpdateReceiver(receiverEntity) {
+    let url = BASE_PATH + "receiver/update?p="  + JSON.stringify(receiverEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestUpdateReceiverCallback(jsonData.data, nameView, addressView);
+            requestReceiver(jsonData.data.sessionId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestDeleteReceiver(accountId, receiverId, view) {
-    let url = BASE_PATH + "receiver/delete?accountId=" + accountId + "&receiverId=" + receiverId;
+function requestDeleteReceiver(receiverEntity) {
+    let url = BASE_PATH + "receiver/delete?p=" + JSON.stringify(receiverEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestDeleteReceiverCallback(jsonData.data, view);
+            requestReceiver(jsonData.data.sessionId);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestMarkReceiver(receiverEntity) {
+    let url = BASE_PATH + "receiver/king?p=" + JSON.stringify(receiverEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            requestReceiver(jsonData.data.sessionId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -140,7 +146,7 @@ function onRequestDeleteReceiverCallback(data, view) {
     }
 }
 
-function createReceiverItemContainer(data, receiverItemContainer) {
+function createReceiverItemContainer(receiverEntity, receiverItemContainer) {
     if (receiverItemContainer == undefined) {
         receiverItemContainer = document.createElement("div");
     } else {
@@ -153,7 +159,7 @@ function createReceiverItemContainer(data, receiverItemContainer) {
     let nameView = document.createElement("div");
     nameView.className = "receiverLabel";
     nameView.style.width = "151px";
-    nameView.innerHTML = data.name;
+    nameView.innerHTML = receiverEntity.name;
     receiverItemContainer.appendChild(nameView);
     let connectLine2 = document.createElement("hr");
     connectLine2.className = "connectLineH";
@@ -165,10 +171,10 @@ function createReceiverItemContainer(data, receiverItemContainer) {
     addressView.style.textAlign = "left";
     addressView.style.paddingLeft = "10px";
     addressView.style.paddingRight = "10px";
-    addressView.innerHTML = data.province + " " + data.city + " " + data.county + " " + data.town + " " + data.village
-        + " " + (data.append == undefined ? "" : data.append ) + " " + data.phone0;
+    addressView.innerHTML = receiverEntity.province + " " + receiverEntity.city + " " + receiverEntity.county + " " + receiverEntity.town + " " + receiverEntity.village
+        + " " + (receiverEntity.append == undefined ? "" : receiverEntity.append ) + " " + receiverEntity.phone0;
     receiverItemContainer.appendChild(addressView);
-    if (data.status == 3) {
+    if (receiverEntity.status == 3) {
         nameView.style.borderColor = "red";
         addressView.style.borderColor = "red";
         addressView.style.width = "784px";
@@ -194,24 +200,32 @@ function createReceiverItemContainer(data, receiverItemContainer) {
         receiverItemContainer.appendChild(deleteView);
 
         defaultView.onclick = function () {
-            data.status = 3;
-            requestUpdateReceiver(data, nameView, addressView);
+            window.event.cancelBubble = true;
+            let requestReceiver = new Object();
+            requestReceiver.receiverId = receiverEntity.receiverId;
+            requestReceiver.sessionId = "test";
+            requestReceiver.status = 3;
+            requestMarkReceiver(requestReceiver);
         };
 
         deleteView.onclick = function () {
-            requestDeleteReceiver(data.accountId, data.receiverId, deleteView.parentNode);
+            let requestReceiver = new Object();
+            requestReceiver.sessionId = "test";
+            requestReceiver.accountId = "test";
+            requestReceiver.receiverId = receiverEntity.receiverId;
+            requestDeleteReceiver(requestReceiver);
         };
     }
 
     nameView.ondblclick = function () {
-        showReceiverEditorView(data, function (data) {
-            requestUpdateReceiver(data, nameView, addressView);
+        showReceiverEditorView(receiverEntity, function (newReceiverEntity) {
+            requestUpdateReceiver(newReceiverEntity);
         });
     };
 
     addressView.ondblclick = function () {
-        showReceiverEditorView(data, function (data) {
-            requestUpdateReceiver(data, nameView, addressView);
+        showReceiverEditorView(receiverEntity, function (newReceiverEntity) {
+            requestUpdateReceiver(newReceiverEntity);
         });
     };
     return receiverItemContainer;
@@ -230,9 +244,9 @@ function createAddNewReceiverContainer(accountId) {
     addView.innerHTML = "+";
     addReceiverView.appendChild(addView);
     addView.onclick = function () {
-        showReceiverEditorView(undefined, function (data) {
-            data.accountId = accountId;
-            requestCreateReceiver(data);
+        showReceiverEditorView(undefined, function (receiverEntity) {
+            receiverEntity.accountId = accountId;
+            requestCreateReceiver(receiverEntity);
         });
     };
     return addReceiverView;

@@ -30,7 +30,6 @@ function onRequestOrderCallback(orderEntities) {
 }
 
 function createOrderItemView(orderEntity) {
-    console.log(orderEntity);
     let itemContainer = document.createElement("div");
     itemContainer.className = "itemContainer";
     itemContainer.customerHeight = 0;

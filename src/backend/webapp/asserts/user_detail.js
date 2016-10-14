@@ -2,7 +2,7 @@
  * Created by dingpengwei on 8/16/16.
  */
 
-function onCartTabCallback(userEntity) {
+function onUserCartTabCallback(userEntity) {
     let url = BASE_PATH + "/cart/mRetrieve?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -15,8 +15,8 @@ function onCartTabCallback(userEntity) {
     createCartView();
 }
 
-function onOrderTabCallback(userEntity) {
-    let url = BASE_PATH + "/receiver/mRetrievesByUser?p=" + JSON.stringify(userEntity);
+function onUserOrderTabCallback(userEntity) {
+    let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -29,11 +29,11 @@ function onOrderTabCallback(userEntity) {
 }
 
 
-function onAccountTabCallback(userEntity) {
+function onUserAccountTabCallback(userEntity) {
     createAccountView();
 }
 
-function onRequestReceiverCallback(userEntity) {
+function onUserRequestReceiverCallback(userEntity) {
     let url = BASE_PATH + "/receiver/mRetrieveByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -66,10 +66,10 @@ function showUserDetail(userEntity) {
     titleView.style.backgroundColor = "red";
 
     let tabItems = new Array();
-    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onCartTabCallback));
-    tabItems.push(new Tab("order", "订单", "horizontalNormal", onOrderTabCallback));
-    tabItems.push(new Tab("account", "账户", "horizontalNormal", onAccountTabCallback));
-    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onRequestReceiverCallback));
+    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onUserCartTabCallback));
+    tabItems.push(new Tab("order", "订单", "horizontalNormal", onUserOrderTabCallback));
+    tabItems.push(new Tab("account", "账户", "horizontalNormal", onUserAccountTabCallback));
+    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onUserRequestReceiverCallback));
 
     titleViewContainer.appendChild(titleView);
 
@@ -77,7 +77,7 @@ function showUserDetail(userEntity) {
     requestUserEntity.userId = userEntity.userId;
     createUserTitleTab(titleView, tabItems, requestUserEntity);
 
-    onCartTabCallback(requestUserEntity);
+    onUserCartTabCallback(requestUserEntity);
 }
 
 function createUserTitleTab(container, tabItems, userEntity) {

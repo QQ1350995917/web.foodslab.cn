@@ -1,7 +1,7 @@
 /**
  * Created by dingpengwei on 8/24/16.
  */
-function showReceiverEditorView(data, callback) {
+function showReceiverEditorView(receiverEntity, callback) {
     document.documentElement.style.overflow = 'hidden';
     document.oncontextmenu = new Function("event.returnValue=false;");
     document.onselectstart = new Function("event.returnValue=false;");
@@ -16,11 +16,11 @@ function showReceiverEditorView(data, callback) {
     let receiverEditor = createReceiverEditor();
     document.body.appendChild(receiverEditor);
     receiverEditor.appendChild(createReceiverEditorTitle());
-    receiverEditor.appendChild(createReceiverEditorName(data));
-    receiverEditor.appendChild(createReceiverEditorPhone(data));
-    receiverEditor.appendChild(createReceiverEditorAddress(data));
-    receiverEditor.appendChild(createReceiverEditorAddressAppend(data));
-    receiverEditor.appendChild(createReceiverEditorSave(data, callback));
+    receiverEditor.appendChild(createReceiverEditorName(receiverEntity));
+    receiverEditor.appendChild(createReceiverEditorPhone(receiverEntity));
+    receiverEditor.appendChild(createReceiverEditorAddress(receiverEntity));
+    receiverEditor.appendChild(createReceiverEditorAddressAppend(receiverEntity));
+    receiverEditor.appendChild(createReceiverEditorSave(receiverEntity, callback));
 }
 
 function dismissReceiverEditorView() {
