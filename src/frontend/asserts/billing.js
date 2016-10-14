@@ -8,7 +8,25 @@ window.onload = function () {
     if (accountId == undefined || accountId == null || accountId == "") {
         requestBillingByAnonymous();
     } else {
-        requestUserReceiver();
+        let mainView = document.getElementById(MAIN);
+        mainView.innerHTML = null;
+        mainView.style.height = "280px";
+        let receiverContainer = document.createElement("div");
+        receiverContainer.className = "containerStyle";
+        receiverContainer.style.height = "120px";
+        receiverContainer.style.minHeight = "120px";
+        let payStyleContainer = document.createElement("div");
+        payStyleContainer.className = "containerStyle";
+        payStyleContainer.appendChild(createPayStyleContainer());
+        let productContainer = document.createElement("div");
+        productContainer.className = "containerStyle";
+        mainView.appendChild(receiverContainer);
+        mainView.appendChild(payStyleContainer);
+        mainView.appendChild(productContainer);
+        let userEntity = new Object();
+        userEntity.sessionId = accountId;
+        requestUserReceiver(userEntity,receiverContainer);
+        requestCart(productContainer);
     }
 };
 
@@ -26,36 +44,38 @@ function requestBillingByAnonymous() {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-let tempReceiver = undefined;
-function requestUserReceiver() {
-    let url = BASE_PATH + "receiver/retrieve?accountId=test";
+function requestUserReceiver(userEntity,receiverContainer) {
+    let url = BASE_PATH + "receiver/retrieves?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            tempReceiver = jsonData.data;
-            requestBillingByUser();
+            receiverContainer.appendChild(createUserReceiverContainer(jsonData.data,function (height) {
+                receiverContainer.parentNode.style.height = (receiverContainer.parentNode.clientHeight + height) + "px";
+            }));
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestBillingByUser() {
+function requestCart(productContainer) {
     let mappingIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
     let cartEntity = new Object();
     cartEntity.sessionId = "test";
     cartEntity.mappingIds = mappingIds;
-    let url = BASE_PATH + "cart/retrieve?p=" + JSON.stringify(cartEntity);
+    let url = BASE_PATH + "cart/retrieves?p=" + JSON.stringify(cartEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createBillingByUser(jsonData.data);
+            console.log(jsonData);
+            fillingProductContainer(productContainer,jsonData.data,function (height) {
+                productContainer.parentNode.style.height = (productContainer.parentNode.clientHeight + height) + "px";
+            });
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
 function requestCreateOrder(orderEntity) {
-    console.log(orderEntity);
     let url = BASE_PATH + "order/create?p="  + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -116,31 +136,22 @@ function createBillingByAnonymous(formatEntity) {
  * 创建用户支付信息
  * @param data
  */
-function createBillingByUser(cartEntities) {
-    let mainView = document.getElementById(MAIN);
-    mainView.innerHTML = null;
-    let receiverView = createUserReceiverContainer(tempReceiver);
-    mainView.appendChild(receiverView);
-
-    let payStyleView = createPayStyleContainer();
-    mainView.appendChild(payStyleView);
-
+function fillingProductContainer(productContainer, cartEntities,resetHeightCallback) {
     let length = cartEntities == undefined ? 0:cartEntities.length;
     let formatEntities = new Array();
     for (let i=0;i<length;i++){
         let cartEntity = cartEntities[i];
-        console.log(cartEntity);
         let formatEntity = cartEntity.formatEntity;
         formatEntity.amount = cartEntity.amount;
         formatEntities.push(formatEntity);
     }
     let productView = createProductContainer(formatEntities);
-    mainView.appendChild(productView);
+    productContainer.appendChild(productView);
 
     let payBarView = createPayBarContainer(cartEntities);
-    mainView.appendChild(payBarView);
-
-    mainView.style.height = receiverView.clientHeight + payStyleView.clientHeight + productView.clientHeight + payBarView.clientHeight + "px";
+    productContainer.appendChild(payBarView);
+    productContainer.style.height =  productView.clientHeight + payBarView.clientHeight + "px";
+    resetHeightCallback(productContainer.clientHeight);
 }
 
 function createAnonymousReceiverContainer() {
@@ -183,7 +194,7 @@ function createAnonymousReceiverContainer() {
     return receiverContainer;
 }
 
-function createUserReceiverContainer(receiverEntities) {
+function createUserReceiverContainer(receiverEntities,onResetHeightCallback) {
     let receiverContainer = document.createElement("div");
     receiverContainer.className = "receiverContainer containerStyle";
     let receiverMessage = document.createElement("div");
@@ -203,35 +214,32 @@ function createUserReceiverContainer(receiverEntities) {
     moreReceiverTip.status = "less";
     receiverContainer.appendChild(moreReceiverTip);
     let moreReceiverContainer = createMoreReceiverAddressContainer(receiverEntities);
-    moreReceiverTip.onclick = function () {
-        if (this.status == "less") {
-            moreReceiverTip.innerHTML = "更多收货地址 ︾ ";
-            this.status = "more";
-            receiverContainer.style.height = "210px";
-            let mainView = document.getElementById(MAIN);
-            receiverContainer.appendChild(moreReceiverContainer);
-            mainView.style.height = mainView.clientHeight + moreReceiverContainer.clientHeight + "px";
-        } else if (this.status == "more") {
-            moreReceiverTip.innerHTML = "更多收货地址 ︽ ";
-            this.status = "less";
-            receiverContainer.style.height = "120px";
-            let mainView = document.getElementById(MAIN);
-            receiverContainer.removeChild(moreReceiverContainer);
-            mainView.style.height = mainView.clientHeight - moreReceiverContainer.clientHeight + "px";
-        }
-    };
+    // moreReceiverTip.onclick = function () {
+    //     if (this.status == "less") {
+    //         moreReceiverTip.innerHTML = "更多收货地址 ︾ ";
+    //         this.status = "more";
+    //         onResetHeightCallback(moreReceiverContainer.customerHeight);
+    //         receiverContainer.appendChild(moreReceiverContainer);
+    //     } else if (this.status == "more") {
+    //         moreReceiverTip.innerHTML = "更多收货地址 ︽ ";
+    //         this.status = "less";
+    //         receiverContainer.parentNode.style.height = "120px";
+    //         receiverContainer.removeChild(moreReceiverContainer);
+    //     }
+    // };
     receiverContainer.style.height = "120px";
     return receiverContainer;
 }
 
-function createMoreReceiverAddressContainer(data) {
+function createMoreReceiverAddressContainer(receiverEntities) {
     let moreAddressContainer = document.createElement("div");
-    if (data != undefined && data.length > 0) {
-        for (let i = 0; i < data.length; i++) {
-
-        }
+    moreAddressContainer.style.color = "black";
+    let length = receiverEntities == undefined ? 0:receiverEntities.length;
+    for (let i = 0; i < length; i++) {
+        let receiverEntity = receiverEntities[i];
+        moreAddressContainer.appendChild(createReceiverAddressEditorContainer(receiverEntity));
     }
-    if (data == undefined || data.length < 10) {
+    if (receiverEntities == undefined || receiverEntities.length < 10) {
         let addNewReceiver = document.createElement("div");
         addNewReceiver.className = "billingReceiverItem";
         addNewReceiver.style.textAlign = "center";
@@ -239,7 +247,8 @@ function createMoreReceiverAddressContainer(data) {
         addNewReceiver.innerHTML = "+";
         moreAddressContainer.appendChild(addNewReceiver);
     }
-    moreAddressContainer.style.height = data == undefined ? 0 : data.length * 30 + data.length < 10 ? 1 : 0 * 30 + "px";
+    moreAddressContainer.style.height = (length * 30 + (receiverEntities.length < 10 ? 1 : 0 * 30)) + "px";
+    moreAddressContainer.customerHeight = length * 30 + ((receiverEntities.length < 10 ? 1 : 0)* 30) ;
     return moreAddressContainer;
 
 }

@@ -32,6 +32,7 @@ div.header_icon {
     width: 199px;
     height: 70px;
     border-right: 1px solid #CCCCCC;
+    cursor: pointer;
 }
 
 div.header_menu {

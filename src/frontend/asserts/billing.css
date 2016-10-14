@@ -1,6 +1,8 @@
+
 div.containerStyle{
     width: 1000px;
     height: 160px;
+    min-height: 160px;
     border: 0px solid #CCCCCC;
     border-top-width: 1px;
 }

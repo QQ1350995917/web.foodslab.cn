@@ -30,11 +30,11 @@
 - [管理员根据用户读取购物车产品]()
 
 ## [收货人接口](domain/receiver.md)
-- [新建收货人](domain/receiver.md)
-- [修改收货人](domain/receiver.md)
-- [删除收货人](domain/receiver.md)
-- [设置默认收货人](domain/receiver.md)
-- [读取收货人](domain/receiver.md)
+- [用户新建收货人](domain/receiver.md)
+- [用户修改收货人](domain/receiver.md)
+- [用户删除收货人](domain/receiver.md)
+- [用户设置默认收货人](domain/receiver.md)
+- [用户读取收货人](domain/receiver.md)
 - [管理员读取收货人](domain/receiver.md)
 
 ## [支付接口](domain/billing.md)

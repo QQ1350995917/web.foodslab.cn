@@ -7,18 +7,18 @@ window.onload = function () {
     let formatId = document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content;
     let typeEntity = new Object();
     typeEntity.typeId = typeId;
-    requestType(typeEntity);
+    requestType(typeEntity,formatId);
     requestLinker();
 };
 
-function requestType(typeEntity) {
+function requestType(typeEntity,selectedFormatId) {
     let url = BASE_PATH + "type/retrieve?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
             createTypeTitle(jsonData.data);
-            createTypeMainView(jsonData.data);
+            createTypeMainView(jsonData.data,selectedFormatId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -72,7 +72,7 @@ function createTypeTitle(typeEntity) {
     typeEntityView.appendChild(typeLabelView);
 }
 
-function createTypeMainView(typeEntity) {
+function createTypeMainView(typeEntity,selectedFormatId) {
     let typeMainTopView = document.createElement("div");
     typeMainTopView.className = "typeMainTopView";
 
@@ -91,12 +91,13 @@ function createTypeMainView(typeEntity) {
     let descriptionView = document.createElement("div");
     descriptionView.innerHTML = typeEntity.summary;
     descriptionView.style.color = "black";
-    descriptionView.style.height = "120px";
+    descriptionView.style.height = "70px";
     typeMainTopRight.appendChild(descriptionView);
 
     let formatEntitiesView = document.createElement("div");
-    formatEntitiesView.style.height = "251px";
-    //createFormatView(formatEntitiesView, typeEntity.children, document.getElementById("formatId") == undefined ? null : document.getElementById("formatId").content);
+    formatEntitiesView.style.height = "231px";
+    formatEntitiesView.style.marginTop = "20px";
+    requestFormat(typeEntity,formatEntitiesView,selectedFormatId);
     typeMainTopRight.appendChild(formatEntitiesView);
 
     typeMainTopView.appendChild(typeMainTopRight);
@@ -114,27 +115,38 @@ function createTypeMainView(typeEntity) {
     mainView.style.height = typeMainTopView.clientHeight + typeMainLine.clientHeight + typeMainDownView.clientHeight + "px";
 }
 
-function createFormatView(containerView, formatEntity, selectedFormatId) {
+function requestFormat(typeEntity,containerView,selectedFormatId) {
+    let url = BASE_PATH + "format/retrieves?p=" + JSON.stringify(typeEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createFormatView(containerView,jsonData.data,selectedFormatId);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function createFormatView(containerView, formatEntities, selectedFormatId) {
     containerView.innerHTML = null;
     let formatLabelView = document.createElement("div");
     formatLabelView.className = "formatItem";
     let currentFormat = undefined;
-    for (let i = 0; i < formatEntity.length; i++) {
+    for (let i = 0; i < formatEntities.length; i++) {
         let formatLabel = document.createElement("div");
         formatLabel.className = "formatLabel";
-        formatLabel.innerHTML = formatEntity[i].label + formatEntity[i].meta;
+        formatLabel.innerHTML = formatEntities[i].label + formatEntities[i].meta;
         formatLabel.onclick = function () {
-            createFormatView(containerView, formatEntity, formatEntity[i].formatId);
+            createFormatView(containerView, formatEntities, formatEntities[i].formatId);
         };
-        if (selectedFormatId == formatEntity[i].formatId) {
-            currentFormat = formatEntity[i];
+        if (selectedFormatId == formatEntities[i].formatId) {
+            currentFormat = formatEntities[i];
             formatLabel.className = "formatLabelSelected";
         }
         formatLabelView.appendChild(formatLabel);
     }
 
     if (currentFormat == undefined) {
-        currentFormat = formatEntity[0];
+        currentFormat = formatEntities[0];
         formatLabelView.childNodes[0].className = "formatLabelSelected";
     }
     containerView.appendChild(formatLabelView);

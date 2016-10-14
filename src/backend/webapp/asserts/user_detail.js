@@ -16,7 +16,7 @@ function onCartTabCallback(userEntity) {
 }
 
 function onOrderTabCallback(userEntity) {
-    let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
+    let url = BASE_PATH + "/receiver/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -541,7 +541,7 @@ function createReceiverContainer(receiverEntities) {
         addressView.style.paddingRight = "10px";
         addressView.innerHTML = receiverEntity.province + " " + receiverEntity.city + " " + receiverEntity.county + " " + receiverEntity.town + " " + receiverEntity.village
             + " " + (receiverEntity.append == undefined ? "" : receiverEntity.append ) + " " + receiverEntity.phone0;
-        if (receiverEntity.status == 2) {
+        if (receiverEntity.status == 1) {
             nameView.style.borderColor = "red";
             addressView.style.borderColor = "red";
             addressView.style.width = "784px";

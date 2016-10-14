@@ -63,7 +63,11 @@ function onTimeoutCallback() {
 
 function initTitleView() {
     let header = document.getElementById("header");
-    header.innerHTML = "<div id='header_icon' class='header_icon'>foodslab.cn</div> <div id='header_menu' class='header_menu'> <div id='header_menu_top' class='header_menu_top'></div> <div id='header_menu_down' class='header_menu_down'></div> </div>";
+    header.innerHTML = "<div id='header_icon' class='header_icon' onclick='onIndexClick()'>foodslab.cn</div> <div id='header_menu' class='header_menu'> <div id='header_menu_top' class='header_menu_top'></div> <div id='header_menu_down' class='header_menu_down'></div> </div>";
+}
+
+function onIndexClick() {
+    window.open(BASE_PATH,"_blank");
 }
 
 function requestLinker() {

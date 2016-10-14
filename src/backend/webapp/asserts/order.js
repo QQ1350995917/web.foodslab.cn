@@ -63,7 +63,7 @@ function onExpressingTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createExpressingView(jsonData.data);
+            createOrderExpressingView(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -179,7 +179,7 @@ function attachUnExpressView(orderEntity, container, status) {
     }
 }
 
-function createExpressingView(orderEntities) {
+function createOrderExpressingView(orderEntities) {
     let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     contentViewContainer.innerHTML = null;
 
@@ -233,6 +233,7 @@ function createAllView(orderEntities) {
 }
 
 function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, statusViewWidth, paramView) {
+    console.log(orderEntity);
     /**
      * 最外层的容器根对象
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
@@ -244,7 +245,7 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
      */
     let orderEntityTitleView = document.createElement("div");
     orderEntityTitleView.className = "orderItemTitle";
-    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId + "  收货人：地球往事    电话：123 4567 78900";
+    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId + "  收货人：" + (orderEntity.senderName == undefined ? orderEntity.receiverId: orderEntity.senderName) + "    电话：123 4567 78900";
     orderEntityView.appendChild(orderEntityTitleView);
 
     /**

@@ -2,7 +2,9 @@
  * Created by dingpengwei on 9/8/16.
  */
 function requestReceiver(accountId) {
-    let url = BASE_PATH + "receiver/retrieve?accountId=" + accountId;
+    let userEntity = new Object()
+    userEntity.sessionId = accountId;
+    let url = BASE_PATH + "receiver/retrieves?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -37,7 +39,7 @@ function requestUpdateReceiver(data, nameView, addressView) {
     let url = BASE_PATH + "receiver/update?accountId=" + data.accountId + "&receiverId=" + data.receiverId
         + "&name=" + data.name + "&phone0=" + data.phone0 + "&phone1=" + data.phone1
         + "&province=" + data.province + "&city=" + data.city + "&county=" + data.county
-        + "&town=" + data.town + "&village=" + data.village + "&status=" + (data.status == 3 ? 2:1);
+        + "&town=" + data.town + "&village=" + data.village + "&status=" + (data.status == 3 ? 2 : 1);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -112,7 +114,7 @@ function onRequestUpdateReceiverCallback(data, nameView, addressView) {
         let mainView = document.getElementById(MAIN);
         for (let i = 0; i < mainView.childNodes.length; i++) {
             let originData = mainView.childNodes[i].data;
-            if (originData.status == 2){
+            if (originData.status == 2) {
                 originData.status = 1;
                 mainView.childNodes[i].data = originData;
                 createReceiverItemContainer(originData, mainView.childNodes[i]);
@@ -166,7 +168,7 @@ function createReceiverItemContainer(data, receiverItemContainer) {
     addressView.innerHTML = data.province + " " + data.city + " " + data.county + " " + data.town + " " + data.village
         + " " + (data.append == undefined ? "" : data.append ) + " " + data.phone0;
     receiverItemContainer.appendChild(addressView);
-    if (data.status == 2) {
+    if (data.status == 3) {
         nameView.style.borderColor = "red";
         addressView.style.borderColor = "red";
         addressView.style.width = "784px";
