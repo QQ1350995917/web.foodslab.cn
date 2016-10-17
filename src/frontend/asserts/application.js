@@ -63,31 +63,75 @@ function onTimeoutCallback() {
 function initTitleView() {
     let header = document.getElementById("header");
     header.innerHTML = "<div id='header_icon' class='header_icon' onclick='onIndexClick()'>foodslab.cn</div> <div id='header_menu' class='header_menu'> <div id='header_menu_top' class='header_menu_top'></div> <div id='header_menu_down' class='header_menu_down'></div> </div>";
-    requestAccount();
+    initAccountView();
 }
 
-function requestAccount() {
-    if (sessionStorage.cs) {
+function initAccountView() {
+    let topMenuPanel = document.getElementById(HEADER_MENU_TOP);
+    topMenuPanel.innerHTML = null;
+    let loginAction = document.createElement("div");
+    loginAction.className = "header_menu_top_item";
+    loginAction.innerHTML = "登录/注册";
+    let queryAction = document.createElement("div");
+    queryAction.className = "header_menu_top_item";
+    queryAction.style.widths = "100px";
+    queryAction.innerHTML = "订单查询";
+    topMenuPanel.appendChild(loginAction);
+    topMenuPanel.appendChild(queryAction);
 
-    } else {
-        let topMenuPanel = document.getElementById(HEADER_MENU_TOP);
-        let loginAction = document.createElement("div");
-        loginAction.className = "header_menu_top_item";
-        loginAction.innerHTML = "登录/注册";
-        let queryAction = document.createElement("div");
-        queryAction.className = "header_menu_top_item";
-        queryAction.style.widths = "100px";
-        queryAction.innerHTML = "订单查询";
-        topMenuPanel.appendChild(loginAction);
-        topMenuPanel.appendChild(queryAction);
-        loginAction.onclick = function () {
-            showLoginView();
-        }
-        
-        queryAction.onclick = function () {
-            window.open(BASE_PATH + "pq");
-        }
+    loginAction.onclick = function () {
+        showLoginView(function () {
+            let requestUserEntity = new Object();
+            requestUserEntity.cs = getCookie("cs");
+            requestUser(topMenuPanel, requestUserEntity);
+        });
     }
+    queryAction.onclick = function () {
+        window.open(BASE_PATH + "pq");
+    }
+    if (getCookie("cs")) {
+        let requestUserEntity = new Object();
+        requestUserEntity.cs = getCookie("cs");
+        requestUser(topMenuPanel, requestUserEntity);
+    }
+}
+
+function requestUser(container, userEntity) {
+    let url = BASE_PATH + "account/retrieve?p=" + JSON.stringify(userEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            if (jsonData.code == RESPONSE_SUCCESS){
+                let userEntity = jsonData.data;
+                let accountEntity = userEntity.children[0];
+                container.innerHTML = null;
+                let loginAction = document.createElement("div");
+                loginAction.className = "header_menu_top_item";
+                loginAction.innerHTML = accountEntity.nickName == undefined ? accountEntity.identity : accountEntity.nickName;
+                container.appendChild(loginAction);
+
+                let queryAction = document.createElement("div");
+                queryAction.className = "header_menu_top_item";
+                queryAction.style.widths = "100px";
+                queryAction.innerHTML = "订单查询";
+                container.appendChild(queryAction);
+
+                loginAction.onclick = function () {
+                    let requestPageEntity = new Object();
+                    requestPageEntity.cs = getCookie("cs");
+                    requestPageEntity.dir = getCookie("order");
+                    window.open(BASE_PATH + "pm?p="+JSON.stringify(requestPageEntity));
+                }
+
+                queryAction.onclick = function () {
+                    let requestPageEntity = new Object();
+                    requestPageEntity.cs = getCookie("cs");
+                    window.open(BASE_PATH + "pm?p="+JSON.stringify(requestPageEntity));
+                }
+            }
+        }
+    }, onErrorCallback, onTimeoutCallback);
 }
 
 function onIndexClick() {
@@ -188,6 +232,28 @@ function isNullValue(value) {
         return true;
     }
     return false;
+}
+
+function setCookie(key, value, expireDays) {
+    if (isNullValue(expireDays)) {
+        expireDays = 30;
+    }
+    var expireDate = new Date()
+    expireDate.setDate(expireDate.getDate() + expireDays)
+    document.cookie = key + "=" + escape(value) + ((expireDays == null) ? "" : ";expires=" + expireDate.toGMTString())
+}
+
+function getCookie(key) {
+    if (document.cookie.length > 0) {
+        let indexStart = document.cookie.indexOf(key + "=")
+        if (indexStart != -1) {
+            indexStart = indexStart + key.length + 1
+            let indexEnd = document.cookie.indexOf(";", indexStart)
+            if (indexEnd == -1) indexEnd = document.cookie.length
+            return unescape(document.cookie.substring(indexStart, indexEnd))
+        }
+    }
+    return ""
 }
 
 Date.prototype.format = function (format) {

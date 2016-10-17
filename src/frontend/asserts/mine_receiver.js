@@ -1,15 +1,15 @@
 /**
  * Created by dingpengwei on 9/8/16.
  */
-function requestReceiver(accountId) {
+function requestMineReceiver(cs) {
     let userEntity = new Object()
-    userEntity.sessionId = accountId;
+    userEntity.cs = cs;
     let url = BASE_PATH + "receiver/retrieves?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestRetrieveCallback(accountId, jsonData.data);
+            onRequestRetrieveCallback(getCookie("cs"), jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -39,7 +39,7 @@ function requestUpdateReceiver(receiverEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            requestReceiver(jsonData.data.sessionId);
+            requestMineReceiver(jsonData.data.sessionId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -50,7 +50,7 @@ function requestDeleteReceiver(receiverEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            requestReceiver(jsonData.data.sessionId);
+            requestMineReceiver(jsonData.data.sessionId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -61,7 +61,7 @@ function requestMarkReceiver(receiverEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            requestReceiver(jsonData.data.sessionId);
+            requestMineReceiver(jsonData.data.sessionId);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -70,7 +70,7 @@ function requestMarkReceiver(receiverEntity) {
  * 请求所有的收货地址的回调
  * @param data
  */
-function onRequestRetrieveCallback(accountId, data) {
+function onRequestRetrieveCallback(cs, data) {
     let mainView = document.getElementById(MAIN);
     mainView.innerHTML = null;
     let mainViewHeight = 0;
@@ -83,7 +83,7 @@ function onRequestRetrieveCallback(accountId, data) {
     }
 
     if (length < 12) {
-        let receiverAddNewContainer = createAddNewReceiverContainer(accountId);
+        let receiverAddNewContainer = createAddNewReceiverContainer(cs);
         mainView.appendChild(receiverAddNewContainer);
         mainViewHeight = mainViewHeight + receiverAddNewContainer.clientHeight;
     }
@@ -102,7 +102,7 @@ function onRequestCreateReceiverCallback(data) {
     mainView.appendChild(receiverItemContainer);
 
     if (mainView.childNodes.length < 12) {
-        let receiverAddNewContainer = createAddNewReceiverContainer(data.accountId);
+        let receiverAddNewContainer = createAddNewReceiverContainer(data.cs);
         mainView.appendChild(receiverAddNewContainer);
         mainView.style.height = mainView.clientHeight + receiverItemContainer.clientHeight + "px";
     }
@@ -231,7 +231,7 @@ function createReceiverItemContainer(receiverEntity, receiverItemContainer) {
     return receiverItemContainer;
 }
 
-function createAddNewReceiverContainer(accountId) {
+function createAddNewReceiverContainer(cs) {
     let addReceiverView = document.createElement("div");
     addReceiverView.id = "addReceiverView";
     addReceiverView.className = "receiverItemContainer";
@@ -245,7 +245,7 @@ function createAddNewReceiverContainer(accountId) {
     addReceiverView.appendChild(addView);
     addView.onclick = function () {
         showReceiverEditorView(undefined, function (receiverEntity) {
-            receiverEntity.accountId = accountId;
+            receiverEntity.cs = cs;
             requestCreateReceiver(receiverEntity);
         });
     };

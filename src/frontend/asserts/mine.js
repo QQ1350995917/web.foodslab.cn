@@ -4,7 +4,7 @@
 window.onload = function () {
     initTitleView();
     requestLinker();
-    let dir = document.getElementById("dir") == undefined ? null : document.getElementById("dir").content;
+    let dir = document.getElementById("dir") == undefined ? null : document.getElementById("dir").content == "" ? "cart":document.getElementById("dir").content;
     if (dir == "cart"){
         createMineTabView(0);
     }
@@ -56,17 +56,17 @@ function createMineTabView(index) {
 }
 
 function requestMyCart() {
-    requestCart("test");
+    requestMineCart(getCookie("cs"));
 }
 
 function requestMyOrder() {
-    requestOrder("test");
+    requestMineOrder(getCookie("cs"));
 }
 
 function requestMyAccount() {
-    requestAccount("test");
+    requestMineAccount(getCookie("cs"));
 }
 
 function requestMyReceiver() {
-    requestReceiver("test");
+    requestMineReceiver(getCookie("cs"));
 }
