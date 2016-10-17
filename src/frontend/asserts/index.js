@@ -3,9 +3,30 @@
  */
 window.onload = function () {
     initTitleView();
+    let mainContainer = document.getElementById(MAIN);
+    mainContainer.innerHTML = null;
+    let posterContainer = document.createElement("div");
+    posterContainer.className = "HFillContainer";
+    let recommendContainer = document.createElement("div");
+    recommendContainer.className = "HFillContainer";
+    mainContainer.appendChild(posterContainer);
+    mainContainer.appendChild(recommendContainer);
+    
     requestSeries();
-    requestPoster();
-    requestRecommend();
+    requestPoster(posterContainer, function (reset, height) {
+        if (reset) {
+
+        } else {
+            mainContainer.style.height = (posterContainer.clientHeight + recommendContainer.clientHeight) + "px";
+        }
+    });
+    requestRecommend(recommendContainer, function (reset, height) {
+        if (reset) {
+
+        } else {
+            mainContainer.style.height = (posterContainer.clientHeight + recommendContainer.clientHeight) + "px";
+        }
+    });
     requestLinker();
 };
 
@@ -20,17 +41,25 @@ function requestSeries() {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestPoster() {
-    let url = BASE_PATH + "poster";
+function requestPoster(posterContainer, onResizeCallback) {
+    let url = BASE_PATH + "poster/retrieves";
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createPosterView(posterContainer, jsonData.data, onResizeCallback);
+        }
+    }, onErrorCallback, onTimeoutCallback);
 }
 
-function requestRecommend() {
+
+function requestRecommend(recommendContainer, onResizeCallback) {
     let url = BASE_PATH + "format/recommends";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createRecommendView(jsonData.data);
+            fillRecommendContainer(recommendContainer, jsonData.data, onResizeCallback);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -49,17 +78,39 @@ function createSeriesView(seriesEntities) {
     }
 }
 
-function createPosterView(posterEntities) {
+function createPosterView(posterContainer, posterEntities, onResizeCallback) {
+    let length = posterEntities == undefined ? 0 : posterEntities.length;
 
+    if (length == 0) {
+        posterContainer.style.height = "0px";
+    } else {
+        let index = 0;
+        posterContainer.style.height = "320px";
+        let posterView = document.createElement("img");
+        posterView.style.width = "1000px";
+        posterView.style.height = "320px";
+        posterView.src = posterEntities[index].href;
+        posterContainer.appendChild(posterView);
+        onResizeCallback(false, 320);
+        if (length > 1){
+            window.setInterval(function () {
+                index ++;
+                if (index == length){
+                    index = 0;
+                }
+                posterView.src = posterEntities[index].href;
+            },3000);
+        }
+    }
 }
 
-function createRecommendView(formatEntities) {
-    let formatEntitiesView = document.createElement("div")
-    for (let i = 0; i < formatEntities.length; i++) {
+function fillRecommendContainer(recommendContainer, formatEntities, onResizeCallback) {
+    let length = formatEntities == undefined ? 0 : formatEntities.length;
+    for (let i = 0; i < length; i++) {
         if (i % 4 == 0) {
             let clearFloat = document.createElement("div")
             clearFloat.className = "clearFloat";
-            formatEntitiesView.appendChild(clearFloat);
+            recommendContainer.appendChild(clearFloat);
         }
         let formatEntityView = document.createElement("div")
         formatEntityView.className = "productItem";
@@ -68,7 +119,7 @@ function createRecommendView(formatEntities) {
          */
         let formatEntityTitleView = document.createElement("div")
         formatEntityTitleView.className = "productItem_title";
-        formatEntityTitleView.style.backgroundColor = COLORS[Math.floor(Math.random()*10)];
+        formatEntityTitleView.style.backgroundColor = COLORS[Math.floor(Math.random() * 10)];
         formatEntityTitleView.innerHTML = formatEntities[i].parent.parent.label;
         formatEntityTitleView.onclick = function () {
             let url = BASE_PATH + "ps?seriesId=" + formatEntities[i].parent.parent.seriesId;
@@ -115,10 +166,10 @@ function createRecommendView(formatEntities) {
             window.open(url);
         };
         formatEntityView.appendChild(formatEntityBuyView);
-        formatEntitiesView.appendChild(formatEntityView);
+        recommendContainer.appendChild(formatEntityView);
     }
-    let mainView = document.getElementById(MAIN);
-    let rowNum = Math.floor(formatEntities.length / 4) + (formatEntities.length % 4 == 0 ? 0 : 1);
-    mainView.style.height = rowNum * 400 + rowNum * 2 + "px";
-    mainView.appendChild(formatEntitiesView);
+
+    let rowNum = Math.floor(length / 4) + (length % 4 == 0 ? 0 : 1);
+    recommendContainer.style.height = rowNum * 400 + rowNum * 2 + "px";
+    onResizeCallback(false, recommendContainer.clientHeight);
 }

@@ -88,8 +88,15 @@ function onFrameMenuItemClick(dataId) {
     } else if (dataId == "message") {
         resetView();
         showMessageView();
+    } else if (dataId == "sys_status") {
+        resetView();
+    } else if (dataId == "sys_log") {
+        resetView();
+    } else if (dataId == "sys_flow") {
+        resetView();
+    } else if (dataId == "sale_chart") {
+        resetView();
     } else {
-        console.log(dataId);
         console.log("点击判断值超出范围");
     }
 }

@@ -1,6 +1,7 @@
 /**
  * Created by dingpengwei on 9/7/16.
  */
+
 function showLoginView() {
     showMaskView();
     createLoginView();

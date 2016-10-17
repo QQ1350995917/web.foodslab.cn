@@ -136,8 +136,6 @@ function initPosterEditorView(posterEntity, isCreate) {
         commitView.onclick = function () {
             let requestPosterEntity = new Object();
             requestPosterEntity.href = linkedEditor.value;
-            // requestPosterEntity.start = posterEntity.start;
-            // requestPosterEntity.end = posterEntity.end;
             requestPosterEntity.status = displayView.checked ? 2 : 1;
             requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
             requestCreatePoster(requestPosterEntity);
@@ -147,12 +145,11 @@ function initPosterEditorView(posterEntity, isCreate) {
         commitView.onclick = function () {
             let requestPosterEntity = new Object();
             requestPosterEntity.posterId = posterEntity.posterId;
-            requestPosterEntity.href = posterEntity.href;
+            requestPosterEntity.href = linkedEditor.value;
             requestPosterEntity.fileId = posterEntity.fileId;
-            requestPosterEntity.start = posterEntity.start;
-            requestPosterEntity.end = posterEntity.end;
             requestPosterEntity.status = displayView.checked ? 2 : 1;
             requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
+            console.log(requestPosterEntity);
             requestUpdatePoster(requestPosterEntity);
         };
     }

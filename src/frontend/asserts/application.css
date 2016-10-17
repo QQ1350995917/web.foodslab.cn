@@ -48,6 +48,19 @@ div.header_menu_top {
     border-bottom: 1px solid #CCCCCC;
 }
 
+div.header_menu_top_item {
+    float: right;
+    width: 90px;
+    height: 29px;
+    text-align: center;
+    line-height: 29px;
+    font-size: 1.2rem;
+    color: #FFFFFF;
+    border: 0px solid #CCCCCC;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
 div.header_menu_down {
     width: 800px;
     height: 40px;
@@ -58,6 +71,10 @@ div.main {
     width: 1000px;
     height: 600px;
     margin: 75px auto 0px;
+}
+
+div.HFillContainer{
+    width: 100%;
 }
 
 div.footer {

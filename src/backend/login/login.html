@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=no">
     <title>登录</title>
     <style type="text/css">
-        html body{
+        html body {
             width: 100%;
             height: 100%;
             padding: 0px;
@@ -73,6 +73,7 @@
     <div id="loginButton" class="loginButton" onclick="loginAction()">登录</div>
 </div>
 </body>
+<script src="sha256.js"></script>
 <script>
     window.onload = function () {
         let background = document.getElementById("background");
@@ -87,7 +88,57 @@
 
     let frame = "http://localhost:8080/foodslab/frame";
     function loginAction() {
-        window.open(frame,"_self");
+
+     sha256("foobar").then(function (digest) {
+         console.log(digest);
+     });
+
+//        window.open(frame,"_self");
+
+//        let accountEntity = new Object();
+//        accountEntity.identity = "test";
+//        let url = "http://localhost:8080/foodslab/account/login?p=" + JSON.stringify(accountEntity);
+//        asyncRequestByGet(url, function (data) {
+//            console.log(data);
+//            console.log(document.cookie);
+//            var arrStr = document.cookie.split("; ");
+//            for (var i = 0; i < arrStr.length; i++) {
+//                var temp = arrStr[i].split("=");
+//                if (temp[0] == "cs"){
+//                  console.log(unescape(temp[1]));
+//                } // url编码了，所以应该解码
+//            }
+//        }, function () {
+//
+//        }, function () {
+//
+//        });
     }
+
+
+    function setCookie(NameOfCookie, value) {
+        var ExpireDate = new Date();
+        ExpireDate.setTime(ExpireDate.getTime() + (10 * 1000));
+        document.cookie = NameOfCookie + "=" +escape(value) + ((expiredays == null) ? "" : ";expires =" +ExpireDate.toGMTString());
+    }
+
+
+    function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                onDataCallback(xmlHttp.responseText);
+            } else {
+                onErrorCallback;
+            }
+        }
+        xmlHttp.timeout = 5000;
+        xmlHttp.ontimeout = onTimeoutCallback;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.withCredentials = true;
+        xmlHttp.send(null);
+    }
+    //    encodeURIComponent
+    //    decodeURIComponent
 </script>
 </html>

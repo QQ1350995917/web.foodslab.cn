@@ -60,14 +60,38 @@ function onTimeoutCallback() {
 
 }
 
-
 function initTitleView() {
     let header = document.getElementById("header");
     header.innerHTML = "<div id='header_icon' class='header_icon' onclick='onIndexClick()'>foodslab.cn</div> <div id='header_menu' class='header_menu'> <div id='header_menu_top' class='header_menu_top'></div> <div id='header_menu_down' class='header_menu_down'></div> </div>";
+    requestAccount();
+}
+
+function requestAccount() {
+    if (sessionStorage.cs) {
+
+    } else {
+        let topMenuPanel = document.getElementById(HEADER_MENU_TOP);
+        let loginAction = document.createElement("div");
+        loginAction.className = "header_menu_top_item";
+        loginAction.innerHTML = "登录/注册";
+        let queryAction = document.createElement("div");
+        queryAction.className = "header_menu_top_item";
+        queryAction.style.widths = "100px";
+        queryAction.innerHTML = "订单查询";
+        topMenuPanel.appendChild(loginAction);
+        topMenuPanel.appendChild(queryAction);
+        loginAction.onclick = function () {
+            showLoginView();
+        }
+        
+        queryAction.onclick = function () {
+            window.open(BASE_PATH + "pq");
+        }
+    }
 }
 
 function onIndexClick() {
-    window.open(BASE_PATH,"_blank");
+    window.open(BASE_PATH, "_blank");
 }
 
 function requestLinker() {

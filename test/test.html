@@ -5,14 +5,14 @@
     <title>Title</title>
     <link rel="stylesheet" type="text/css" href="test.css">
     <style type="text/css">
-        div.SS_IC{
+        div.SS_IC {
             width: 100%;
             height: 50px;
             margin: 0px auto;
             border: 1px solid #CCCCCC;
         }
 
-        hr.HL{
+        hr.HL {
             float: left;
             width: 20px;
             height: 1px;
@@ -21,7 +21,7 @@
             background-color: #CCCCCC;
         }
 
-        hr.HL2{
+        hr.HL2 {
             float: left;
             width: 20px;
             height: 1px;
@@ -33,23 +33,26 @@
 </head>
 <body id="body">
 <div class="outer" style="width: 100%;height: 500px ;background-color: transparent">
-    <div id="level1" class="SS_IC" >
-        <hr class="HL"/><hr class="HL"/>
-    </div>
-    <div class="SS_IC" >
+    <div id="level1" class="SS_IC">
+        <hr class="HL"/>
         <hr class="HL"/>
     </div>
-    <div class="SS_IC" >
+    <div class="SS_IC">
         <hr class="HL"/>
     </div>
-    <div class="SS_IC" >
+    <div class="SS_IC">
+        <hr class="HL"/>
+    </div>
+    <div class="SS_IC">
         <hr class="HL"/>
     </div>
 </div>
-<script type="text/javascript" >
+<script type="text/javascript">
     window.onload = function () {
-        let container = document.getElementById("level1");
-        container
+        console.log("1");
+    }
+    window.onload = function () {
+        console.log("2");
     }
 </script>
 
