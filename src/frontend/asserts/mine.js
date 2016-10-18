@@ -2,9 +2,8 @@
  * Created by dingpengwei on 9/8/16.
  */
 window.onload = function () {
-    initTitleView();
+    this.initFrameView();
     requestSessionStatus(onMineRequestSessionStatusCommonCallback);
-    requestLinker();
     let dir = document.getElementById("dir") == undefined ? null : document.getElementById("dir").content == "" ? "cart":document.getElementById("dir").content;
     if (dir == "cart"){
         createMineTabView(0);
@@ -42,7 +41,7 @@ function onMineRequestSessionStatusCommonCallback(data) {
         if (jsonData.code == RESPONSE_SUCCESS) {
             let userEntity = jsonData.data;
             let accountEntity = userEntity.children[0];
-            let headerMenuTop = document.getElementById(HEADER_MENU_TOP);
+            let headerMenuTop = document.getElementById(ID_HEADER_MENU_TOP);
             headerMenuTop.innerHTML = null;
             let logoutAction = document.createElement("div");
             logoutAction.className = "header_menu_top_item";
@@ -63,7 +62,7 @@ function onMineRequestSessionStatusCommonCallback(data) {
             headerMenuTop.appendChild(loginAction);
 
         } else {
-            let headerMenuTop = document.getElementById(HEADER_MENU_TOP);
+            let headerMenuTop = document.getElementById(ID_HEADER_MENU_TOP);
             headerMenuTop.innerHTML = null;
             let loginAction = document.createElement("div");
             loginAction.id = ID_HEADER_MENU_LOGIN;
@@ -95,7 +94,7 @@ function createMineTabView(index) {
     if (index == undefined) {
         index = 0;
     }
-    let mineTabContainer = document.getElementById(HEADER_MENU_DOWN);
+    let mineTabContainer = document.getElementById(ID_HEADER_MENU_DOWN);
     mineTabContainer.innerHTML = null;
     for (let i = 0; i < MINE_TABS.length; i++) {
         let tabView = document.createElement("div");

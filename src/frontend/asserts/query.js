@@ -2,11 +2,10 @@
  * Created by dingpengwei on 8/30/16.
  */
 window.onload = function () {
-    initTitleView();
+    this.initFrameView();
     createMenuDownView();
     requestSessionStatus(onQueryRequestSessionStatusCommonCallback);
     requestRecommend();
-    requestLinker();
     diversifyMainView();
     let orderId = document.getElementById("orderId") == undefined ? null : document.getElementById("orderId").content;
     if (orderId != null) {
@@ -33,7 +32,7 @@ function onQueryRequestSessionStatusCommonCallback(data) {
         if (jsonData.code == RESPONSE_SUCCESS) {
             let userEntity = jsonData.data;
             let accountEntity = userEntity.children[0];
-            let headerMenuTop = document.getElementById(HEADER_MENU_TOP);
+            let headerMenuTop = document.getElementById(ID_HEADER_MENU_TOP);
             headerMenuTop.innerHTML = null;
             let logoutAction = document.createElement("div");
             logoutAction.className = "header_menu_top_item";
@@ -57,7 +56,7 @@ function onQueryRequestSessionStatusCommonCallback(data) {
                 window.open(BASE_PATH + "pm?p=" + JSON.stringify(requestPageEntity),"_self");
             }
         } else {
-            let headerMenuTop = document.getElementById(HEADER_MENU_TOP);
+            let headerMenuTop = document.getElementById(ID_HEADER_MENU_TOP);
             headerMenuTop.innerHTML = null;
             let loginAction = document.createElement("div");
             loginAction.id = ID_HEADER_MENU_LOGIN;
