@@ -1,9 +1,9 @@
 /**
  * Created by dingpengwei on 9/8/16.
  */
-function requestMineReceiver(cs) {
+function requestMineReceiver() {
     let userEntity = new Object()
-    userEntity.cs = cs;
+    userEntity.cs = getCookie("cs");
     let url = BASE_PATH + "receiver/retrieves?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -50,7 +50,8 @@ function requestDeleteReceiver(receiverEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            requestMineReceiver(jsonData.data.sessionId);
+            console.log(jsonData);
+            requestMineReceiver();
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -203,15 +204,14 @@ function createReceiverItemContainer(receiverEntity, receiverItemContainer) {
             window.event.cancelBubble = true;
             let requestReceiver = new Object();
             requestReceiver.receiverId = receiverEntity.receiverId;
-            requestReceiver.sessionId = "test";
+            requestReceiver.cs = getCookie("cs");
             requestReceiver.status = 3;
             requestMarkReceiver(requestReceiver);
         };
 
         deleteView.onclick = function () {
             let requestReceiver = new Object();
-            requestReceiver.sessionId = "test";
-            requestReceiver.accountId = "test";
+            requestReceiver.cs = getCookie("cs");
             requestReceiver.receiverId = receiverEntity.receiverId;
             requestDeleteReceiver(requestReceiver);
         };

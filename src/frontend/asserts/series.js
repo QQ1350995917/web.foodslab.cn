@@ -3,6 +3,7 @@
  */
 window.onload = function () {
     initTitleView();
+    requestSessionStatus(onRequestSessionStatusCommonCallback);
     let seriesId = document.getElementById("seriesId") == undefined ? null : document.getElementById("seriesId").content;
     requestSeries(seriesId);
     requestLinker();

@@ -111,11 +111,3 @@ Toast.prototype.show = function (message) {
 function dismiss() {
     document.body.removeChild(document.getElementById("toastView"));
 }
-
-function isNull(value) {
-    if (value !== null && value !== undefined && value !== '') {
-        return false;
-    } else {
-        return true;
-    }
-}
