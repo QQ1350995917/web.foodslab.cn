@@ -78,10 +78,11 @@ window.onload = function () {
                         var result = checkResponseDataFormat(data);
                         if (result) {
                             var jsonData = JSON.parse(data);
-                            console.log(jsonData);
                             attachProductContainer(productContainer,jsonData.data,function (height) {
+                                productContainer.style.height = height + "px";
                                 productContainer.parentNode.style.height = (productContainer.parentNode.clientHeight + height) + "px";
                             });
+                            attachPayBarContainer(payBarContainer, jsonData.data);
                         }
                     }, onErrorCallback, onTimeoutCallback);
                 } else {
@@ -112,8 +113,6 @@ function onBillingRequestSessionStatusCommonCallback(data) {
         delCookie(KEY_CS);
     }
 }
-
-
 
 
 //
@@ -314,6 +313,7 @@ function attachProductContainer(container, formatEntities, onAttachCallback) {
     let length = formatEntities == undefined ? 0 : formatEntities.length;
     for (let i = 0; i < length; i++) {
         let formatEntity = formatEntities[i];
+
         let productItemContainer = document.createElement("div");
         productItemContainer.className = "productItemView";
 
@@ -324,14 +324,14 @@ function attachProductContainer(container, formatEntities, onAttachCallback) {
         let productName = document.createElement("div");
         productName.className = "messageLabelInItem";
         productName.style.width = "470px";
-        productName.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
+        productName.innerHTML = formatEntity.formatEntity.parent.parent.label + " " + formatEntity.formatEntity.parent.label + " " + formatEntity.formatEntity.label + formatEntity.formatEntity.meta;
         productItemContainer.appendChild(productName);
 
         let productPricing = document.createElement("div");
         productPricing.className = "messageLabelInItem";
         productPricing.style.width = "190px";
         productPricing.style.textAlign = "center";
-        productPricing.innerHTML = formatEntity.pricing + formatEntity.priceMeta;
+        productPricing.innerHTML = formatEntity.formatEntity.pricing + formatEntity.formatEntity.priceMeta;
         productItemContainer.appendChild(productPricing);
 
         let productAmount = document.createElement("div");
@@ -406,7 +406,7 @@ function onPayActionClick() {
         return;
     }
 
-    let accountId = document.getElementById("accountId") == undefined ? null : document.getElementById("accountId").content;
+    let accountId = getCookie(KEY_CS);
     let productIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
     if (accountId == undefined) {
         let senderName = document.getElementById("senderName").value;
