@@ -13,7 +13,7 @@ function showUsers() {
                 new Toast().show("请求失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function initUserList(userEntities) {
@@ -61,19 +61,19 @@ function createUserContentContainer(userEntity) {
     gridContentView.className = "gridItemSubContainer";
     let blockView = document.createElement("div");
     blockView.className = "actionButton gridItemActionButton";
-    if (userEntity.status == 0) {
+    if (userEntity.status == 1) {
         blockView.innerHTML = "启用";
         gridContentView.style.borderColor = "red";
-    } else if (userEntity.status == 1) {
+    } else if (userEntity.status == 2) {
         blockView.innerHTML = "禁用";
     }
     blockView.onclick = function () {
         let requestUserEntity = new Object();
         requestUserEntity.userId = userEntity.userId;
-        if (userEntity.status == 0) {
+        if (userEntity.status == 1) {
+            requestUserEntity.status = 2;
+        } else if (userEntity.status == 2) {
             requestUserEntity.status = 1;
-        } else if (userEntity.status == 1) {
-            requestUserEntity.status = 0;
         }
         requestUpdateStatus(requestUserEntity);
     };
@@ -88,7 +88,7 @@ function createUserContentContainer(userEntity) {
 
     let foodslabView = document.createElement("div");
     foodslabView.className = "actionButton accountStatusNormal";
-    foodslabView.innerHTML = "食坊账号未绑定";
+    foodslabView.innerHTML = "电话账号未绑定";
     gridContentView.appendChild(foodslabView);
     let weixinView = document.createElement("div");
     weixinView.className = "actionButton accountStatusNormal";
@@ -101,15 +101,17 @@ function createUserContentContainer(userEntity) {
 
     let accountEntities = userEntity.children;
     for (let i = 0; i < accountEntities.length; i++) {
-        if (userEntity.children[i].source == 0) {
+        let accountEntity = userEntity.children[i];
+        let displayName = accountEntity.nickName == undefined ? accountEntity.identity : accountEntity.nickName;
+        if (accountEntity.source == 1) {
             foodslabView.className = "actionButton accountStatusActive";
-            foodslabView.innerHTML = "食坊账号已绑定";
-        } else if (userEntity.children[i].source == 1) {
+            foodslabView.innerHTML = "电话账号{" + displayName + "}已绑定";
+        } else if (accountEntity.source == 2) {
             weixinView.className = "actionButton accountStatusActive";
-            weixinView.innerHTML = "微信账号已绑定";
-        } else if (userEntity.children[i].source == 2) {
+            weixinView.innerHTML = "微信账号{" + displayName + "}已绑定";
+        } else if (accountEntity.source == 3) {
             QQView.className = "actionButton accountStatusActive";
-            QQView.innerHTML = "微信账号已绑定";
+            QQView.innerHTML = "QQ账号{" + displayName +"}已绑定";
         }
     }
     return gridContentView;
@@ -127,5 +129,5 @@ function requestUpdateStatus(userEntity) {
                 new Toast().show("请求失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }

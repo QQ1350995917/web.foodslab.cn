@@ -10,7 +10,7 @@ function createPoster(pid, status, clickable, href) {
     var indexUrl = BASE_PATH + "/poster/create?pid=" + pid + "&status=" + status + "&clickable=" + clickable + "&href=" + href;
     asyncRequestByGet(indexUrl, function (data) {
         onCreateDataCallback(data);
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onCreateDataCallback(data) {

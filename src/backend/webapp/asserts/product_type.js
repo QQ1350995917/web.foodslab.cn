@@ -29,7 +29,7 @@ function requestTypeListData(seriesEntity) {
                 new Toast().show("请求数据失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onRequestTypeListDataCallback(seriesEntity, typeEntities) {
@@ -408,7 +408,7 @@ function requestCreateType(seriesEntity,typeEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestRenameType(seriesEntity,typeEntity) {
@@ -424,7 +424,7 @@ function requestRenameType(seriesEntity,typeEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestMarkType(seriesEntity,typeEntity) {
@@ -439,7 +439,7 @@ function requestMarkType(seriesEntity,typeEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestUpdateSummary(typeEntity) {
@@ -453,7 +453,7 @@ function requestUpdateSummary(typeEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestUpdateDirections(typeEntity) {
@@ -467,5 +467,5 @@ function requestUpdateDirections(typeEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }

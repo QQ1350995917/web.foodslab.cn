@@ -30,7 +30,7 @@ function requestFormatListData(typeEntity) {
                 new Toast().show("请求数据失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onRequestFormatListDataCallback(typeEntity, formatEntities) {
@@ -449,7 +449,7 @@ function requestCreateFormat(typeEntity, formatEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestUpdateFormat(typeEntity, formatEntity) {
@@ -465,7 +465,7 @@ function requestUpdateFormat(typeEntity, formatEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestMarkFormat(typeEntity, formatEntity) {
@@ -481,5 +481,5 @@ function requestMarkFormat(typeEntity, formatEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }

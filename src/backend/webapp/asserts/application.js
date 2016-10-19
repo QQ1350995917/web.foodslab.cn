@@ -1,14 +1,10 @@
 /**
  * Created by dingpengwei on 7/20/16.
  */
-const BASE_PATH = "http://localhost:8080/foodslab";
-const MAIN_TITLE_ID = "main_title";
-const MAIN_CONTENT_ID = "main_content_container";
-const TOAST_CONTAINER_ID = "body";
+
 
 const RESPONSE_SUCCESS = 3050;
 
-const APP_CONST_MENU = new Array();//全局变量,保存所有的菜单引用
 const APP_CONST_CLIENT_ID = "clientId";
 
 //标记元素是添加按钮
@@ -72,6 +68,19 @@ function checkResponseDataFormat(data) {
 
 function applicationOnload() {
     requestMenus("");
+}
+
+/**
+ * 数据层工具方法
+ * 判定字符串是否是泛义上的空
+ * @param value
+ * @returns {boolean}
+ */
+function isNullValue(value) {
+    if (value == undefined || value == null || value == "") {
+        return true;
+    }
+    return false;
 }
 
 Date.prototype.format = function (format) {

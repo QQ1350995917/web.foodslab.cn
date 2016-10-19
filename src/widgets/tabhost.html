@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="tabhost.css"/>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<div id="HTabHost1" style="width: 100%;height: 50px;background-color: #33aaff"></div>
+<br>
+<div id="HTabHost2" style="width: 100%;height: 50px;background-color: #33aaff"></div>
+<br>
+<div>
+    <div id="VTabHost1" style="float: left;width: 300px;height: 500px;background-color: #33aaff"></div>
+    <div id="VTabHost2" style="float: left;width: 300px;height: 500px;background-color: #33aaff;margin-left: 10px"></div>
+</div>
+
+</body>
+<script type="text/javascript" src="tabhost.js"></script>
+<script type="text/javascript">
+    window.onload = loadDemo();
+    function loadDemo() {
+        let array = new Array();
+        array.push("a");
+        array.push("b");
+        array.push("c");
+        array.push("d");
+        array.push("e");
+        array.push("f");
+        array.push("g");
+        array.push("h");
+        array.push("i");
+
+        let containerH1 = document.getElementById("HTabHost1");
+        containerH1.appendChild(createHorizontalTabHostDiv("HTabhost1", array, "defaultTabSelected", "defaultTabNormal", function (data) {
+
+        }, 0));
+
+        let containerH2 = document.getElementById("HTabHost2");
+        containerH2.appendChild(createHorizontalTabHostDiv("HTabhost2", array, "horizontalIndexSelect", "horizontalIndexNormal", function (data) {
+
+        }, 0));
+
+        let containerV1 = document.getElementById("VTabHost1");
+        containerV1.appendChild(createVerticalTabHostDiv("VTabhost1", array, "defaultTabSelected", "defaultTabNormal", function (data) {
+
+        }, 0));
+
+        let containerV2 = document.getElementById("VTabHost2");
+        containerV2.appendChild(createFrameVerticalTabHostDiv("VTabhost2", array,  function (data) {
+
+        }, 0));
+    }
+</script>
+</html>

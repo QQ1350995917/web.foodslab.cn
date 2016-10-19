@@ -1,47 +1,6 @@
 /**
  * Created by dingpengwei on 7/17/16.
  */
-// class TabItem2 {
-//     /**
-//      *
-//      * @param id
-//      * @param label
-//      * @param normalClassName
-//      * @param selectedClassName
-//      * @param currentClassName
-//      */
-//     constructor(id, label,normalClassName,selectedClassName,currentClassName) {
-//         this.id = id;
-//         this.label = label;
-//         this.normalClassName = normalClassName;
-//         this.selectedClassName = selectedClassName;
-//         this.currentClassName = currentClassName;
-//         this.width = undefined;
-//         this.height = undefined;
-//     }
-//
-//     setWidth(width){
-//         this.width = width;
-//     }
-//
-//     setHeight(height){
-//         this.height = height;
-//     }
-//
-//     setVerticalTabHostArrowNormalClasssName(verticalNormalArrowClassName){
-//         this.verticalNormalArrowClassName = verticalNormalArrowClassName;
-//     }
-//
-//     setVerticalSelectedArrowClassName(verticalSelectedArrowClassName){
-//         this.verticalSelectedArrowClassName = verticalSelectedArrowClassName;
-//     }
-//
-//     setVerticalCurrentArrowClassName(verticalCurrentArrowClassName){
-//         this.verticalCurrentArrowClassName = verticalCurrentArrowClassName;
-//     }
-//
-// }
-
 class Tab {
     constructor(id, label, className,callback) {
         this.id = id;

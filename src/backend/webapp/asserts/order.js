@@ -233,7 +233,6 @@ function createAllView(orderEntities) {
 }
 
 function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, statusViewWidth, paramView) {
-    console.log(orderEntity);
     /**
      * 最外层的容器根对象
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
@@ -316,9 +315,7 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
     return orderEntityView;
 }
 
-
 function requestExpress(orderEntity) {
-    console.log(orderEntity);
     const url = BASE_PATH + "/order/mExpressing?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);

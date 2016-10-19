@@ -17,7 +17,7 @@ function requestTopLink() {
             var parseData = JSON.parse(data);
             onRequestTopLinkCallback(parseData.data);
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 
@@ -80,7 +80,7 @@ function requestSubLink(pLinkEntity) {
             var parseData = JSON.parse(data);
             onRequestSubLinkCallback(pLinkEntity.linkId, parseData.data);
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onRequestSubLinkCallback(pid, linkEntities) {
@@ -276,7 +276,7 @@ function requestCreateLink(linkEntity) {
                 new Toast().show("创建失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestMarkLink(linkEntity) {
@@ -299,7 +299,7 @@ function requestMarkLink(linkEntity) {
                 new Toast().show("操作失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 
 }
 
@@ -323,7 +323,7 @@ function requestUpdateLink(linkEntity) {
                 new Toast().show("操作失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestSwapSubLinkWeight(linkEntity) {
@@ -342,7 +342,7 @@ function requestSwapSubLinkWeight(linkEntity) {
                 new Toast().show("操作失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onAttachSubLinkEntityView(containerView, pid, linkEntity, viewEditorStatus) {

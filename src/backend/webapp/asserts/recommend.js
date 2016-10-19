@@ -16,7 +16,7 @@ function recommend() {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 /**
@@ -36,7 +36,7 @@ function swapRecommend(swapWeightFormatEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 /**
@@ -57,7 +57,7 @@ function updateRecommend(formatId, weight) {
             }
         }
         onConvertDataCallback(data);
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function initRecommendView(formatEntities) {

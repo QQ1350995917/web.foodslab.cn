@@ -27,7 +27,7 @@ function requestSeriesListData(sessionEntity) {
                 new Toast().show("请求数据失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function onRequestSeriesListDataCallback(seriesEntities) {
@@ -226,7 +226,7 @@ function requestCreateSeries(seriesEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestRenameSeries(seriesEntity) {
@@ -242,7 +242,7 @@ function requestRenameSeries(seriesEntity) {
                 new Toast().show("更新失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestMarkSeries(seriesEntity) {
@@ -259,5 +259,5 @@ function requestMarkSeries(seriesEntity) {
                 new Toast().show("操作失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }

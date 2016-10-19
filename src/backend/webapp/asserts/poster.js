@@ -10,7 +10,7 @@ function posterInit() {
             var parseData = JSON.parse(data);
             initPosterView(parseData.data);
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestCreatePoster(posterEntity) {
@@ -26,7 +26,7 @@ function requestCreatePoster(posterEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestUpdatePoster(posterEntity) {
@@ -42,7 +42,7 @@ function requestUpdatePoster(posterEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestUpdatePosterStatus(posterEntity) {
@@ -58,7 +58,7 @@ function requestUpdatePosterStatus(posterEntity) {
                 new Toast().show("保存失败");
             }
         }
-    }, onRequestError(), onRequestTimeout());
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function initPosterView(posterEntities) {

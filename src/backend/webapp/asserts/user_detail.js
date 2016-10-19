@@ -1,6 +1,40 @@
 /**
  * Created by dingpengwei on 8/16/16.
  */
+function showUserDetail(userEntity) {
+    // 重置界面
+    resetView();
+    // 获取根元素对象
+    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
+    let backView = document.createElement("div");
+    backView.innerHTML = "返回列表";
+    backView.className = "horizontalNormal";
+    backView.style.float = "left";
+    backView.style.width = "82px";
+    backView.onclick = function () {
+        showUsers();
+    };
+    titleViewContainer.appendChild(backView);
+
+    let titleView = document.createElement("div");
+    titleView.style.float = "left";
+    titleView.style.width = "1004px";
+    titleView.style.height = "40px";
+    titleView.style.backgroundColor = "red";
+
+    let tabItems = new Array();
+    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onUserCartTabCallback));
+    tabItems.push(new Tab("order", "订单", "horizontalNormal", onUserOrderTabCallback));
+    tabItems.push(new Tab("account", "账户", "horizontalNormal", onUserAccountTabCallback));
+    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onUserRequestReceiverCallback));
+
+    titleViewContainer.appendChild(titleView);
+
+    let requestUserEntity = new Object();
+    requestUserEntity.userId = userEntity.userId;
+    createUserTitleTab(titleView, tabItems, requestUserEntity);
+    onUserCartTabCallback(requestUserEntity);
+}
 
 function onUserCartTabCallback(userEntity) {
     let url = BASE_PATH + "/cart/mRetrieve?p=" + JSON.stringify(userEntity);
@@ -44,41 +78,7 @@ function onUserRequestReceiverCallback(userEntity) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function showUserDetail(userEntity) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let backView = document.createElement("div");
-    backView.innerHTML = "返回列表";
-    backView.className = "horizontalNormal";
-    backView.style.float = "left";
-    backView.style.width = "82px";
-    backView.onclick = function () {
-        showUsers();
-    };
-    titleViewContainer.appendChild(backView);
 
-    let titleView = document.createElement("div");
-    titleView.style.float = "left";
-    titleView.style.width = "1004px";
-    titleView.style.height = "40px";
-    titleView.style.backgroundColor = "red";
-
-    let tabItems = new Array();
-    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onUserCartTabCallback));
-    tabItems.push(new Tab("order", "订单", "horizontalNormal", onUserOrderTabCallback));
-    tabItems.push(new Tab("account", "账户", "horizontalNormal", onUserAccountTabCallback));
-    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onUserRequestReceiverCallback));
-
-    titleViewContainer.appendChild(titleView);
-
-    let requestUserEntity = new Object();
-    requestUserEntity.userId = userEntity.userId;
-    createUserTitleTab(titleView, tabItems, requestUserEntity);
-
-    onUserCartTabCallback(requestUserEntity);
-}
 
 function createUserTitleTab(container, tabItems, userEntity) {
     container.innerHTML = null;

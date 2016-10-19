@@ -1,0 +1,109 @@
+div.defaultTabSelected {
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 1px solid #CCCCCC;
+    border-bottom-width: 0px;
+    background: linear-gradient(to bottom, #999999 0%, #ffffff 100%);
+    pointer-events: none;
+}
+
+div.defaultTabNormal {
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 1px solid #CCCCCC;
+    background: linear-gradient(to bottom, #E3E3E3 0%, #ffffff 100%);
+    box-shadow: 0px 0px 0px #999999;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+div.horizontalIndexSelect {
+    line-height: 35px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #ffffff;
+    border: 5px solid transparent;
+    border-top-width: 0px;
+    border-bottom-color: #FFFFFF;
+    pointer-events: none;
+}
+
+div.horizontalIndexNormal {
+    line-height: 35px;
+    text-align: center;
+    font-size: 1.5rem;
+    color: #D8D8D8;
+    border: 5px solid transparent;
+    border-top-width: 0px;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+
+/*
+frame左侧导航栏专用选择器
+*/
+div.verticalSelected {
+    height: 100%;
+    width: 100%;
+    line-height: 100%;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 0px solid #66666E;
+    background: linear-gradient(to bottom, #999999 0%, #ffffff 100%);
+    pointer-events: none;
+}
+
+/*
+frame左侧导航栏专用选择器
+*/
+div.verticalNormal {
+    height: 100%;
+    line-height: 40px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 1rem;
+    color: #666666;
+    font-size: 1rem;
+    border: 0px solid #66666E;
+    border-bottom-width: 1px;
+    cursor: pointer;
+    pointer-events: all;
+}
+
+/*
+frame左侧导航栏专用选择器
+*/
+div.frameVTabSelectedArrow {
+    float: right;
+    width: 0px;
+    height: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    border-top: 20px solid transparent;
+    border-right: 30px solid #FFFFFF;
+    border-bottom: 20px solid transparent;
+}
+
+/*
+frame左侧导航栏专用选择器
+*/
+div.frameVTabNormalArrow {
+    float: right;
+    width: 0px;
+    height: 0px;
+    color: #FFFFFF;
+    text-align: center;
+    border-top: 20px solid transparent;
+    border-right: 30px solid transparent;
+    border-bottom: 20px solid transparent;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+

@@ -76,7 +76,7 @@ class ManagerMenuEntity {
  */
 function managerIndex() {
     const indexUrl = BASE_PATH + "/manager";
-    asyncRequestByGet(indexUrl, onIndexDataCallback, onRequestError(), onRequestTimeout());
+    asyncRequestByGet(indexUrl, onIndexDataCallback, onErrorCallback(), onTimeoutCallback());
 }
 
 /**
