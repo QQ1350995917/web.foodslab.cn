@@ -259,7 +259,7 @@ function createFormatDiscountItemView(formatEntity) {
     buyNow.className = "formatLabel button";
     buyNow.innerHTML = "立即购买";
     buyNow.onclick = function () {
-        let url = BASE_PATH + "pb?formatId=" + formatEntity.formatId;
+        let url = BASE_PATH + "pb?productIds=" + formatEntity.formatId;
         window.open(url);
     };
     formatDiscountView.appendChild(buyNow);
