@@ -434,7 +434,10 @@ function requestCreateAnonymousOrder(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestAnonymousCreateOrderCallback(jsonData.data);
+            if (jsonData.code = RESPONSE_SUCCESS){
+                let url = BASE_PATH + "pq?orderId=" + data.orderId;
+                window.open(url, "_self");
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -445,27 +448,15 @@ function requestCreateOrder(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            onRequestUserCreateOrderCallback(jsonData.data);
+            if (jsonData.code == RESPONSE_SUCCESS){
+                let pageEntity = new Object();
+                pageEntity.cs = getCookie(KEY_CS);
+                pageEntity.dir = "order";
+                let url = BASE_PATH + "pm?p=" + JSON.stringify(pageEntity);
+                window.open(url, "_self");    
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
-}
-
-/**
- * 创建匿名订单
- * @param data
- */
-function onRequestAnonymousCreateOrderCallback(data) {
-    let url = BASE_PATH + "pq?orderId=" + data.orderId;
-    window.open(url, "_self");
-}
-
-/**
- * 创建用户订单
- * @param data
- */
-function onRequestUserCreateOrderCallback(data) {
-    let url = BASE_PATH + "pm?accountId=test&dir=order";
-    window.open(url, "_self");
 }
 
 function attachUserReceiverContainer(container, receiverEntities, onAttachCallback) {
