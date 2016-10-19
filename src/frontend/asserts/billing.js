@@ -73,7 +73,7 @@ window.onload = function () {
                     let productIds = document.getElementById("productIds") == undefined ? null : document.getElementById("productIds").content;
                     let cartEntity = new Object();
                     cartEntity.cs = getCookie(KEY_CS);
-                    cartEntity.mappingIds = productIds.split(",");
+                    cartEntity.productIds = productIds.split(",");
                     asyncRequestByGet(BASE_PATH + "cart/retrieves?p=" + JSON.stringify(cartEntity), function (data) {
                         var result = checkResponseDataFormat(data);
                         if (result) {
