@@ -1,13 +1,32 @@
+body, html {
+    padding: 0;
+    margin: 0;
+}
+
+input:focus, textarea:focus,select:focus {
+    outline: none;
+}
+
+div.clearFloat{
+    clear: both;
+}
+
+
 div.headerContainer {
+    position: fixed;
     width: 100%;
     height: 40px;
-    position: fixed;
-    float: left;
-    margin: 0px;
+    margin-top: -40px;
     background-color: #333333;
 }
 
-div.header_icon {
+div.mainContainer{
+    width: 100%;
+    height: 100%;
+    margin-top: 40px;
+}
+
+div.headerIcon {
     float: left;
     margin: 0px;
     width: 15%;
@@ -19,13 +38,13 @@ div.header_icon {
     font-size: 32px;
 }
 
-div.header_menu {
+div.headerMenu {
     float: left;
-    width: 70%;
+    width: 500px;
     height: 40px;
 }
 
-div.header_user {
+div.headerUser {
     float: right;
     width: 14%;
     height: 40px;
@@ -35,45 +54,31 @@ div.header_user {
 }
 
 div.leftMenuContainer {
-    background-color: #66666E;
     position: fixed;
     float: left;
-    margin: 40px 0px 0px 0px;
     width: 15%;
     height: 100%;
+    background-color: #66666E;
 }
 
-div.mainContainer {
-    float: right;
-    margin: 40px 0px 0px 0px;
+div.rightMainContainer {
+    float: left;
     width: 85%;
     height: 100%;
-    color: #666666;
+    margin-left: 15%;
 }
 
-div.main_title {
-    float: right;
+div.mainTitle {
     position: fixed;
     width: 85%;
-    height: 45px;
-    margin-right: 0px;
-    margin-bottom: 0px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    color: #666666;
+    font-size: 1rem;
+    border: 0px solid #CCCCCC;
+    background: linear-gradient(to bottom, #BBBBBB 0%, #ffffff 100%);
 }
-
-div.main_content {
-    float: right;
-    width: 100%;
-    height: 100%;
-    margin: 40px auto;
-    padding-left: 30px;
-}
-
-/*div.main_content_container {*/
-    /*width: 98%;*/
-    /*height: 100%;*/
-    /*margin: 0px auto;*/
-    /*padding-top: 10px;*/
-/*}*/
 
 /*
 tabHost默认的选择器
@@ -88,7 +93,6 @@ div.defaultTabSelected {
     background: linear-gradient(to bottom, #999999 0%, #ffffff 100%);
     pointer-events: none;
 }
-
 /*
 tabHost默认的选择器
 */
@@ -105,7 +109,7 @@ div.defaultTabNormal {
 }
 
 /*
-tabHost默认的带下划线选择器
+tabHost带下标线的选择器
 */
 div.horizontalIndexSelect {
     line-height: 35px;
@@ -119,7 +123,7 @@ div.horizontalIndexSelect {
 }
 
 /*
-tabHost默认的带下划线选择器
+tabHost带下标线的选择器
 */
 div.horizontalIndexNormal {
     line-height: 35px;
@@ -132,13 +136,14 @@ div.horizontalIndexNormal {
     pointer-events: all;
 }
 
+
+
 /*
 frame左侧导航栏专用选择器
 */
 div.verticalSelected {
-    height: 100%;
-    width: 100%;
-    line-height: 100%;
+    height: 40px;
+    line-height: 40px;
     text-align: center;
     color: #666666;
     font-size: 1rem;
@@ -151,17 +156,14 @@ div.verticalSelected {
 frame左侧导航栏专用选择器
 */
 div.verticalNormal {
-    height: 100%;
-    line-height: 40px;
+    height: 39px;
+    line-height: 39px;
     text-align: center;
     color: #FFFFFF;
     font-size: 1rem;
-    color: #666666;
-    font-size: 1rem;
-    border: 0px solid #66666E;
+    border: 0px solid #FFFFFF;
     border-bottom-width: 1px;
     cursor: pointer;
-    pointer-events: all;
 }
 
 /*
@@ -192,6 +194,42 @@ div.frameVTabNormalArrow {
     border-bottom: 20px solid transparent;
     cursor: pointer;
     background-color: transparent;
+}
+
+
+
+/*
+高度为31,是为了和按钮的35保持一致性
+同样高度的input要比div高出4px?
+*/
+input.searchInput{
+    float: left;
+    height: 31px;
+    text-align: center;
+    line-height: 31px;
+    border: 1px solid #CCCCCC;
+    font-size: 1rem;
+}
+
+/*
+高度为35,是为了和按钮的31保持一致性
+同样高度的input要比div高出4px?
+*/
+div.actionButton{
+    float: left;
+    width: 60px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    border: 0px solid #CCCCCC;
+    cursor: pointer;
+    background-color: #169BD5;
+    color: #FFFFFF;
+}
+
+div.searchWidgetContainer{
+    width: 100%;
+    height: 35px;
 }
 
 /*

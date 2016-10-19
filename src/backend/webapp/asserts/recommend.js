@@ -4,7 +4,11 @@
 /**
  * 请求产品反转树形列表
  */
-function recommend() {
+function loadRecommendView() {
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "推荐管理";
+    getTitleContainer().appendChild(titleView);
+
     var indexUrl = BASE_PATH + "/format/mWeights";
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -56,23 +60,11 @@ function updateRecommend(formatId, weight) {
                 new Toast().show("更新失败");
             }
         }
-        onConvertDataCallback(data);
     }, onErrorCallback(), onTimeoutCallback());
 }
 
 function initRecommendView(formatEntities) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "推荐管理";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
+    let contentViewContainer = getMainContainer();
     let formatSize = formatEntities == undefined ? 0 : formatEntities.length;
     for (let index = 0; index < formatSize; index++) {
         let formatEntity = formatEntities[index];

@@ -2,47 +2,49 @@
  * Created by dingpengwei on 7/19/16.
  */
 const BASE_PATH = "http://localhost:8080/foodslab";
+const ID_TOAST_CONTAINER = "body";
+const ID_FRAME_HEADER_MENU = "headerMenu";
 const ID_FRAME_LEFT_MENU = "leftMenu";
-const MAIN_TITLE_ID = "main_title";
-const MAIN_CONTENT_ID = "main_content";
-const TOAST_CONTAINER_ID = "body";
+const ID_MAIN_TITLE = "mainTitle";
+const ID_MAIN_CONTAINER = "mainContainer";
 
-function requestMenus() {
-    requestMeta();
-    const url = BASE_PATH + "/menu/mRetrieves";
+const RESPONSE_SUCCESS = 3050;
+const APP_CONST_CLIENT_ID = "clientId";
+//标记元素是添加按钮
+const APP_CONST_ADD_NEW = "addNew";
+
+
+function onFrameLoad() {
+    let topMenuEntity = new Object();
+    topMenuEntity.category = 1;
+    requestMenus(topMenuEntity);
+    let leftMenuEntity = new Object();
+    leftMenuEntity.category = 2;
+    requestMenus(leftMenuEntity);
+}
+
+function requestMenus(menuEntity) {
+    const url = BASE_PATH + "/menu/mRetrieves?p=" + JSON.stringify(menuEntity);
     asyncRequestByGet(url, function (data) {
         let result = checkResponseDataFormat(data);
         if (result){
             var jsonData = JSON.parse(data);
             if (jsonData.code == RESPONSE_SUCCESS){
                 var menuEntities = jsonData.data;
-                var horizontalTabItems = new Array();
-                var verticalTabItems = new Array();
-
-                for (var index = 0; index < menuEntities.length; index++) {
-                    var menuEntity = menuEntities[index];
-                    if (menuEntity.category == 0) {
-                        horizontalTabItems.push(menuEntity);
-                    } else if (menuEntity.category == 1) {
-                        verticalTabItems.push(menuEntity);
-                    }
+                if (menuEntity.category == 1){
+                    document.getElementById(ID_FRAME_HEADER_MENU).appendChild(createHorizontalTabHostDiv("mTop",menuEntities,"horizontalIndexSelect","horizontalIndexNormal",function (menuEntity) {
+                        onFrameMenuItemClick(menuEntity.flag);
+                        resetFrameVerticalTabHost("mLeft");
+                    },-1));
+                } else if (menuEntity.category == 2){
+                    document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("mLeft",menuEntities,function (menuEntity) {
+                        onFrameMenuItemClick(menuEntity.flag);
+                        resetTabHost("mTop","horizontalIndexNormal");
+                    },-1));
                 }
-                console.log(verticalTabItems);
-                document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("left",verticalTabItems,function () {
-
-                },-1));
             }
         }
     }, onErrorCallback, onTimeoutCallback);
-}
-
-let UNITS;
-let EXPRESS = ["顺丰快递", "圆通快递", "中通快递", "邮政快递"];
-function requestMeta() {
-    // asyncRequestByGet(BASE_PATH + "/meta", function (data) {
-    //     var json = JSON.parse(data);
-    //     UNITS = json.data;
-    // }, onErrorCallback, onTimeoutCallback);
 }
 
 function createFrameVerticalTabHostDiv(viewId, tabItems, onItemClickCallback, defaultSelectIndex) {
@@ -51,16 +53,11 @@ function createFrameVerticalTabHostDiv(viewId, tabItems, onItemClickCallback, de
     horizontalTabHost.style.width = "100%";
     horizontalTabHost.style.height = "100%";
     let length = tabItems == undefined ? 0 : tabItems.length;
-    let itemWidth = 100;
-    let itemHeight = 100;
-    if (length > 0){
-        itemHeight = 100 / length;
-    }
     for (let i = 0; i < length; i++) {
         let tabEntity = tabItems[i];
         let horizontalTabItemContainer = document.createElement("div");
-        horizontalTabItemContainer.style.width = itemWidth + "%";
-        horizontalTabItemContainer.style.height = itemHeight + "%";
+        horizontalTabItemContainer.style.width = "100%";
+        horizontalTabItemContainer.style.height = "40px";
         let tabItemDiv = document.createElement("div")
         tabItemDiv.innerHTML = tabEntity.label;
         tabItemDiv.className = "verticalNormal";
@@ -102,39 +99,61 @@ function resetFrameVerticalTabHost(viewId) {
     }
 }
 
-function onFrameMenuItemClick(dataId) {
-    if (dataId == "manager") {
-        resetView();
+function resetMainContainer() {
+    document.getElementById(ID_MAIN_TITLE).innerHTML = null;
+    document.getElementById(ID_MAIN_CONTAINER).innerHTML = null;
+}
+
+function getTitleContainer() {
+    return document.getElementById(ID_MAIN_TITLE);
+}
+
+function getMainContainer() {
+    return document.getElementById(ID_MAIN_CONTAINER);
+}
+
+let UNITS;
+let EXPRESS = ["顺丰快递", "圆通快递", "中通快递", "邮政快递"];
+function requestMeta() {
+    // asyncRequestByGet(BASE_PATH + "/meta", function (data) {
+    //     var json = JSON.parse(data);
+    //     UNITS = json.data;
+    // }, onErrorCallback, onTimeoutCallback);
+}
+
+function onFrameMenuItemClick(flag) {
+    if (flag == "manager") {
+        resetMainContainer();
         managerIndex();
-    } else if (dataId == "product") {
-        resetView();
-        initProduct();
-    } else if (dataId == "recommend") {
-        resetView();
-        recommend();
-    } else if (dataId == "link") {
-        resetView();
-        link();
-    } else if (dataId == "poster") {
-        resetView();
-        posterInit();
-    } else if (dataId == "skin") {
-        resetView();
-        initSkinView();
-    } else if (dataId == "user") {
-        resetView();
-        showUsers();
-    } else if (dataId == "order") {
-        resetView();
-        showOrderView();
-    } else if (dataId == "sys_status") {
-        resetView();
-    } else if (dataId == "sys_log") {
-        resetView();
-    } else if (dataId == "sys_flow") {
-        resetView();
-    } else if (dataId == "sale_chart") {
-        resetView();
+    } else if (flag == "skin") {
+        resetMainContainer();
+        loadSkinView();
+    } else if (flag == "poster") {
+        resetMainContainer();
+        loadPosterView();
+    } else if (flag == "recommend") {
+        resetMainContainer();
+        loadRecommendView();
+    } else if (flag == "link") {
+        resetMainContainer();
+        loadLinkView();
+    } else if (flag == "product") {
+        resetMainContainer();
+        loadProductView();
+    } else if (flag == "user") {
+        resetMainContainer();
+        loadUserView();
+    } else if (flag == "order") {
+        resetMainContainer();
+        loadOrderView();
+    } else if (flag == "sys_status") {
+        resetMainContainer();
+    } else if (flag == "sys_log") {
+        resetMainContainer();
+    } else if (flag == "sys_flow") {
+        resetMainContainer();
+    } else if (flag == "sale_chart") {
+        resetMainContainer();
     } else {
         console.log("点击判断值超出范围");
     }

@@ -4,11 +4,11 @@
 /**
  * 请求link数据
  */
-function link() {
-    requestTopLink();
-}
+function loadLinkView() {
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "链接管理";
+    getTitleContainer().appendChild(titleView);
 
-function requestTopLink() {
     let linkEntity = new Object();
     let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
@@ -20,17 +20,8 @@ function requestTopLink() {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-
 function onRequestTopLinkCallback(linkEntities) {
-    resetView();
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "链接管理";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
-    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    let mainView = getMainContainer();
     let length = linkEntities == undefined ? 0 : linkEntities.length;
     for (let i = 0; i <= length; i++) {
         if (i % 4 == 0) {

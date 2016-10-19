@@ -2,14 +2,10 @@
  * Created by dingpengwei on 8/12/16.
  */
 
-function initProductSeries(sessionEntity) {
-    resetView();
-    let titleContainer = document.getElementById(MAIN_TITLE_ID);
+function loadProductView(sessionEntity) {
     let titleView = document.createElement("div");
     titleView.innerHTML = "系列总览";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleContainer.appendChild(titleView);
+    getTitleContainer().appendChild(titleView);
     requestSeriesListData(sessionEntity);
 }
 
@@ -31,7 +27,7 @@ function requestSeriesListData(sessionEntity) {
 }
 
 function onRequestSeriesListDataCallback(seriesEntities) {
-    let mainContainer = document.getElementById(MAIN_CONTENT_ID);
+    let mainContainer = getMainContainer();
     let addNewSeriesContainer = document.createElement("div");
     addNewSeriesContainer.className = "productItemContainer";
     let addSeriesSubContainer = document.createElement("div");

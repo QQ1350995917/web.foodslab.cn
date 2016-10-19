@@ -1,7 +1,11 @@
 /**
  * Created by dingpengwei on 8/16/16.
  */
-function showUsers() {
+function loadUserView() {
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "用户列表";
+    getTitleContainer().appendChild(titleView);
+
     var indexUrl = BASE_PATH + "/account/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -17,18 +21,7 @@ function showUsers() {
 }
 
 function initUserList(userEntities) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "用户列表";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
+    let contentViewContainer = getMainContainer();
     let searchView = createSearchWidget("100%", function (data) {
         console.log(data);
     });
@@ -82,7 +75,8 @@ function createUserContentContainer(userEntity) {
     detailView.className = "actionButton gridItemActionButton";
     detailView.innerHTML = "详情";
     detailView.onclick = function () {
-        showUserDetail(userEntity);
+        resetMainContainer();
+        loadUserDetailView(userEntity);
     };
     gridContentView.appendChild(detailView);
 

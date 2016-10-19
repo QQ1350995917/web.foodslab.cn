@@ -9,7 +9,6 @@
 
     <link rel="stylesheet" type="text/css" href="../asserts/application.css">
     <link rel="stylesheet" type="text/css" href="../asserts/frame.css">
-    <link rel="stylesheet" type="text/css" href="../asserts/tab_host.css">
     <link rel="stylesheet" type="text/css" href="../asserts/manager.css">
     <link rel="stylesheet" type="text/css" href="../asserts/product.css">
     <link rel="stylesheet" type="text/css" href="../asserts/poster.css">
@@ -25,20 +24,19 @@
 </head>
 <body id="body">
 <div id="header" class="headerContainer">
-    <div id="header_icon" class="header_icon">foodslab.cn</div>
-    <div id="header_menu" class="header_menu"></div>
-    <div id="header_user" class="header_user">
+    <div id="headerIcon" class="headerIcon">foodslab.cn</div>
+    <div id="headerMenu" class="headerMenu"></div>
+    <div id="headerUser" class="headerUser">
         <label style="float:left;"> 用户名用户名 </label>
         <label href="#" style="cursor: pointer;" onclick="new Toast('body',null,null,200,30).show('退出')">退出</label>
     </div>
 </div>
-<div id="leftMenu" class="leftMenuContainer"></div>
 <div id="main" class="mainContainer">
-    <div id="main_title" class="main_title"></div>
-    <div id="main_content" class="main_content">abc
-        <!--<div id="main_content_container" class="main_content_container"></div>-->
+    <div id="leftMenu" class="leftMenuContainer"></div>
+    <div id="rightMain" class="rightMainContainer">
+        <div id="mainTitle" class="mainTitle">adfsfa</div>
+        <div id="mainContainer" class="mainContainer" style="width: 99%;padding: 0.5%">adfsdf</div>
     </div>
-
 </div>
 </body>
 <script type="text/javascript" src="../dependency/pikaday.min.js"></script>
@@ -48,10 +46,9 @@
 
 <script type="text/javascript" src="../asserts/application.js"></script>
 <script type="text/javascript" src="../asserts/toast.js"></script>
-<script type="text/javascript" src="../asserts/tab_host.js"></script>
+<script type="text/javascript" src="../asserts/tabhost.js"></script>
 <script type="text/javascript" src="../asserts/frame.js"></script>
 <script type="text/javascript" src="../asserts/manager.js"></script>
-<script type="text/javascript" src="../asserts/product.js"></script>
 <script type="text/javascript" src="../asserts/product_series.js"></script>
 <script type="text/javascript" src="../asserts/product_type.js"></script>
 <script type="text/javascript" src="../asserts/product_format.js"></script>
@@ -65,6 +62,6 @@
 <script type="text/javascript" src="../asserts/order.js"></script>
 
 <script type="text/javascript">
-   window.onload = applicationOnload();
+   window.onload = onFrameLoad();
 </script>
 </html>

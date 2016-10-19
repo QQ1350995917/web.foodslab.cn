@@ -1,28 +1,18 @@
 /**
  * Created by dingpengwei on 8/15/16.
  */
-function initSkinView() {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    // 添加标题
+function loadSkinView() {
     let titleView = document.createElement("div");
     titleView.innerHTML = "皮肤设置";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
+    getTitleContainer().appendChild(titleView);
     let skins = new Array();
     skins.push("简单 洁净 明亮");
     skins.push("传统 稳重 古典");
     skins.push("轻快 时尚 进步");
     skins.push("沉稳 肃穆 安静");
     for (let index =0;index<skins.length;index++){
-        contentViewContainer.appendChild(createItemWidget(skins[index]));
+        getMainContainer().appendChild(createItemWidget(skins[index]));
     }
-
 }
 
 function createItemWidget(text) {

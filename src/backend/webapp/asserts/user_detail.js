@@ -1,39 +1,53 @@
 /**
  * Created by dingpengwei on 8/16/16.
  */
-function showUserDetail(userEntity) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    let backView = document.createElement("div");
-    backView.innerHTML = "返回列表";
-    backView.className = "horizontalNormal";
-    backView.style.float = "left";
-    backView.style.width = "82px";
-    backView.onclick = function () {
-        showUsers();
-    };
-    titleViewContainer.appendChild(backView);
-
+const USER_TABS = new Array();
+const USER_tab0 = new Object();
+USER_tab0.index = 0;
+USER_tab0.label = "购物车";
+const USER_tab1 = new Object();
+USER_tab1.index = 1;
+USER_tab1.label = "订单";
+const USER_tab2 = new Object();
+USER_tab2.index = 2;
+USER_tab2.label = "账户";
+const USER_tab3 = new Object();
+USER_tab3.index = 3;
+USER_tab3.label = "收货地址";
+USER_TABS.push(USER_tab0);
+USER_TABS.push(USER_tab1);
+USER_TABS.push(USER_tab2);
+USER_TABS.push(USER_tab3);
+function loadUserDetailView(userEntity) {
     let titleView = document.createElement("div");
-    titleView.style.float = "left";
-    titleView.style.width = "1004px";
-    titleView.style.height = "40px";
-    titleView.style.backgroundColor = "red";
+    let accountEntity = userEntity.children[0];
+    let displayName = accountEntity.nickName == undefined ? accountEntity.identity : accountEntity.nickName;
+    titleView.innerHTML = "用户列表 >> " + displayName;
+    titleView.className = "defaultTabNormal";
+    getTitleContainer().appendChild(titleView);
+    titleView.onclick = function () {
+        resetMainContainer();
+        loadUserView();
+    }
 
-    let tabItems = new Array();
-    tabItems.push(new Tab("cart", "购物车", "horizontalSelected", onUserCartTabCallback));
-    tabItems.push(new Tab("order", "订单", "horizontalNormal", onUserOrderTabCallback));
-    tabItems.push(new Tab("account", "账户", "horizontalNormal", onUserAccountTabCallback));
-    tabItems.push(new Tab("receiver", "收货地址", "horizontalNormal", onUserRequestReceiverCallback));
-
-    titleViewContainer.appendChild(titleView);
-
-    let requestUserEntity = new Object();
-    requestUserEntity.userId = userEntity.userId;
-    createUserTitleTab(titleView, tabItems, requestUserEntity);
-    onUserCartTabCallback(requestUserEntity);
+    let userTabHost = document.createElement("div");
+    userTabHost.style.width = "100%";
+    userTabHost.style.height = "40px";
+    userTabHost.style.backgroundColor = "red";
+    userTabHost.appendChild(createHorizontalTabHostDiv("userTabHost",USER_TABS,"defaultTabSelected","defaultTabNormal",function (tab) {
+        let requestUserEntity = new Object();
+        requestUserEntity.userId = userEntity.userId;
+        if (tab.index == 0) {
+            onUserCartTabCallback(requestUserEntity);
+        } else if (tab.index == 1) {
+            onUserOrderTabCallback(requestUserEntity);
+        } else if (tab.index == 2) {
+            onUserAccountTabCallback(requestUserEntity);
+        } else if (tab.index == 3) {
+            onUserRequestReceiverCallback(requestUserEntity);
+        }
+    },-1));
+    getMainContainer().appendChild(userTabHost);
 }
 
 function onUserCartTabCallback(userEntity) {
@@ -45,8 +59,6 @@ function onUserCartTabCallback(userEntity) {
             createCartView(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
-    createOrderView();
-    createCartView();
 }
 
 function onUserOrderTabCallback(userEntity) {
@@ -78,33 +90,7 @@ function onUserRequestReceiverCallback(userEntity) {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-
-
-function createUserTitleTab(container, tabItems, userEntity) {
-    container.innerHTML = null;
-    for (let index = 0; index < tabItems.length; index++) {
-        let tabItem = tabItems[index];
-        let tabView = document.createElement("div");
-        tabView.className = tabItem.className;
-        tabView.style.width = "249px";
-        tabView.style.height = "100%";
-        tabView.innerHTML = tabItem.label;
-        tabView.onclick = function () {
-            for (let i = 0; i < tabItems.length; i++) {
-                tabItems[i].className = "horizontalNormal";
-            }
-            tabItem.className = "horizontalSelected";
-            createUserTitleTab(container, tabItems, userEntity);
-            tabItem.onTabClick(userEntity);
-        };
-        container.appendChild(tabView);
-    }
-}
-
 function createOrderView(orderEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-
     /**
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
      */
@@ -246,15 +232,11 @@ function createOrderView(orderEntities) {
         /**
          * 添加最外层容器根对象
          */
-        contentViewContainer.appendChild(orderView);
+        getMainContainer().appendChild(orderView);
     }
-
 }
 
 function createCartView(cartEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-
     /**
      * 容器左右分为加入购物车的日期|产品名称|产品单价|产品数量|总金额五个区域
      */
@@ -313,17 +295,14 @@ function createCartView(cartEntities) {
         moneyView.style.textAlign = "center";
         moneyView.innerHTML = (cartEntity.amount * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
         cartView.appendChild(moneyView);
-
-        contentViewContainer.appendChild(cartView);
+        getMainContainer().appendChild(cartView);
     }
 }
 
 function createAccountView() {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-    contentViewContainer.appendChild(createPhoneAccountContainer());
-    contentViewContainer.appendChild(createAuthAccountContainer(0, "微信账号", "", "http://localhost:8080/foodslab/webapp/asserts/images/login_wx.png"));
-    contentViewContainer.appendChild(createAuthAccountContainer(1, "QQ账号", undefined, "http://localhost:8080/foodslab/webapp/asserts/images/login_qq.png"));
+    getMainContainer().appendChild(createPhoneAccountContainer());
+    getMainContainer().appendChild(createAuthAccountContainer(0, "微信账号", "", "http://localhost:8080/foodslab/webapp/asserts/images/login_wx.png"));
+    getMainContainer().appendChild(createAuthAccountContainer(1, "QQ账号", undefined, "http://localhost:8080/foodslab/webapp/asserts/images/login_qq.png"));
 }
 
 function createPhoneAccountContainer(data) {
@@ -513,9 +492,6 @@ function createAuthAccountContainer(index, title, data, link) {
 }
 
 function createReceiverContainer(receiverEntities) {
-    let mainView = document.getElementById(MAIN_CONTENT_ID);
-    mainView.innerHTML = null;
-
     let length = receiverEntities == undefined ? 0:receiverEntities.length;
     for (let i=0;i<length;i++){
         let receiverEntity = receiverEntities[i];
@@ -547,7 +523,6 @@ function createReceiverContainer(receiverEntities) {
             addressView.style.width = "784px";
         }
         receiverItemContainer.appendChild(addressView);
-        mainView.appendChild(receiverItemContainer);
+        getMainContainer().appendChild(receiverItemContainer);
     }
-
 }

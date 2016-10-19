@@ -1,45 +1,36 @@
 /**
  * Created by dingpengwei on 8/16/16.
  */
-const ORDER_TABS = new Array("未发货", "已发货", "已完成", "全部");
-function showOrderView() {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    createOrderTitleTab(titleViewContainer, ORDER_TABS, 0, function (index) {
-        if (index == 0) {
+const ORDER_TABS = new Array();
+const ORDER_tab0 = new Object();
+ORDER_tab0.index = 0;
+ORDER_tab0.label = "未发货";
+const ORDER_tab1 = new Object();
+ORDER_tab1.index = 1;
+ORDER_tab1.label = "已发货";
+const ORDER_tab2 = new Object();
+ORDER_tab2.index = 2;
+ORDER_tab2.label = "已完成";
+const ORDER_tab3 = new Object();
+ORDER_tab3.index = 3;
+ORDER_tab3.label = "全部";
+ORDER_TABS.push(ORDER_tab0);
+ORDER_TABS.push(ORDER_tab1);
+ORDER_TABS.push(ORDER_tab2);
+ORDER_TABS.push(ORDER_tab3);
+function loadOrderView() {
+    getTitleContainer().appendChild(createHorizontalTabHostDiv("orderMenus",ORDER_TABS,"defaultTabSelected","defaultTabNormal",function (tab) {
+        getMainContainer().innerHTML = null;
+        if (tab.index == 0) {
             onUnExpressTabCallback();
-        } else if (index == 1) {
+        } else if (tab.index == 1) {
             onExpressingTabCallback();
-        } else if (index == 2) {
+        } else if (tab.index == 2) {
             onExpressedTabCallback();
-        } else if (index == 3) {
+        } else if (tab.index == 3) {
             onAllTabCallback();
         }
-    });
-}
-
-function createOrderTitleTab(containerView, tabItems, index, callback) {
-    containerView.innerHTML = null;
-    for (let i = 0; i < tabItems.length; i++) {
-        let tabItem = tabItems[i];
-        let tabView = document.createElement("div");
-        tabView.className = tabItem.className;
-        tabView.style.width = "270px";
-        tabView.style.height = "100%";
-        tabView.innerHTML = tabItem;
-        if (i == index) {
-            tabView.className = "horizontalSelected";
-            callback(i);
-        } else {
-            tabView.className = "horizontalNormal";
-        }
-        tabView.onclick = function () {
-            createOrderTitleTab(containerView, tabItems, i, callback);
-        };
-        containerView.appendChild(tabView);
-    }
+    },0));
 }
 
 function onUnExpressTabCallback() {
@@ -95,10 +86,8 @@ function onAllTabCallback() {
 }
 
 function createUnExpressView(orderEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
     let unExpressTitleContainer = createUnExpressTitleContainer();
-    contentViewContainer.appendChild(unExpressTitleContainer);
+    getMainContainer().appendChild(unExpressTitleContainer);
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let paramView = document.createElement("div");
@@ -106,7 +95,7 @@ function createUnExpressView(orderEntities) {
         paramView.style.borderRightWidth = "0px";
         attachUnExpressView(orderEntities[i], paramView, false);
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        contentViewContainer.appendChild(orderItemContainer);
+        getMainContainer().appendChild(orderItemContainer);
     }
 }
 
@@ -180,9 +169,6 @@ function attachUnExpressView(orderEntity, container, status) {
 }
 
 function createOrderExpressingView(orderEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let paramView = document.createElement("div");
@@ -190,7 +176,7 @@ function createOrderExpressingView(orderEntities) {
         paramView.style.borderRightWidth = "0px";
         attachExpressingStatusView(orderEntities[i], paramView, false);
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        contentViewContainer.appendChild(orderItemContainer);
+        getMainContainer.appendChild(orderItemContainer);
     }
 }
 
@@ -199,9 +185,6 @@ function attachExpressingStatusView(orderEntity, container) {
 }
 
 function createExpressedView(orderEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
-
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let paramView = document.createElement("div");
@@ -209,13 +192,11 @@ function createExpressedView(orderEntities) {
         paramView.style.borderRightWidth = "0px";
         attachExpressingStatusView(orderEntities[i], paramView, false);
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        contentViewContainer.appendChild(orderItemContainer);
+        getMainContainer.appendChild(orderItemContainer);
     }
 }
 
 function createAllView(orderEntities) {
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
-    contentViewContainer.innerHTML = null;
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let orderEntity = orderEntities[i];
@@ -228,7 +209,7 @@ function createAllView(orderEntities) {
             attachExpressingStatusView(orderEntities[i], paramView, false);
         }
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        contentViewContainer.appendChild(orderItemContainer);
+        getMainContainer().appendChild(orderItemContainer);
     }
 }
 

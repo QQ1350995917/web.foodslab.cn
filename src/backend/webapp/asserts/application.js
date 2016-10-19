@@ -3,19 +3,6 @@
  */
 
 
-const RESPONSE_SUCCESS = 3050;
-
-const APP_CONST_CLIENT_ID = "clientId";
-
-//标记元素是添加按钮
-const APP_CONST_ADD_NEW = "addNew";
-
-function resetView() {
-    var main_title_view = document.getElementById(MAIN_TITLE_ID);
-    main_title_view.innerHTML = null;
-    var main_content_view = document.getElementById(MAIN_CONTENT_ID);
-    main_content_view.innerHTML = null;
-}
 
 function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
     var xmlHttp = new XMLHttpRequest();
@@ -66,9 +53,7 @@ function checkResponseDataFormat(data) {
     return true;
 }
 
-function applicationOnload() {
-    requestMenus("");
-}
+
 
 /**
  * 数据层工具方法

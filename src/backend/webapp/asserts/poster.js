@@ -1,8 +1,11 @@
 /**
  * Created by dingpengwei on 8/15/16.
  */
+function loadPosterView() {
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "海报管理";
+    getTitleContainer().appendChild(titleView);
 
-function posterInit() {
     var indexUrl = BASE_PATH + "/poster/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -62,18 +65,7 @@ function requestUpdatePosterStatus(posterEntity) {
 }
 
 function initPosterView(posterEntities) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "海报管理";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.appendChild(titleView);
-
-    let mainView = document.getElementById(MAIN_CONTENT_ID);
+    let mainView = getMainContainer();
     let length = posterEntities == undefined ? 0 :posterEntities.length;
     for (let index = 0; index < length; index++) {
         if (index % 2 == 0) {
