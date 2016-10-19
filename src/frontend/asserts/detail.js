@@ -352,7 +352,9 @@ function createPutInCartResultView(data) {
     goToCart.onclick = function () {
         dismissMaskView();
         document.body.removeChild(keepGoon.parentNode);
-        let url = BASE_PATH + "pm?accountId=test&dir=cart";
+        let requestUserEntity = new Object();
+        requestUserEntity.cs = getCookie(KEY_CS);
+        let url = BASE_PATH + "pm?p=" + JSON.stringify(requestUserEntity);
         window.open(url, "_self");
     };
     resultView.appendChild(keepGoon);
