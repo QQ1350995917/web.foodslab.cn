@@ -2,17 +2,14 @@
  * Created by dingpengwei on 8/12/16.
  */
 
-function initProductFormat(seriesEntity, typeEntity) {
-    resetView();
-    let titleContainer = document.getElementById(MAIN_TITLE_ID);
+function loadProductFormatView(seriesEntity, typeEntity) {
     let titleView = document.createElement("div");
     titleView.innerHTML = "系列总览 >> " + seriesEntity.label + " >> " + typeEntity.label;
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleView.style.cursor = "cursor";
-    titleContainer.appendChild(titleView);
-    titleContainer.onclick = function () {
-        initProductType(seriesEntity);
+    titleView.style.cursor = "pointer";
+    getTitleContainer().appendChild(titleView);
+    titleView.onclick = function () {
+        resetMainContainer();
+        loadProductTypeView(seriesEntity);
     };
     createMixContainer(typeEntity);
     requestFormatListData(typeEntity);
@@ -63,8 +60,11 @@ function onRequestFormatListDataCallback(typeEntity, formatEntities) {
     functionContainer.className = "formatItemContainer";
     functionContainer.style.height = "96px";
     formatContainer.appendChild(functionContainer);
-
-    attachFormatTitleContainer(titleContainer, formatEntities, 0, function (formatEntity) {
+    let newObject = new Object();
+    newObject.label = "+";
+    newObject.tag = APP_CONST_CLIENT_ID;
+    formatEntities.push(newObject);
+    titleContainer.appendChild(createHorizontalTabHostDiv("formatViewId", formatEntities, "defaultTabSelected", "defaultTabNormal", function (formatEntity) {
         if (formatEntity != null && formatEntity.tag == APP_CONST_CLIENT_ID) {
             formatEntity = undefined;
         }
@@ -73,64 +73,7 @@ function onRequestFormatListDataCallback(typeEntity, formatEntities) {
         attachFormatPostageContainer(postageContainer, formatEntity)
         attachFormatGiftContainer(giftContainer, formatEntity);
         attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity);
-    });
-}
-
-function attachFormatTitleContainer(titleContainer, formatEntities, selectedIndex, callback) {
-    titleContainer.innerHTML = null;
-    let containerWidth = titleContainer.clientWidth;
-    let length = formatEntities == undefined ? 0 : formatEntities.length;
-    /*
-     容器的宽度减去每个页签的左右边框的宽度除以页签的个数就是页签的宽度(有效页签的个数加上一个添加新页签就是总页签个数)
-     */
-    let tabWidth = (containerWidth - ((length + 1) * 2)) / (length + 1) + "px";
-    /*
-     每次创建页签后追加一个新的页签,故循环次数是有效页签的个数加一
-     */
-    for (let i = 0; i < length + 1; i++) {
-        let tabView = document.createElement("div");
-        tabView.style.width = tabWidth;
-        let formatEntity = undefined;
-        if (i < length) {
-            formatEntity = formatEntities[i];
-            /*
-             通过点击添加新页签添加的未经过服务器保存的页签的tag是newFormat
-             */
-            if (formatEntity.tag == APP_CONST_CLIENT_ID) {
-                tabView.innerHTML = "新规格";
-            } else {
-                tabView.innerHTML = formatEntity.label;
-                if (formatEntity.status == 1) {
-                    tabView.style.color = "red";
-                }
-            }
-        } else {
-            tabView.tag = "addNewFormat";
-            tabView.innerHTML = "+";
-        }
-        if (i == selectedIndex) {
-            tabView.className = "HTabSelected";
-            callback(formatEntity);
-        } else {
-            tabView.className = "HTabNormal";
-        }
-
-        titleContainer.appendChild(tabView);
-        tabView.onclick = function () {
-            if (tabView.tag == "addNewFormat") {
-                if (formatEntities[length - 1].tag == APP_CONST_CLIENT_ID) {
-                    new Toast().show("请先保存新规格");
-                } else {
-                    let newFormat = new Object();
-                    newFormat.tag = APP_CONST_CLIENT_ID;
-                    formatEntities.push(newFormat)
-                    attachFormatTitleContainer(titleContainer, formatEntities, i, callback)
-                }
-            } else {
-                attachFormatTitleContainer(titleContainer, formatEntities, i, callback)
-            }
-        }
-    }
+    }, 0));
 }
 
 function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity) {
@@ -173,18 +116,20 @@ function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEnti
     baseInfoContainer.appendChild(baseInfoLeftLeftContainer);
     let baseInfoRightContainer = document.createElement("div");
     baseInfoRightContainer.className = "formatFunctionRightContainer";
-    let formatDelete = document.createElement("div");
-    formatDelete.className = "formatDeleteView";
-    formatDelete.innerHTML = "删除";
-    baseInfoRightContainer.appendChild(formatDelete);
-    baseInfoContainer.appendChild(baseInfoRightContainer);
-    formatDelete.onclick = function () {
-        let requestFormatEntity = new Object();
-        requestFormatEntity.typeId = typeEntity.typeId;
-        requestFormatEntity.formatId = formatEntity.formatId;
-        requestFormatEntity.status = -1;
-        requestMarkFormat(typeEntity, requestFormatEntity);
+    if (!isNullValue(formatEntity)){
+        let formatDelete = document.createElement("div");
+        formatDelete.className = "formatDeleteView";
+        formatDelete.innerHTML = "删除";
+        baseInfoRightContainer.appendChild(formatDelete);
+        formatDelete.onclick = function () {
+            let requestFormatEntity = new Object();
+            requestFormatEntity.typeId = typeEntity.typeId;
+            requestFormatEntity.formatId = formatEntity.formatId;
+            requestFormatEntity.status = -1;
+            requestMarkFormat(typeEntity, requestFormatEntity);
+        }
     }
+    baseInfoContainer.appendChild(baseInfoRightContainer);
 }
 
 function attachFormatDiscountContainer(discountContainer, formatEntity) {

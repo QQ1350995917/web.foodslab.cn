@@ -1,183 +1,95 @@
-div.managerContainer {
+div.managerItem{
     width: 100%;
-    height: 100%;
-    margin: auto;
-    margin-top: 20px;
-    border-top: 0px solid transparent;
-    border-right: 0px solid transparent;
-    border-bottom: 0px solid transparent;
-    border-left: 1px solid #CCCCCC;
-}
-
-/*定义容器内容:宽度为百分比例,高度固定,每个数据对象对应一个该样式*/
-div.managerItemContainer {
-    width: 100%;
-    height: 240px;
-    margin: auto;
-    padding: 0px;
-    margin: 0px;
+    height: 35px;
+    line-height: 35px;
     border: 0px solid #CCCCCC;
+    border-bottom-width: 1px;
+    margin: 5px auto;
 }
 
-/*定义容器内容中的第一行,即数据显示的第一行连接线,用户名,以及操作按钮的外层对象样式*/
-div.managerItem_rowLevel1 {
-    width: 100%;
-    height: 32px;
-    border: 0px solid transparent;
+div.managerLabel{
+    height: 100%;
+    border: 0px solid #CCCCCC;
+    color: #333333;
 }
 
-/*定义容器内容中的第一行后的几行外层对象样式*/
-div.managerItem_rowLevel2{
-    width: 98%;
-    height: 32px;
-    margin-top: 10px;
-    margin-left: 2%;
-    border: 0px solid transparent;
-}
-
-/*定义容器内容中的第一行中的连接短线样式*/
-hr.managerItem_connectLineHLevel1 {
+div.managerNameLabel{
     float: left;
-    width: 2%;
-    height: 1px;
-    border: 0px;
-    margin-top: 15px;
-    background-color: #CCCCCC;
+    width: 9%;
+    margin-left: 0px;
+    margin-right: 1%;
 }
 
-/*定义容器内容中的第一行后几行中的连接短线样式*/
-hr.managerItem_connectLineHLevel2 {
+div.managerAccessLabel{
     float: left;
-    width: 2%;
-    height: 1px;
-    border: 0px;
-    margin-top: 15px;
-    background-color: #CCCCCC;
+    width: 69%;
+    margin-left: 0px;
+    margin-right: 5px;
 }
 
-/*定义容器内容中的垂直短线样式*/
-hr.managerItem_connectLineV {
-    float: left;
-    width: 1px;
-    height: 190px;
-    border: 0px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 2%;
-    background-color: #CCCCCC;
-}
-
-/*定义容器内容中的用户名样式*/
-div.managerItem_managerName {
-    float: left;
-    width: 200px;
-    height: 30px;
-    border: 1px solid #CCCCCC;
-    line-height: 30px;
-    color: #666666;
-    padding-left: 10px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-/*定义容器内容中的数据对象操作按钮样式*/
-div.managerItem_action {
-    float: left;
-    width: 40px;
-    height: 30px;
-    margin-left: 2%;
-    border: 1px solid #CCCCCC;
-    line-height: 30px;
-    color: #666666;
-    padding-left: 10px;
-    cursor: pointer;
-    font-size: 1rem;
-}
-
-/*定义容器内容中的数据对象功能名称(比如密码,确认)样式*/
-div.managerItem_label{
-    float: left;
+div.managerEditorLabel{
+    float: right;
     width: 4%;
-    height: 30px;
-    line-height: 30px;
-    padding-left: 10px;
-    border: 1px solid #CCCCCC;
-    border-right:0px solid #CCCCCC;
-    color: #666666;
+    margin-left: 1%;
+    margin-right: 0px;
+    color: #FFFFFF;
 }
 
-/*定义容器内容中的数据对象功能名称(比如密码,确认)后面的输入框的样式*/
-div.managerItem_managerEditor {
+div.managerBlockLabel{
+    float: right;
+    width: 4%;
+    margin-left: 1%;
+    margin-right: 0px;
+    color: #FFFFFF;
+}
+
+div.textCenter{
+    text-align: center;
+}
+
+div.noneFloat{
+    float: none;
+}
+
+div.floatLeft{
     float: left;
-    width: 30%;
-    height: 30px;
-    border: 1px solid #CCCCCC;
-    line-height: 30px;
-    color: #666666;
-    padding-left: 10px;
-    cursor: pointer;
-    font-size: 1rem;
+}
+div.floatRight{
+    float: right;
 }
 
-.managerItem_save{
+div.editorManagerItem{
+    height: 40px;
+    margin-top: 20px;
+    border-bottom-width: 0px;
+}
+
+input.default{
+    width: 20%;
+    height: 25px;
+    font-size: 1rem;
+    border: 0px solid #CCCCCC;
+    border-bottom-width: 1px;
+}
+
+select.selector{
+    float: left;
+    width: 10%;
+    height: 40px;
+    background-color: transparent;
+}
+div.selectedMenu{
     float: left;
     width: 10%;
     height: 30px;
-    border: 0px solid #CCCCCC;
-    color: #FFFFFF;
-    font-size: 1rem;
-    text-align: center;
-    line-height: 28px;
-    background-color: #169BD5;
-    cursor: pointer;
-}
-
-button:focus{
-    outline: none;
-}
-
-.widget_editable_block{
-    width: 190px;
-    height: 26px;
-    font-size: 1rem;
-    line-height: 26px;
-    float: left;
-    border: 0px;
-}
-
-
-div.widget_editable_button{
-    width: 33px;
-    height: 30px;
-    line-height: 30px;
+    margin-top: 4px;
     border: 1px solid #CCCCCC;
-    float: left;
-    margin-left: 10px;
-    cursor: pointer;
-    border-top: 0px;
-    border-bottom: 0px;
 }
-
-
-.selector_selected{
-    float: left;
-    width: 80px;
-    height:30px;
-    line-height: 30px;
-    margin-left: 5px;
-    padding-left: 10px;
-    border-top: 0px solid #CCCCCC;
-    border-right: 1px solid #CCCCCC;
-    border-bottom: 0px solid #CCCCCC;
-    border-left: 1px solid #CCCCCC;
-}
-div.selector_selected_delete{
+div.selectedDel{
     float: right;
-    width: 15px;
-    height:32px;
-    line-height: 32px;
+    width: 30px;
+    height: 30px;
     color: red;
-    cursor: pointer;
-    border: 0px solid red;
     visibility: hidden;
+    cursor: pointer;
 }

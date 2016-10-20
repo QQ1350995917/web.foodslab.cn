@@ -2,7 +2,11 @@
  * Created by dingpengwei on 8/15/16.
  */
 
-function posterEditor(posterEntity, isCreate) {
+function loadPosterEditor(posterEntity, isCreate) {
+    let titleView = document.createElement("div");
+    titleView.innerHTML = "海报编辑";
+    titleView.style.cursor = "pointer";
+    getTitleContainer().appendChild(titleView);
     initPosterEditorView(posterEntity, isCreate);
 }
 
@@ -19,7 +23,8 @@ function onCreateDataCallback(data) {
         var parseData = JSON.parse(data);
         if (parseData.code == 200) {
             new Toast().show("保存成功");
-            poster();
+            resetMainContainer();
+            loadPosterView();
         } else {
             new Toast().show("保存失败");
         }
@@ -28,25 +33,12 @@ function onCreateDataCallback(data) {
 
 
 function initPosterEditorView(posterEntity, isCreate) {
-    // 重置界面
-    resetView();
-    // 获取根元素对象
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
-    // 添加标题
-    let titleView = document.createElement("div");
-    titleView.innerHTML = "海报编辑";
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleView.style.cursor = "pointer";
-    titleViewContainer.appendChild(titleView);
-
-    let contentViewContainer = document.getElementById(MAIN_CONTENT_ID);
     let imgViewContainer = document.createElement("div");
     imgViewContainer.className = "editorBlockView";
     imgViewContainer.style.height = "440px";
     imgViewContainer.style.borderWidth = "1px";
     imgViewContainer.style.cursor = "pointer";
-    contentViewContainer.appendChild(imgViewContainer);
+    getMainContainer().appendChild(imgViewContainer);
     let displayViewContainer = document.createElement("div");
     displayViewContainer.className = "editorBlockView";
     let displayView = document.createElement("input");
@@ -67,7 +59,7 @@ function initPosterEditorView(posterEntity, isCreate) {
     displayViewText.style.fontSize = "14px";
     displayViewText.innerHTML = "是否显示";
     displayViewContainer.appendChild(displayViewText);
-    contentViewContainer.appendChild(displayViewContainer);
+    getMainContainer().appendChild(displayViewContainer);
     let linkedViewContainer = document.createElement("div");
     linkedViewContainer.className = "editorBlockView";
     let linkedView = document.createElement("input");
@@ -88,7 +80,7 @@ function initPosterEditorView(posterEntity, isCreate) {
     linkedViewText.style.fontSize = "14px";
     linkedViewText.innerHTML = "是否可点击";
     linkedViewContainer.appendChild(linkedViewText);
-    contentViewContainer.appendChild(linkedViewContainer);
+    getMainContainer().appendChild(linkedViewContainer);
 
     let linkedHrefText = document.createElement("div");
     linkedHrefText.style.float = "left";
@@ -108,7 +100,7 @@ function initPosterEditorView(posterEntity, isCreate) {
         linkedEditor.value = posterEntity.href;
     }
     linkedViewContainer.appendChild(linkedEditor);
-    contentViewContainer.appendChild(linkedViewContainer);
+    getMainContainer().appendChild(linkedViewContainer);
 
     let buttonViewContainer = document.createElement("div");
     buttonViewContainer.className = "editorBlockView";
@@ -119,9 +111,8 @@ function initPosterEditorView(posterEntity, isCreate) {
     cancelView.style.width = "532px";
     cancelView.innerHTML = "取消";
     cancelView.onclick = function () {
-        posterInit();
-        titleViewContainer.onclick = null;
-        titleViewContainer.style.cursor = "default";
+        resetMainContainer();
+        loadPosterView();
     };
     buttonViewContainer.appendChild(cancelView);
     let separateHL = document.createElement("hr");
@@ -154,5 +145,5 @@ function initPosterEditorView(posterEntity, isCreate) {
         };
     }
     buttonViewContainer.appendChild(commitView);
-    contentViewContainer.appendChild(buttonViewContainer);
+    getMainContainer().appendChild(buttonViewContainer);
 }

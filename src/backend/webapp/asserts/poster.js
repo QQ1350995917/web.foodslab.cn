@@ -24,7 +24,8 @@ function requestCreatePoster(posterEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("保存成功");
-                posterInit();
+                resetMainContainer();
+                loadPosterView();
             } else {
                 new Toast().show("保存失败");
             }
@@ -40,7 +41,8 @@ function requestUpdatePoster(posterEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("保存成功");
-                posterInit();
+                resetMainContainer();
+                loadPosterView();
             } else {
                 new Toast().show("保存失败");
             }
@@ -56,7 +58,8 @@ function requestUpdatePosterStatus(posterEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("保存成功");
-                posterInit();
+                resetMainContainer();
+                loadPosterView();
             } else {
                 new Toast().show("保存失败");
             }
@@ -153,7 +156,8 @@ function createPosterItemWidget(container, posterEntity) {
     editor.className = "posterButton";
     editor.innerHTML = "编辑";
     editor.onclick = function () {
-        posterEditor(posterEntity,false);
+        resetMainContainer();
+        loadPosterEditor(posterEntity,false);
     };
     posterActionBar.appendChild(editor);
     posterItemContainer.appendChild(posterActionBar);

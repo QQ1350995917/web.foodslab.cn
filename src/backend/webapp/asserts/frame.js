@@ -21,6 +21,8 @@ function onFrameLoad() {
     let leftMenuEntity = new Object();
     leftMenuEntity.category = 2;
     requestMenus(leftMenuEntity);
+
+    requestMeta();
 }
 
 function requestMenus(menuEntity) {
@@ -115,16 +117,16 @@ function getMainContainer() {
 let UNITS;
 let EXPRESS = ["顺丰快递", "圆通快递", "中通快递", "邮政快递"];
 function requestMeta() {
-    // asyncRequestByGet(BASE_PATH + "/meta", function (data) {
-    //     var json = JSON.parse(data);
-    //     UNITS = json.data;
-    // }, onErrorCallback, onTimeoutCallback);
+    asyncRequestByGet(BASE_PATH + "/meta/units", function (data) {
+        var json = JSON.parse(data);
+        UNITS = json.data;
+    }, onErrorCallback, onTimeoutCallback);
 }
 
 function onFrameMenuItemClick(flag) {
     if (flag == "manager") {
         resetMainContainer();
-        managerIndex();
+        loadManagerView();
     } else if (flag == "skin") {
         resetMainContainer();
         loadSkinView();

@@ -58,6 +58,7 @@ div.leftMenuContainer {
     float: left;
     width: 15%;
     height: 100%;
+    overflow: scroll;
     background-color: #66666E;
 }
 
@@ -136,8 +137,6 @@ div.horizontalIndexNormal {
     pointer-events: all;
 }
 
-
-
 /*
 frame左侧导航栏专用选择器
 */
@@ -195,8 +194,6 @@ div.frameVTabNormalArrow {
     cursor: pointer;
     background-color: transparent;
 }
-
-
 
 /*
 高度为31,是为了和按钮的35保持一致性

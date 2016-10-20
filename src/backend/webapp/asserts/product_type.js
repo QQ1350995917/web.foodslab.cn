@@ -2,22 +2,20 @@
  * Created by dingpengwei on 8/12/16.
  */
 
-function initProductType(seriesEntity) {
-    resetView();
-    let titleContainer = document.getElementById(MAIN_TITLE_ID);
+function loadProductTypeView(seriesEntity) {
     let titleView = document.createElement("div");
     titleView.innerHTML = "系列总览 >> " + seriesEntity.label;
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleView.style.cursor = "cursor";
-    titleContainer.appendChild(titleView);
-    titleContainer.onclick = function () {
-        initProductSeries(undefined);
+    titleView.style.cursor = "pointer";
+    getTitleContainer().appendChild(titleView);
+    titleView.onclick = function () {
+        resetMainContainer();
+        loadProductView();
     };
     requestTypeListData(seriesEntity);
 }
 
 function requestTypeListData(seriesEntity) {
+    getMainContainer().innerHTML = null;
     var indexUrl = BASE_PATH + "/type/mRetrieves?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -33,24 +31,22 @@ function requestTypeListData(seriesEntity) {
 }
 
 function onRequestTypeListDataCallback(seriesEntity, typeEntities) {
-    let mainContainer = document.getElementById(MAIN_CONTENT_ID);
-    mainContainer.innerHTML = null;
     let addNewTypeContainer = document.createElement("div");
     addNewTypeContainer.className = "productItemContainer";
     let addTypeSubContainer = document.createElement("div");
     addTypeSubContainer.className = "productItemSubContainer";
     addNewTypeToContainer(addTypeSubContainer, seriesEntity);
     addNewTypeContainer.appendChild(addTypeSubContainer);
-    mainContainer.appendChild(addNewTypeContainer);
+    getMainContainer().appendChild(addNewTypeContainer);
 
     let length = typeEntities == undefined ? 0 : typeEntities.length;
     for (let i = 0; i < length; i++) {
         if (i + 1 % 4 == 0) {
             let clearFloat = document.createElement("div");
             clearFloat.className = "clearFloat";
-            mainContainer.appendChild(clearFloat);
+            getMainContainer().appendChild(clearFloat);
         }
-        mainContainer.appendChild(createTypeContainer(seriesEntity, typeEntities[i]));
+        getMainContainer().appendChild(createTypeContainer(seriesEntity, typeEntities[i]));
     }
 }
 
@@ -92,7 +88,8 @@ function addTypeToContainer(container, seriesEntity, typeEntity) {
         convertTypeContainerToEditor(container, seriesEntity, typeEntity);
     }
     container.onclick = function () {
-        initProductFormat(seriesEntity, typeEntity);
+        resetMainContainer();
+        loadProductFormatView(seriesEntity, typeEntity);
     }
 }
 
@@ -206,10 +203,8 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
 }
 
 function createMixContainer(typeEntity) {
-    let mainContainer = document.getElementById(MAIN_CONTENT_ID);
-    mainContainer.innerHTML = null;
-    mainContainer.appendChild(createTopContainer(typeEntity));
-    mainContainer.appendChild(createBottomContainer(typeEntity));
+    getMainContainer().appendChild(createTopContainer(typeEntity));
+    getMainContainer().appendChild(createBottomContainer(typeEntity));
 }
 
 function createTopContainer(typeEntity) {

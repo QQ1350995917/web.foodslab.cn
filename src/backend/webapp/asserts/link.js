@@ -48,22 +48,20 @@ function onRequestTopLinkCallback(linkEntities) {
 }
 
 function initSubLinkView(linkEntity) {
-    resetView();
-    let titleViewContainer = document.getElementById(MAIN_TITLE_ID);
     let titleView = document.createElement("div");
     titleView.innerHTML = "链接管理 >> " + linkEntity.label;
-    titleView.className = "horizontalSelected";
-    titleView.style.width = "100%";
-    titleViewContainer.style.cursor = "pointer";
-    titleViewContainer.onclick = function () {
-        requestTopLink();
+    titleView.style.cursor = "pointer";
+    titleView.onclick = function () {
+        resetMainContainer();
+        loadLinkView();
     }
-    titleViewContainer.appendChild(titleView);
+    getTitleContainer().appendChild(titleView);
 
     requestSubLink(linkEntity);
 }
 
 function requestSubLink(pLinkEntity) {
+    getMainContainer().innerHTML = null;
     let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(pLinkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -75,8 +73,6 @@ function requestSubLink(pLinkEntity) {
 }
 
 function onRequestSubLinkCallback(pid, linkEntities) {
-    let mainView = document.getElementById(MAIN_CONTENT_ID);
-    mainView.innerHTML = null;
     let length = linkEntities == undefined ? 0 : linkEntities.length;
     for (let index = 0; index <= length; index++) {
         if (index <= length) {
@@ -89,7 +85,7 @@ function onRequestSubLinkCallback(pid, linkEntities) {
             recommendItemRootViewContainer.style.height = "40px";
             recommendItemRootViewContainer.style.width = "100%";
             onAttachSubLinkEntityView(recommendItemRootViewContainer, pid, subLinkEntity, false);
-            mainView.appendChild(recommendItemRootViewContainer);
+            getMainContainer().appendChild(recommendItemRootViewContainer);
         }
     }
 }
@@ -115,6 +111,7 @@ function attachLinkGridViewToContainer(container, linkEntity) {
     }
     container.onclick = function () {
         if (linkEntity != undefined) {
+            resetMainContainer();
             initSubLinkView(linkEntity)
         } else {
             convertTopLinkContainerToEditor(container, linkEntity);

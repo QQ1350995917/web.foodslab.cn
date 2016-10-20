@@ -10,6 +10,7 @@ function loadProductView(sessionEntity) {
 }
 
 function requestSeriesListData(sessionEntity) {
+    getMainContainer().innerHTML = null;
     let tempSessionEntity = new Object();
     tempSessionEntity.sessionId = "admin";
     var indexUrl = BASE_PATH + "/series/mRetrieves?p=" + JSON.stringify(tempSessionEntity);
@@ -86,7 +87,8 @@ function addSeriesToContainer(container, seriesEntity) {
         convertSeriesContainerToEditor(container, seriesEntity);
     }
     container.onclick = function () {
-        initProductType(seriesEntity);
+        resetMainContainer();
+        loadProductTypeView(seriesEntity);
     }
 }
 
@@ -217,7 +219,7 @@ function requestCreateSeries(seriesEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("创建成功");
-                initProductSeries(undefined);
+                requestSeriesListData(undefined);
             } else {
                 new Toast().show("更新失败");
             }
@@ -233,7 +235,7 @@ function requestRenameSeries(seriesEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("更新成功");
-                initProductSeries(undefined);
+                requestSeriesListData(undefined);
             } else {
                 new Toast().show("更新失败");
             }
@@ -242,7 +244,6 @@ function requestRenameSeries(seriesEntity) {
 }
 
 function requestMarkSeries(seriesEntity) {
-    console.log(seriesEntity);
     var indexUrl = BASE_PATH + "/series/mMark?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -250,7 +251,7 @@ function requestMarkSeries(seriesEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("操作成功");
-                initProductSeries(undefined);
+                requestSeriesListData(undefined);
             } else {
                 new Toast().show("操作失败");
             }

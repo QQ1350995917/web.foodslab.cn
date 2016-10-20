@@ -18,6 +18,7 @@ USER_TABS.push(USER_tab0);
 USER_TABS.push(USER_tab1);
 USER_TABS.push(USER_tab2);
 USER_TABS.push(USER_tab3);
+
 function loadUserDetailView(userEntity) {
     let titleView = document.createElement("div");
     let accountEntity = userEntity.children[0];
@@ -31,66 +32,72 @@ function loadUserDetailView(userEntity) {
     }
 
     let userTabHost = document.createElement("div");
-    userTabHost.style.width = "100%";
-    userTabHost.style.height = "40px";
-    userTabHost.style.backgroundColor = "red";
-    userTabHost.appendChild(createHorizontalTabHostDiv("userTabHost",USER_TABS,"defaultTabSelected","defaultTabNormal",function (tab) {
+    let userDetailMainView = document.createElement("div");
+
+    userTabHost.appendChild(createHorizontalTabHostDiv("userTabHost", USER_TABS, "defaultTabSelected", "defaultTabNormal", function (tab) {
+        let object = new Object();
         let requestUserEntity = new Object();
+        object.userId = userEntity.userId;
         requestUserEntity.userId = userEntity.userId;
+        object.user = requestUserEntity;
+        userDetailMainView.innerHTML = null;
         if (tab.index == 0) {
-            onUserCartTabCallback(requestUserEntity);
+            onUserCartTabCallback(object,userDetailMainView);
         } else if (tab.index == 1) {
-            onUserOrderTabCallback(requestUserEntity);
+            onUserOrderTabCallback(object,userDetailMainView);
         } else if (tab.index == 2) {
-            onUserAccountTabCallback(requestUserEntity);
+            onUserAccountTabCallback(object,userDetailMainView);
         } else if (tab.index == 3) {
-            onUserRequestReceiverCallback(requestUserEntity);
+            onUserRequestReceiverCallback(object,userDetailMainView);
         }
-    },-1));
+    }, 0));
+
     getMainContainer().appendChild(userTabHost);
+    userDetailMainView.style.width = "100%";
+    userDetailMainView.style.height = "400px";
+    userDetailMainView.style.marginTop = "45px";
+    getMainContainer().appendChild(userDetailMainView);
 }
 
-function onUserCartTabCallback(userEntity) {
+function onUserCartTabCallback(userEntity,mainContainer) {
     let url = BASE_PATH + "/cart/mRetrieve?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createCartView(jsonData.data);
+            attachCartViewToUserDetailMainContainer(mainContainer,jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function onUserOrderTabCallback(userEntity) {
+function onUserOrderTabCallback(userEntity,mainContainer) {
     let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            console.log(jsonData);
-            createOrderView(jsonData.data);
+            attachOrderViewToUserDetailMainContainer(mainContainer,jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
-    createOrderView();
 }
 
 
-function onUserAccountTabCallback(userEntity) {
-    createAccountView();
+function onUserAccountTabCallback(userEntity,mainContainer) {
+    attachAccountViewToUserDetailMainContainer(mainContainer);
 }
 
-function onUserRequestReceiverCallback(userEntity) {
+function onUserRequestReceiverCallback(userEntity,mainContainer) {
     let url = BASE_PATH + "/receiver/mRetrieveByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createReceiverContainer(jsonData.data);
+            attachReceiverViewToUserDetailMainContainer(mainContainer,jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function createOrderView(orderEntities) {
+function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
     /**
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
      */
@@ -232,11 +239,11 @@ function createOrderView(orderEntities) {
         /**
          * 添加最外层容器根对象
          */
-        getMainContainer().appendChild(orderView);
+        mainContainer.appendChild(orderView);
     }
 }
 
-function createCartView(cartEntities) {
+function attachCartViewToUserDetailMainContainer(mainContainer, cartEntities) {
     /**
      * 容器左右分为加入购物车的日期|产品名称|产品单价|产品数量|总金额五个区域
      */
@@ -295,14 +302,14 @@ function createCartView(cartEntities) {
         moneyView.style.textAlign = "center";
         moneyView.innerHTML = (cartEntity.amount * cartEntity.formatEntity.pricing) + cartEntity.formatEntity.priceMeta;
         cartView.appendChild(moneyView);
-        getMainContainer().appendChild(cartView);
+        mainContainer.appendChild(cartView);
     }
 }
 
-function createAccountView() {
-    getMainContainer().appendChild(createPhoneAccountContainer());
-    getMainContainer().appendChild(createAuthAccountContainer(0, "微信账号", "", "http://localhost:8080/foodslab/webapp/asserts/images/login_wx.png"));
-    getMainContainer().appendChild(createAuthAccountContainer(1, "QQ账号", undefined, "http://localhost:8080/foodslab/webapp/asserts/images/login_qq.png"));
+function attachAccountViewToUserDetailMainContainer(mainContainer) {
+    mainContainer.appendChild(createPhoneAccountContainer());
+    mainContainer.appendChild(createAuthAccountContainer(0, "微信账号", "", "http://localhost:8080/foodslab/webapp/asserts/images/login_wx.png"));
+    mainContainer.appendChild(createAuthAccountContainer(1, "QQ账号", undefined, "http://localhost:8080/foodslab/webapp/asserts/images/login_qq.png"));
 }
 
 function createPhoneAccountContainer(data) {
@@ -491,9 +498,9 @@ function createAuthAccountContainer(index, title, data, link) {
     return authAccountContainer;
 }
 
-function createReceiverContainer(receiverEntities) {
-    let length = receiverEntities == undefined ? 0:receiverEntities.length;
-    for (let i=0;i<length;i++){
+function attachReceiverViewToUserDetailMainContainer(mainContainer, receiverEntities) {
+    let length = receiverEntities == undefined ? 0 : receiverEntities.length;
+    for (let i = 0; i < length; i++) {
         let receiverEntity = receiverEntities[i];
         let receiverItemContainer = document.createElement("div");
         receiverItemContainer.className = "receiverItemContainer";
@@ -523,6 +530,6 @@ function createReceiverContainer(receiverEntities) {
             addressView.style.width = "784px";
         }
         receiverItemContainer.appendChild(addressView);
-        getMainContainer().appendChild(receiverItemContainer);
+        mainContainer.appendChild(receiverItemContainer);
     }
 }
