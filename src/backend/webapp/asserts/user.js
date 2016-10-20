@@ -6,13 +6,25 @@ function loadUserView() {
     titleView.innerHTML = "用户列表";
     getTitleContainer().appendChild(titleView);
 
+    let searchContainer = document.createElement("div");
+    searchContainer.className = "listItem listItemWidthBottom";
+    let searchView = createSearchWidget("100%", function (data) {
+        console.log(data);
+    });
+    searchContainer.appendChild(searchView);
+    getMainContainer().appendChild(searchContainer);
+
+    let userListContainer = document.createElement("div");
+    userListContainer.className = "managerItem";
+    getMainContainer().appendChild(userListContainer);
+
     var indexUrl = BASE_PATH + "/account/mRetrieves";
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
-                initUserList(parseData.data);
+                attachUsersToMainContainer(userListContainer,parseData.data);
             } else {
                 new Toast().show("请求失败");
             }
@@ -20,95 +32,74 @@ function loadUserView() {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function initUserList(userEntities) {
-    let contentViewContainer = getMainContainer();
-    let searchView = createSearchWidget("100%", function (data) {
-        console.log(data);
-    });
-    contentViewContainer.appendChild(searchView);
-    let userGridView = createUserGridView(userEntities);
-    userGridView.style.marginTop = "5px";
-    contentViewContainer.appendChild(userGridView);
-}
-
-function createUserGridView(userEntities) {
-    let gridContainer = document.createElement("div");
+function attachUsersToMainContainer(userListContainer,userEntities) {
     let length = userEntities == undefined ? 0 : userEntities.length;
     for (let i = 0; i < length; i++) {
-        let gridView = document.createElement("div");
-        gridView.className = "gridItemContainer";
-        let gridContentView = createUserContentContainer(userEntities[i]);
-        gridView.appendChild(gridContentView);
-        gridContainer.appendChild(gridView);
-        if (i % 4 == 0) {
-            let clearFloat = document.createElement("div");
-            clearFloat.className = "clearFloat";
-            gridContainer.appendChild(gridView);
-        }
-    }
-    return gridContainer;
-}
+        let userEntity = userEntities[i];
+        let userEntityContainer = document.createElement("div");
+        userEntityContainer.className = "managerItem";
+        let userPhoneAccountDiv = document.createElement("div");
+        userPhoneAccountDiv.className = "listItemLabel listItemNormal";
+        userPhoneAccountDiv.innerHTML = "电话账号未绑定";
+        let userWeiXinAccountDiv = document.createElement("div");
+        userWeiXinAccountDiv.className = "listItemLabel listItemNormal";
+        userWeiXinAccountDiv.innerHTML = "微信账号未绑定";
+        let userQQAccountDiv = document.createElement("div");
+        userQQAccountDiv.className = "listItemLabel listItemNormal";
+        userQQAccountDiv.innerHTML = "QQ账号未绑定";
+        let blockUserDiv = document.createElement("div");
+        blockUserDiv.className = "listAction";
+        blockUserDiv.innerHTML = "禁用";
+        let userDetailDiv = document.createElement("div");
+        userDetailDiv.className = "listAction";
+        userDetailDiv.innerHTML = "详情";
+        userEntityContainer.appendChild(userPhoneAccountDiv);
+        userEntityContainer.appendChild(userWeiXinAccountDiv);
+        userEntityContainer.appendChild(userQQAccountDiv);
+        userEntityContainer.appendChild(userDetailDiv);
+        userEntityContainer.appendChild(blockUserDiv);
+        userListContainer.appendChild(userEntityContainer);
 
-function createUserContentContainer(userEntity) {
-    let gridContentView = document.createElement("div");
-    gridContentView.className = "gridItemSubContainer";
-    let blockView = document.createElement("div");
-    blockView.className = "actionButton gridItemActionButton";
-    if (userEntity.status == 1) {
-        blockView.innerHTML = "启用";
-        gridContentView.style.borderColor = "red";
-    } else if (userEntity.status == 2) {
-        blockView.innerHTML = "禁用";
-    }
-    blockView.onclick = function () {
-        let requestUserEntity = new Object();
-        requestUserEntity.userId = userEntity.userId;
+        let accountEntities = userEntity.children;
+        for (let i = 0; i < accountEntities.length; i++) {
+            let accountEntity = userEntity.children[i];
+            let displayName = accountEntity.nickName == undefined ? accountEntity.identity : accountEntity.nickName;
+            if (accountEntity.source == 1) {
+                userPhoneAccountDiv.className = "listItemLabel listItemActive";
+                userPhoneAccountDiv.innerHTML = displayName;
+            } else if (accountEntity.source == 2) {
+                userWeiXinAccountDiv.className = "listItemLabel listItemActive";
+                userWeiXinAccountDiv.innerHTML = displayName;
+            } else if (accountEntity.source == 3) {
+                userQQAccountDiv.className = "listItemLabel listItemActive";
+                userQQAccountDiv.innerHTML = displayName;
+            }
+        }
+
         if (userEntity.status == 1) {
-            requestUserEntity.status = 2;
-        } else if (userEntity.status == 2) {
-            requestUserEntity.status = 1;
+            userPhoneAccountDiv.className = "listItemLabel listItemBlock";
+            userWeiXinAccountDiv.className = "listItemLabel listItemBlock";
+            userQQAccountDiv.className = "listItemLabel listItemBlock";
+            blockUserDiv.innerHTML = "启用";
+        } else {
+            blockUserDiv.innerHTML = "禁用";
         }
-        requestUpdateStatus(requestUserEntity);
-    };
-    gridContentView.appendChild(blockView);
-    let detailView = document.createElement("div");
-    detailView.className = "actionButton gridItemActionButton";
-    detailView.innerHTML = "详情";
-    detailView.onclick = function () {
-        resetMainContainer();
-        loadUserDetailView(userEntity);
-    };
-    gridContentView.appendChild(detailView);
 
-    let foodslabView = document.createElement("div");
-    foodslabView.className = "actionButton accountStatusNormal";
-    foodslabView.innerHTML = "电话账号未绑定";
-    gridContentView.appendChild(foodslabView);
-    let weixinView = document.createElement("div");
-    weixinView.className = "actionButton accountStatusNormal";
-    weixinView.innerHTML = "微信账号未绑定";
-    gridContentView.appendChild(weixinView);
-    let QQView = document.createElement("div");
-    QQView.className = "actionButton accountStatusNormal";
-    QQView.innerHTML = "QQ账号未绑定";
-    gridContentView.appendChild(QQView);
-
-    let accountEntities = userEntity.children;
-    for (let i = 0; i < accountEntities.length; i++) {
-        let accountEntity = userEntity.children[i];
-        let displayName = accountEntity.nickName == undefined ? accountEntity.identity : accountEntity.nickName;
-        if (accountEntity.source == 1) {
-            foodslabView.className = "actionButton accountStatusActive";
-            foodslabView.innerHTML = "电话账号{" + displayName + "}已绑定";
-        } else if (accountEntity.source == 2) {
-            weixinView.className = "actionButton accountStatusActive";
-            weixinView.innerHTML = "微信账号{" + displayName + "}已绑定";
-        } else if (accountEntity.source == 3) {
-            QQView.className = "actionButton accountStatusActive";
-            QQView.innerHTML = "QQ账号{" + displayName +"}已绑定";
+        blockUserDiv.onclick = function () {
+            let requestUserEntity = new Object();
+            requestUserEntity.userId = userEntity.userId;
+            if (userEntity.status == 1) {
+                requestUserEntity.status = 2;
+            } else if (userEntity.status == 2) {
+                requestUserEntity.status = 1;
+            }
+            requestUpdateStatus(requestUserEntity);
+        }
+        userDetailDiv.onclick = function () {
+            resetMainContainer();
+            loadUserDetailView(userEntity);
         }
     }
-    return gridContentView;
 }
 
 function requestUpdateStatus(userEntity) {
@@ -118,7 +109,8 @@ function requestUpdateStatus(userEntity) {
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
-                showUsers();
+                resetMainContainer();
+                loadUserView();
             } else {
                 new Toast().show("请求失败");
             }

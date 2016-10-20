@@ -30,7 +30,6 @@ div.managerAccessLabel{
 div.managerEditorLabel{
     float: right;
     width: 4%;
-    margin-left: 1%;
     margin-right: 0px;
     color: #FFFFFF;
 }
@@ -38,7 +37,6 @@ div.managerEditorLabel{
 div.managerBlockLabel{
     float: right;
     width: 4%;
-    margin-left: 1%;
     margin-right: 0px;
     color: #FFFFFF;
 }

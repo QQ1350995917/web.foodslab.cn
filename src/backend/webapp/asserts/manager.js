@@ -28,26 +28,28 @@ function attachManagerToMainContainer(managerEntities) {
         let managerEntityContainer = document.createElement("div");
         managerEntityContainer.className = "managerItem";
         let userNameDiv = document.createElement("div");
-        userNameDiv.className = "managerLabel managerNameLabel";
+        userNameDiv.className = "listItemLabel";
         userNameDiv.innerHTML = managerEntity.username;
 
         let accessDiv = document.createElement("div");
-        accessDiv.className = "managerLabel managerAccessLabel";
+        accessDiv.className = "listItemLabel";
         accessDiv.innerHTML = "系统日志 ";
-        let blockDiv = document.createElement("div");
-        blockDiv.className = "managerLabel managerBlockLabel actionButton";
 
+        let blockDiv = document.createElement("div");
+        blockDiv.className = "listAction";
+        blockDiv.innerHTML = "禁用";
 
         let deleteDiv = document.createElement("div");
-        deleteDiv.className = "managerLabel managerEditorLabel actionButton";
+        deleteDiv.className = "listAction";
         deleteDiv.innerHTML = "删除";
 
         let editorDiv = document.createElement("div");
-        editorDiv.className = "managerLabel managerEditorLabel actionButton";
+        editorDiv.className = "listAction";
         editorDiv.innerHTML = "编辑";
 
         if (managerEntity.status == 1) {
-            userNameDiv.style.color = "red";
+            userNameDiv.className = "listItemLabel listItemBlock";
+            accessDiv.className = "listItemLabel listItemBlock";
             blockDiv.innerHTML = "启用";
         } else {
             blockDiv.innerHTML = "禁用";
@@ -82,6 +84,7 @@ function attachManagerToMainContainer(managerEntities) {
             loadManagerEditorView(managerEntity);
         }
     }
+    
     let addNewManagerView = document.createElement("div");
     addNewManagerView.className = "actionButton";
     addNewManagerView.style.width = "100%";
