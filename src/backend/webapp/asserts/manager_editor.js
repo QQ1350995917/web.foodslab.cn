@@ -1,7 +1,7 @@
 /**
  * Created by dingpengwei on 10/20/16.
  */
-function loadManagerEditorView(managerEntity, menuEntities, self) {
+function loadManagerEditorView(managerEntity, menuEntities) {
     let titleView = document.createElement("div");
     if (isNullValue(managerEntity)) {
         titleView.innerHTML = "管理员编辑 >> 添加管理员";
@@ -9,15 +9,15 @@ function loadManagerEditorView(managerEntity, menuEntities, self) {
         titleView.innerHTML = "管理员编辑 >> " + managerEntity.username;
     }
     titleView.style.cursor = "pointer";
-    getTitleContainer().appendChild(titleView);
     titleView.onclick = function () {
         resetMainContainer();
         loadManagerView();
     }
-    attachManagerEditorView(managerEntity, menuEntities, self);
+    getTitleContainer().appendChild(titleView);
+    attachManagerEditorView(managerEntity, menuEntities);
 }
 
-function attachManagerEditorView(managerEntity, menuEntities, self) {
+function attachManagerEditorView(managerEntity, menuEntities) {
     let loginNameContainer = document.createElement("div");
     loginNameContainer.className = "managerItem textCenter editorManagerItem";
     let userNameContainer = document.createElement("div");
@@ -33,9 +33,7 @@ function attachManagerEditorView(managerEntity, menuEntities, self) {
     getMainContainer().appendChild(loginNameContainer);
     getMainContainer().appendChild(userNameContainer);
     getMainContainer().appendChild(passwordContainer);
-    if (!self) {
-        getMainContainer().appendChild(accessContainer);
-    }
+    getMainContainer().appendChild(accessContainer);
     getMainContainer().appendChild(actionBarContainer);
 
     let loginNameInput = document.createElement("input");
@@ -298,13 +296,8 @@ function requestCreateManager(managerEntity) {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function requestUpdateManager(managerEntity, self) {
-    let url = undefined;
-    if (self) {
-        url = BASE_PATH + "/manager/mUpdate?p=" + JSON.stringify(managerEntity);
-    } else {
-        url = BASE_PATH + "/manager/MUpdate?p=" + JSON.stringify(managerEntity);
-    }
+function requestUpdateManager(managerEntity) {
+    let url = BASE_PATH + "/manager/MUpdate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

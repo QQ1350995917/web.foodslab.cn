@@ -36,6 +36,7 @@ function onFrameLoad() {
         },-1));
     });
     let leftMenuEntity = new Object();
+    leftMenuEntity.cs = getCookie(KEY_CS);
     leftMenuEntity.category = 2;
     requestMenus(leftMenuEntity,function (menuEntities) {
         FRAME_MENUS = FRAME_MENUS.concat(menuEntities);
@@ -47,11 +48,29 @@ function onFrameLoad() {
 
     let managerDiv = document.getElementById(ID_FRAME_HEADER_MANAGER);
     managerDiv.onclick = function () {
-        
+        let object = new Object();
+        object.cs = getCookie(KEY_CS);
+        asyncRequestByGet(BASE_PATH + "/manager/mRetrieve?p=" + JSON.stringify(object), function (data) {
+            var json = JSON.parse(data);
+            if (json.code = RESPONSE_SUCCESS){
+                resetFrameVerticalTabHost("mLeft");
+                resetTabHost("mTop","horizontalIndexNormal");
+                resetMainContainer();
+                loadManagerSelfEditorView(json.data, json.data.menus, true);
+            }
+        }, onErrorCallback, onTimeoutCallback);
     };
     let exitDiv = document.getElementById(ID_FRAME_HEADER_EXIT);
     exitDiv.onclick = function () {
-
+        let object = new Object();
+        object.cs = getCookie(KEY_CS);
+        asyncRequestByGet(BASE_PATH + "/manager/mExit?p=" + JSON.stringify(object), function (data) {
+            var json = JSON.parse(data);
+            if (json.code = RESPONSE_SUCCESS){
+                delCookie(KEY_CS);
+                window.open(BASE_PATH ,"_self");
+            }
+        }, onErrorCallback, onTimeoutCallback);
     };
     requestMeta();
 }

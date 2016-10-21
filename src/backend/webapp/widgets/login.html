@@ -124,8 +124,10 @@
                         doubleClick = false;
                     }
                 }, function () {
+                    console.log("============delete 1==============");
                     delCookie("mcs");
                 }, function () {
+                    console.log("============delete 2==============");
                     delCookie("mcs");
                 });
             }
@@ -149,7 +151,7 @@
 
     function setCookie(key, value) {
         var expireDate = new Date();
-        expireDate.setTime(expireDate.getTime() + (15 * 1000));
+        expireDate.setTime(expireDate.getTime() + (15 * 60 * 1000));
         document.cookie = key + "=" + encodeURI(value) + ";expires =" + expireDate.toGMTString();
     }
 
