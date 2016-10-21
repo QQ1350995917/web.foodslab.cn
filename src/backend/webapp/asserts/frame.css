@@ -245,8 +245,12 @@ div.listItemWidthBottom{
 div.listItemLabel{
     float: left;
     width: 24%;
+    height: 30px;
     margin-left: 0px;
     margin-right: 1%;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 div.listItemNormal{

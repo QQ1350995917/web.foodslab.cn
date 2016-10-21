@@ -3,47 +3,68 @@
  */
 const BASE_PATH = "http://localhost:8080/foodslab";
 const ID_TOAST_CONTAINER = "body";
+const ID_FRAME_HEADER_ICON = "headerIcon";
+const ID_FRAME_HEADER_MANAGER = "manager";
+const ID_FRAME_HEADER_EXIT = "exit";
 const ID_FRAME_HEADER_MENU = "headerMenu";
 const ID_FRAME_LEFT_MENU = "leftMenu";
 const ID_MAIN_TITLE = "mainTitle";
 const ID_MAIN_CONTAINER = "mainContainer";
+const KEY_CS = "cs";
 
 const RESPONSE_SUCCESS = 3050;
 const APP_CONST_CLIENT_ID = "clientId";
 //标记元素是添加按钮
 const APP_CONST_ADD_NEW = "addNew";
-
+let FRAME_MENUS = new Array();
 
 function onFrameLoad() {
+    let iconDiv  = document.getElementById(ID_FRAME_HEADER_ICON);
+    iconDiv.style.cursor = "pointer";
+    iconDiv.onclick = function () {
+        location.reload();
+    }
+
     let topMenuEntity = new Object();
+    topMenuEntity.cs = getCookie(KEY_CS);
     topMenuEntity.category = 1;
-    requestMenus(topMenuEntity);
+    requestMenus(topMenuEntity,function (menuEntities) {
+        FRAME_MENUS = FRAME_MENUS.concat(menuEntities);
+        document.getElementById(ID_FRAME_HEADER_MENU).appendChild(createHorizontalTabHostDiv("mTop",menuEntities,"horizontalIndexSelect","horizontalIndexNormal",function (menuEntity) {
+            onFrameMenuItemClick(menuEntity.flag);
+            resetFrameVerticalTabHost("mLeft");
+        },-1));
+    });
     let leftMenuEntity = new Object();
     leftMenuEntity.category = 2;
-    requestMenus(leftMenuEntity);
+    requestMenus(leftMenuEntity,function (menuEntities) {
+        FRAME_MENUS = FRAME_MENUS.concat(menuEntities);
+        document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("mLeft",menuEntities,function (menuEntity) {
+            onFrameMenuItemClick(menuEntity.flag);
+            resetTabHost("mTop","horizontalIndexNormal");
+        },-1));
+    });
 
+    let managerDiv = document.getElementById(ID_FRAME_HEADER_MANAGER);
+    managerDiv.onclick = function () {
+        
+    };
+    let exitDiv = document.getElementById(ID_FRAME_HEADER_EXIT);
+    exitDiv.onclick = function () {
+
+    };
     requestMeta();
 }
 
-function requestMenus(menuEntity) {
-    const url = BASE_PATH + "/menu/mRetrieves?p=" + JSON.stringify(menuEntity);
+function requestMenus(menuEntity,callback) {
+    const url = BASE_PATH + "/menu/MRetrieves?p=" + JSON.stringify(menuEntity);
     asyncRequestByGet(url, function (data) {
         let result = checkResponseDataFormat(data);
         if (result){
             var jsonData = JSON.parse(data);
             if (jsonData.code == RESPONSE_SUCCESS){
                 var menuEntities = jsonData.data;
-                if (menuEntity.category == 1){
-                    document.getElementById(ID_FRAME_HEADER_MENU).appendChild(createHorizontalTabHostDiv("mTop",menuEntities,"horizontalIndexSelect","horizontalIndexNormal",function (menuEntity) {
-                        onFrameMenuItemClick(menuEntity.flag);
-                        resetFrameVerticalTabHost("mLeft");
-                    },-1));
-                } else if (menuEntity.category == 2){
-                    document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("mLeft",menuEntities,function (menuEntity) {
-                        onFrameMenuItemClick(menuEntity.flag);
-                        resetTabHost("mTop","horizontalIndexNormal");
-                    },-1));
-                }
+                callback(menuEntities);
             }
         }
     }, onErrorCallback, onTimeoutCallback);
@@ -186,5 +207,55 @@ function createSearchWidget(width,callback) {
     searchContainer.appendChild(searchActionView);
 
     return searchContainer;
+}
+
+
+/**
+ * 数据层工具方法
+ * 设置本地cookie存储
+ * @param key
+ * @param value
+ * @param expireDays
+ */
+function setCookie(key, value, expireDays) {
+    if (isNullValue(expireDays)) {
+        expireDays = 30;
+    }
+    var expireDate = new Date()
+    expireDate.setDate(expireDate.getDate() + expireDays)
+    document.cookie = key + "=" + encodeURI(value) + ((expireDays == null) ? "" : ";expires=" + expireDate.toGMTString())
+}
+
+/**
+ * 数据层工具方法
+ * 获取本地cookie存储
+ * @param key
+ * @returns {*}
+ */
+function getCookie(key) {
+    if (document.cookie.length > 0) {
+        let indexStart = document.cookie.indexOf(key + "=")
+        if (indexStart != -1) {
+            indexStart = indexStart + key.length + 1
+            let indexEnd = document.cookie.indexOf(";", indexStart)
+            if (indexEnd == -1) indexEnd = document.cookie.length
+            return decodeURI(document.cookie.substring(indexStart, indexEnd))
+        }
+    }
+    return ""
+}
+
+/**
+ * 数据层工具方法
+ * 删除本地cookie存储
+ * @param key
+ */
+function delCookie(key) {
+    var exp = new Date();
+    exp.setTime(exp.getTime() - 1);
+    var del = getCookie(key);
+    if (del != null) {
+        document.cookie = key + "=" + del + ";expires=" + exp.toGMTString();
+    }
 }
 

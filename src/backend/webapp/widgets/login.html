@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1 maximum-scale=1, user-scalable=no">
+    <title>登录</title>
+    <style type="text/css">
+        html body {
+            width: 100%;
+            height: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
+        div.backgroundContainer {
+            float: left;
+            width: 80%;
+        }
+
+        img.background {
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+
+        div.loginPanelContainer {
+            float: right;
+            width: 20%;
+            height: 120px;
+            margin-top: 10px;
+            border: 0px solid #000000;
+        }
+
+        input {
+            width: 90%;
+            height: 20px;
+            margin: 5px auto;
+            background-color: transparent;
+            border: 1px solid #CCCCCC;
+            max-lines: 1;
+        }
+
+        div.loginButton {
+            width: 90.5%;
+            height: 30px;
+            text-align: center;
+            line-height: 30px;
+            border: 1px solid #CCCCCC;
+            cursor: pointer;
+            color: #CCCCCC;
+        }
+
+        input:hover {
+            cursor: pointer;
+            border-color: dodgerblue;
+            color: dodgerblue;
+        }
+
+        .loginButton:hover {
+            cursor: pointer;
+            border-color: dodgerblue;
+            color: dodgerblue;
+        }
+    </style>
+</head>
+<body>
+<div class="backgroundContainer">
+    <img id="background" class="background" src="../../login/lan.jpg"/>
+</div>
+<div class="loginPanelContainer">
+    <input id="loginName" type="text" maxlength="20" placeholder="请输入用户名">
+    <input id="password" type="password" maxlength="12" placeholder="请输入密码">
+    <div id="loginButton" class="loginButton" onclick="loginAction()">登录</div>
+</div>
+</body>
+<script>
+    window.onload = function () {
+        let background = document.getElementById("background");
+        background.style.height = window.innerHeight + "px";
+        background.style.width = window.innerHeight * 1.5 + "px";
+    };
+    window.onresize = function () {
+        let background = document.getElementById("background");
+        background.style.height = window.innerHeight + "px";
+        background.style.width = window.innerHeight * 1.5 + "px";
+    };
+
+    let doubleClick = false;
+    function loginAction() {
+        let loginNameInput = document.getElementById("loginName");
+        let passwordInput = document.getElementById("password");
+        let loginName = loginNameInput.value;
+        let password = passwordInput.value;
+
+        let flag = false;
+        if (loginName == undefined || loginName == null || loginName.trim() == "") {
+            loginNameInput.style.borderColor = "red";
+        } else {
+            flag = true;
+        }
+
+        if (password == undefined || password == null || password.trim() == "") {
+            passwordInput.style.borderColor = "red";
+        } else {
+            flag = true;
+        }
+
+        if (flag) {
+            let manager = new Object();
+            manager.loginName = loginName;
+            manager.password = password;
+            let url = "http://localhost:8080/foodslab/manager/mLogin?p=" + JSON.stringify(manager);
+            if (!doubleClick){
+                doubleClick = true;
+                asyncRequestByGet(url, function (data) {
+                    var jsonData = JSON.parse(data);
+                    if (jsonData.code == 3050) {
+                        setCookie("mcs",jsonData.data.cs);
+                        let object = new Object();
+                        object.cs = jsonData.data.cs;
+                        window.open("http://localhost:8080/foodslab/frame?p=" + JSON.stringify(object),"_self");
+                    } else {
+                        delCookie("mcs");
+                        doubleClick = false;
+                    }
+                }, function () {
+                    delCookie("mcs");
+                }, function () {
+                    delCookie("mcs");
+                });
+            }
+        }
+    }
+
+    function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.timeout = 5000;
+        xmlHttp.ontimeout = onTimeoutCallback;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send(null);
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                onDataCallback(xmlHttp.responseText);
+            } else {
+                onErrorCallback;
+            }
+        }
+    }
+
+    function setCookie(key, value) {
+        var expireDate = new Date();
+        expireDate.setTime(expireDate.getTime() + (15 * 1000));
+        document.cookie = key + "=" + encodeURI(value) + ";expires =" + expireDate.toGMTString();
+    }
+
+    function getCookie(key) {
+        if (document.cookie.length > 0) {
+            let indexStart = document.cookie.indexOf(key + "=")
+            if (indexStart != -1) {
+                indexStart = indexStart + key.length + 1
+                let indexEnd = document.cookie.indexOf(";", indexStart)
+                if (indexEnd == -1) indexEnd = document.cookie.length
+                return decodeURI(document.cookie.substring(indexStart, indexEnd))
+            }
+        }
+        return ""
+    }
+
+    function delCookie(key) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var del = getCookie(key);
+        if (del != null) {
+            document.cookie = key + "=" + del + ";expires=" + exp.toGMTString();
+        }
+    }
+    //    encodeURIComponent
+    //    decodeURIComponent
+</script>
+</html>

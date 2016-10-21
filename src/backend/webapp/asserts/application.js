@@ -2,8 +2,6 @@
  * Created by dingpengwei on 7/20/16.
  */
 
-
-
 function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {

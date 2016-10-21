@@ -1,7 +1,7 @@
 /**
  * Created by dingpengwei on 10/20/16.
  */
-function loadManagerEditorView(managerEntity) {
+function loadManagerEditorView(managerEntity, menuEntities, self) {
     let titleView = document.createElement("div");
     if (isNullValue(managerEntity)) {
         titleView.innerHTML = "管理员编辑 >> 添加管理员";
@@ -14,10 +14,10 @@ function loadManagerEditorView(managerEntity) {
         resetMainContainer();
         loadManagerView();
     }
-    attachManagerEditorView(managerEntity);
+    attachManagerEditorView(managerEntity, menuEntities, self);
 }
 
-function attachManagerEditorView(managerEntity) {
+function attachManagerEditorView(managerEntity, menuEntities, self) {
     let loginNameContainer = document.createElement("div");
     loginNameContainer.className = "managerItem textCenter editorManagerItem";
     let userNameContainer = document.createElement("div");
@@ -25,6 +25,7 @@ function attachManagerEditorView(managerEntity) {
     let passwordContainer = document.createElement("div");
     passwordContainer.className = "managerItem textCenter editorManagerItem";
     let accessContainer = document.createElement("div");
+    accessContainer.id = "accessContainer";
     accessContainer.className = "managerItem textCenter editorManagerItem";
     let actionBarContainer = document.createElement("div");
     actionBarContainer.className = "managerItem textCenter editorManagerItem";
@@ -32,7 +33,9 @@ function attachManagerEditorView(managerEntity) {
     getMainContainer().appendChild(loginNameContainer);
     getMainContainer().appendChild(userNameContainer);
     getMainContainer().appendChild(passwordContainer);
-    getMainContainer().appendChild(accessContainer);
+    if (!self) {
+        getMainContainer().appendChild(accessContainer);
+    }
     getMainContainer().appendChild(actionBarContainer);
 
     let loginNameInput = document.createElement("input");
@@ -57,6 +60,7 @@ function attachManagerEditorView(managerEntity) {
 
     let password0Input = document.createElement("input")
     password0Input.className = "default";
+    password0Input.value = managerEntity.password;
     if (isNullValue(managerEntity)) {
         password0Input.placeholder = "请输入密码";
         password0Input.style.marginRight = "10px";
@@ -74,15 +78,24 @@ function attachManagerEditorView(managerEntity) {
     }
 
     let leftMenuEntities = new Array();
-    leftMenuEntities.push("A");
-    leftMenuEntities.push("B");
-    leftMenuEntities.push("C");
-    leftMenuEntities.push("D");
-    leftMenuEntities.push("E");
-    leftMenuEntities.push("F");
-    leftMenuEntities.push("G");
-
-    attachMenuSelectorToAccessView(accessContainer, undefined, leftMenuEntities);
+    for (let i = 0; i < menuEntities.length; i++) {
+        let menuEntity = menuEntities[i];
+        let selected = false;
+        if (!isNullValue(managerEntity)) {
+            let length = managerEntity.menus == undefined ? 0 : managerEntity.menus.length;
+            for (let j = 0; j < length; j++) {
+                let selectedMenuEntity = managerEntity.menus[j];
+                if (selectedMenuEntity.menuId == menuEntity.menuId) {
+                    selected = true;
+                    break;
+                }
+            }
+        }
+        if (!selected) {
+            leftMenuEntities.push(menuEntity);
+        }
+    }
+    attachMenuSelectorToAccessView(accessContainer, managerEntity == undefined ? undefined : managerEntity.menus, leftMenuEntities);
 
     let cancelDiv = document.createElement("div")
     cancelDiv.className = "actionButton floatLeft";
@@ -114,20 +127,44 @@ function attachManagerEditorView(managerEntity) {
 
     saveDiv.onclick = function () {
         let loginName = loginNameInput.value;
-        let userName = loginNameInput.value;
-        let password = "temp-password";
+        let userName = userNameInput.value;
+        let password = password0Input.value;
+        if (isNullValue(loginName)) {
+            new Toast().show("请输入登录名");
+            return;
+        }
+        if (isNullValue(userName)) {
+            new Toast().show("请输入用户名");
+            return;
+        }
+
+        if (isNullValue(password)) {
+            new Toast().show("请输入密码");
+            return;
+        }
+
         let requestManagerEntity = new Object();
         requestManagerEntity.loginName = loginName;
         requestManagerEntity.username = userName;
         requestManagerEntity.password = password;
-        if (isNullValue(managerEntity)) {
-            requestCreateManager(requestManagerEntity);
+        let accessContainer = document.getElementById("accessContainer");
+        if (!isNullValue(accessContainer)) {
+            requestManagerEntity.menus = accessContainer.menus == undefined ? new Array() : accessContainer.menus;
+            if (isNullValue(managerEntity)) {
+                requestCreateManager(requestManagerEntity);
+            } else {
+                requestManagerEntity.managerId = managerEntity.managerId;
+                requestManagerEntity.status = managerEntity.status;
+                requestManagerEntity.queue = managerEntity.queue;
+                requestManagerEntity.level = managerEntity.level;
+                requestUpdateManager(requestManagerEntity,false);
+            }
         } else {
             requestManagerEntity.managerId = managerEntity.managerId;
             requestManagerEntity.status = managerEntity.status;
             requestManagerEntity.queue = managerEntity.queue;
             requestManagerEntity.level = managerEntity.level;
-            requestUpdateManager(requestManagerEntity);
+            requestUpdateManager(requestManagerEntity,true);
         }
     }
 }
@@ -173,6 +210,7 @@ function convertMangerPasswordView(container, editorStatus) {
 
 function attachMenuSelectorToAccessView(container, selectedMenuEntities, leftMenuEntities) {
     container.innerHTML = null;
+    container.menus = selectedMenuEntities;
     if (isNullValue(selectedMenuEntities)) {
         selectedMenuEntities = new Array();
     }
@@ -193,7 +231,7 @@ function attachMenuSelectorToAccessView(container, selectedMenuEntities, leftMen
     for (let index = 0; index < selectedSize; index++) {
         let selectedMenuEntity = selectedMenuEntities[index];
         let selectedMenuDiv = document.createElement("div");
-        selectedMenuDiv.innerHTML = selectedMenuEntity;
+        selectedMenuDiv.innerHTML = selectedMenuEntity.label;
         selectedMenuDiv.className = "selectedMenu";
         selectedMenuDiv.style.width = itemWidth + "px";
         let selectedMenuDelDiv = document.createElement("div");
@@ -225,9 +263,8 @@ function attachMenuSelectorToAccessView(container, selectedMenuEntities, leftMen
     accessSelector.options.add(new Option("请选择授权项", "请选择授权项"));
     innerContainer.appendChild(accessSelector);
 
-
     for (let i = 0; i < optionsSize; i++) {
-        let option = new Option(leftMenuEntities[i], leftMenuEntities[i]);
+        let option = new Option(leftMenuEntities[i].label, leftMenuEntities[i].menuId);
         accessSelector.options.add(option);
     }
 
@@ -244,30 +281,41 @@ function attachMenuSelectorToAccessView(container, selectedMenuEntities, leftMen
 }
 
 function requestCreateManager(managerEntity) {
-    const url = BASE_PATH + "/manager/mCreate?p=" + JSON.stringify(managerEntity);
+    const url = BASE_PATH + "/manager/MCreate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 var managerEntity = parseData.data;
+                new Toast().show("创建成功");
                 resetMainContainer();
-                loadManagerEditorView(managerEntity);
+                loadManagerEditorView(managerEntity,FRAME_MENUS,false);
+            } else {
+                new Toast().show("创建失败");
             }
         }
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function requestUpdateManager(managerEntity) {
-    const url = BASE_PATH + "/manager/mUpdate?p=" + JSON.stringify(managerEntity);
+function requestUpdateManager(managerEntity, self) {
+    let url = undefined;
+    if (self) {
+        url = BASE_PATH + "/manager/mUpdate?p=" + JSON.stringify(managerEntity);
+    } else {
+        url = BASE_PATH + "/manager/MUpdate?p=" + JSON.stringify(managerEntity);
+    }
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
                 var managerEntity = parseData.data;
+                new Toast().show("更新成功");
                 resetMainContainer();
-                loadManagerEditorView(managerEntity);
+                loadManagerEditorView(managerEntity,FRAME_MENUS,false);
+            } else {
+                new Toast().show("更新失败");
             }
         }
     }, onErrorCallback(), onTimeoutCallback());

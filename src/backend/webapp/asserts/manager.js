@@ -6,7 +6,7 @@ function loadManagerView() {
     titleView.innerHTML = "管理员列表"
     getTitleContainer().appendChild(titleView);
 
-    const url = BASE_PATH + "/manager/mRetrieves";
+    const url = BASE_PATH + "/manager/MRetrieves";
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -29,11 +29,22 @@ function attachManagerToMainContainer(managerEntities) {
         managerEntityContainer.className = "managerItem";
         let userNameDiv = document.createElement("div");
         userNameDiv.className = "listItemLabel";
+        userNameDiv.style.width = "9%"
         userNameDiv.innerHTML = managerEntity.username;
 
         let accessDiv = document.createElement("div");
         accessDiv.className = "listItemLabel";
-        accessDiv.innerHTML = "系统日志 ";
+        accessDiv.style.width = "69%";
+        accessDiv.innerHTML = "空权限";
+        let menusLength = managerEntity.menus == undefined ? 0 : managerEntity.menus.length;
+        let accessString = "";
+        for (let j = 0; j < menusLength; j++) {
+            accessString = accessString + managerEntity.menus[j].label + " ";
+        }
+        if (!isNullValue(accessString)){
+            accessDiv.innerHTML = accessString;
+        }
+
 
         let blockDiv = document.createElement("div");
         blockDiv.className = "listAction";
@@ -81,10 +92,10 @@ function attachManagerToMainContainer(managerEntities) {
         }
         editorDiv.onclick = function () {
             resetMainContainer();
-            loadManagerEditorView(managerEntity);
+            loadManagerEditorView(managerEntity,FRAME_MENUS,false);
         }
     }
-    
+
     let addNewManagerView = document.createElement("div");
     addNewManagerView.className = "actionButton";
     addNewManagerView.style.width = "100%";
@@ -92,7 +103,7 @@ function attachManagerToMainContainer(managerEntities) {
     getMainContainer().appendChild(addNewManagerView);
     addNewManagerView.onclick = function () {
         resetMainContainer();
-        loadManagerEditorView(undefined);
+        loadManagerEditorView(undefined,FRAME_MENUS,false);
     };
 }
 
@@ -101,7 +112,7 @@ function attachManagerToMainContainer(managerEntities) {
  * @param managerEntity
  */
 function requestMarkManager(managerEntity) {
-    const url = BASE_PATH + "/manager/mMark?p=" + JSON.stringify(managerEntity);
+    const url = BASE_PATH + "/manager/MMark?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
