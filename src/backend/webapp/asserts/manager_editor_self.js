@@ -120,14 +120,14 @@ function attachManagerSelfEditorView(managerEntity, menuEntities) {
                 requestManagerEntity.status = managerEntity.status;
                 requestManagerEntity.queue = managerEntity.queue;
                 requestManagerEntity.level = managerEntity.level;
-                requestUpdateManager(requestManagerEntity, false);
+                requestUpdateSelfManager(requestManagerEntity, false);
             }
         } else {
             requestManagerEntity.managerId = managerEntity.managerId;
             requestManagerEntity.status = managerEntity.status;
             requestManagerEntity.queue = managerEntity.queue;
             requestManagerEntity.level = managerEntity.level;
-            requestUpdateManager(requestManagerEntity, true);
+            requestUpdateSelfManager(requestManagerEntity, true);
         }
     }
 }
@@ -171,7 +171,7 @@ function convertMangerSelfPasswordView(container, editorStatus) {
     }
 }
 
-function requestUpdateManager(managerEntity) {
+function requestUpdateSelfManager(managerEntity) {
     let url = BASE_PATH + "/manager/mUpdate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);

@@ -146,23 +146,15 @@ function attachManagerEditorView(managerEntity, menuEntities) {
         requestManagerEntity.username = userName;
         requestManagerEntity.password = password;
         let accessContainer = document.getElementById("accessContainer");
-        if (!isNullValue(accessContainer)) {
-            requestManagerEntity.menus = accessContainer.menus == undefined ? new Array() : accessContainer.menus;
-            if (isNullValue(managerEntity)) {
-                requestCreateManager(requestManagerEntity);
-            } else {
-                requestManagerEntity.managerId = managerEntity.managerId;
-                requestManagerEntity.status = managerEntity.status;
-                requestManagerEntity.queue = managerEntity.queue;
-                requestManagerEntity.level = managerEntity.level;
-                requestUpdateManager(requestManagerEntity,false);
-            }
+        requestManagerEntity.menus = accessContainer.menus == undefined ? new Array() : accessContainer.menus;
+        if (isNullValue(managerEntity)) {
+            requestCreateManager(requestManagerEntity);
         } else {
             requestManagerEntity.managerId = managerEntity.managerId;
             requestManagerEntity.status = managerEntity.status;
             requestManagerEntity.queue = managerEntity.queue;
             requestManagerEntity.level = managerEntity.level;
-            requestUpdateManager(requestManagerEntity,true);
+            requestUpdateManager(requestManagerEntity);
         }
     }
 }
@@ -306,7 +298,7 @@ function requestUpdateManager(managerEntity) {
                 var managerEntity = parseData.data;
                 new Toast().show("更新成功");
                 resetMainContainer();
-                loadManagerEditorView(managerEntity,FRAME_MENUS,false);
+                loadManagerEditorView(managerEntity,FRAME_MENUS);
             } else {
                 new Toast().show("更新失败");
             }

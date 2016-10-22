@@ -28,7 +28,7 @@ function loadOrderView() {
         } else if (tab.index == 2) {
             onExpressedTabCallback();
         } else if (tab.index == 3) {
-            onAllTabCallback();
+            onOrderAllTabCallback();
         }
     },0));
 }
@@ -72,7 +72,12 @@ function onExpressedTabCallback() {
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function onAllTabCallback() {
+function onOrderAllTabCallback() {
+    let searchView = createSearchWidget("100%", function (data) {
+        console.log(data);
+    });
+    getMainContainer().appendChild(searchView);
+
     let orderEntity = new Object();
     orderEntity.status = 0;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
@@ -80,14 +85,12 @@ function onAllTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createAllView(jsonData.data);
+            createOrderAllView(jsonData.data);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
 function createUnExpressView(orderEntities) {
-    let unExpressTitleContainer = createUnExpressTitleContainer();
-    getMainContainer().appendChild(unExpressTitleContainer);
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let paramView = document.createElement("div");
@@ -99,20 +102,6 @@ function createUnExpressView(orderEntities) {
     }
 }
 
-/**
- * 创建未发货订单的title
- * @returns {Element}
- */
-function createUnExpressTitleContainer() {
-    let unExpressTitleView = document.createElement("div");
-    unExpressTitleView.className = "orderExpressTitle";
-    let searchView = createSearchWidget("100%", function (data) {
-        console.log(data);
-    });
-    searchView.style.float = "left";
-    unExpressTitleView.appendChild(searchView);
-    return unExpressTitleView;
-}
 
 function attachUnExpressView(orderEntity, container, status) {
     container.innerHTML = null;
@@ -196,7 +185,17 @@ function createExpressedView(orderEntities) {
     }
 }
 
-function createAllView(orderEntities) {
+
+/**
+ * 创建全部订单的搜索界面
+ * @returns {Element}
+ */
+function createAllOrderSearchContainer() {
+
+    return unExpressTitleView;
+}
+
+function createOrderAllView(orderEntities) {
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
         let orderEntity = orderEntities[i];
