@@ -6,7 +6,9 @@ function loadPosterView() {
     titleView.innerHTML = "海报管理";
     getTitleContainer().appendChild(titleView);
 
-    var indexUrl = BASE_PATH + "/poster/mRetrieves";
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    var indexUrl = BASE_PATH + "/poster/mRetrieves?p=" + JSON.stringify(object);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -17,6 +19,7 @@ function loadPosterView() {
 }
 
 function requestCreatePoster(posterEntity) {
+    posterEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/poster/mCreate?p="  + JSON.stringify(posterEntity);;
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -34,6 +37,7 @@ function requestCreatePoster(posterEntity) {
 }
 
 function requestUpdatePoster(posterEntity) {
+    posterEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/poster/mUpdate?p="  + JSON.stringify(posterEntity);;
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -51,6 +55,7 @@ function requestUpdatePoster(posterEntity) {
 }
 
 function requestUpdatePosterStatus(posterEntity) {
+    posterEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/poster/mMark?p="  + JSON.stringify(posterEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -175,7 +180,8 @@ function createAddNewPosterWidget(container,poster) {
     posterItemContainer.style.cursor = "pointer";
     posterItemContainer.innerHTML = "+";
     posterItemContainer.onclick = function () {
-        posterEditor(poster,true);
+        resetMainContainer();
+        loadPosterEditor(poster,true);
     };
     container.appendChild(posterItemContainer);
 }

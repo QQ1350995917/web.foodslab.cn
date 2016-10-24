@@ -10,10 +10,11 @@
 
 #### 请求参数
 
-| No.|level|key|Pkey|type|null|default|description|
+| No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|managerId      |      |String    |否| |描述|
-|01|1|key      |Pkey      |String    |否| |描述|
+|01|1|p         |      |jsonObject|否| |参数名称|
+|01|2|managerId |p     |String    |否| |描述|
+|02|2|key       |p     |String    |否| |描述|
 
 - GET请求链接示例：无
 - 请求数据结构示例：
@@ -26,7 +27,7 @@
 ```
 - 备注：无
 #### 响应参数
-| No.|level|key|Pkey|type|null|default|description|
+| No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |相应消息|

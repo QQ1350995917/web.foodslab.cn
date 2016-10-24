@@ -1,15 +1,12 @@
 /**
  * Created by dingpengwei on 10/20/16.
  */
-function loadManagerSelfEditorView(managerEntity, menuEntities) {
+function loadManagerSelfEditorView() {
+    document.getElementById(ID_FRAME_HEADER_MANAGER).innerHTML = CURRENT_MANAGER.username;
     let titleView = document.createElement("div");
-    if (isNullValue(managerEntity)) {
-        titleView.innerHTML = "管理员编辑 >> 添加管理员";
-    } else {
-        titleView.innerHTML = "管理员编辑 >> " + managerEntity.username;
-    }
+    titleView.innerHTML = "管理员编辑 >> " + CURRENT_MANAGER.username;
     getTitleContainer().appendChild(titleView);
-    attachManagerSelfEditorView(managerEntity, menuEntities);
+    attachManagerSelfEditorView(CURRENT_MANAGER, CURRENT_MANAGER.menus);
 }
 
 function attachManagerSelfEditorView(managerEntity, menuEntities) {
@@ -32,43 +29,27 @@ function attachManagerSelfEditorView(managerEntity, menuEntities) {
     getMainContainer().appendChild(actionBarContainer);
 
     let loginNameInput = document.createElement("input");
+    loginNameInput.readOnly = "true";
     loginNameInput.className = "default";
-    if (isNullValue(managerEntity)) {
-        loginNameInput.placeholder = "请输入登录名";
-    } else {
-        loginNameContainer.innerHTML = "登录名: ";
-        loginNameInput.value = managerEntity.loginName;
-    }
+    loginNameContainer.innerHTML = "登录名: ";
+    loginNameInput.value = managerEntity.loginName;
     loginNameContainer.appendChild(loginNameInput);
 
     let userNameInput = document.createElement("input")
     userNameInput.className = "default";
-    if (isNullValue(managerEntity)) {
-        userNameInput.placeholder = "请输入用户名";
-    } else {
-        userNameContainer.innerHTML = "用户名: ";
-        userNameInput.value = managerEntity.username;
-    }
+    userNameContainer.innerHTML = "用户名: ";
+    userNameInput.value = managerEntity.username;
     userNameContainer.appendChild(userNameInput);
 
     let password0Input = document.createElement("input")
     password0Input.className = "default";
     password0Input.value = managerEntity.password;
-    if (isNullValue(managerEntity)) {
-        password0Input.placeholder = "请输入密码";
-        password0Input.style.marginRight = "10px";
-        passwordContainer.appendChild(password0Input);
-    } else {
-        convertMangerSelfPasswordView(passwordContainer, false)
-    }
+    convertMangerSelfPasswordView(passwordContainer, false)
 
     let password1Input = document.createElement("input")
     password1Input.className = "default";
     password1Input.placeholder = "请输入确认密码";
     password1Input.style.marginLeft = "10px";
-    if (isNullValue(managerEntity)) {
-        passwordContainer.appendChild(password1Input);
-    }
 
     let allItemsNumber = menuEntities == undefined ? 0:menuEntities.length;//菜单总个数
     let itemWidth = accessContainer.clientWidth / allItemsNumber;//实际显示的菜单中每个菜单应该占用的宽度(样式中标注了左右各一个像素的边框)
@@ -107,28 +88,11 @@ function attachManagerSelfEditorView(managerEntity, menuEntities) {
         }
 
         let requestManagerEntity = new Object();
-        requestManagerEntity.loginName = loginName;
+        requestManagerEntity.cs = getCookie(KEY_CS);
         requestManagerEntity.username = userName;
         requestManagerEntity.password = password;
         let accessContainer = document.getElementById("accessContainer");
-        if (!isNullValue(accessContainer)) {
-            requestManagerEntity.menus = accessContainer.menus == undefined ? new Array() : accessContainer.menus;
-            if (isNullValue(managerEntity)) {
-                requestCreateManager(requestManagerEntity);
-            } else {
-                requestManagerEntity.managerId = managerEntity.managerId;
-                requestManagerEntity.status = managerEntity.status;
-                requestManagerEntity.queue = managerEntity.queue;
-                requestManagerEntity.level = managerEntity.level;
-                requestUpdateSelfManager(requestManagerEntity, false);
-            }
-        } else {
-            requestManagerEntity.managerId = managerEntity.managerId;
-            requestManagerEntity.status = managerEntity.status;
-            requestManagerEntity.queue = managerEntity.queue;
-            requestManagerEntity.level = managerEntity.level;
-            requestUpdateSelfManager(requestManagerEntity, true);
-        }
+        requestUpdateSelfManager(requestManagerEntity, true);
     }
 }
 
@@ -138,7 +102,7 @@ function convertMangerSelfPasswordView(container, editorStatus) {
         let password0Input = document.createElement("input")
         password0Input.className = "default";
         password0Input.style.marginLeft = "5%";
-        password0Input.placeholder = "请输入密码";
+        password0Input.placeholder = "请输入修改密码";
         password0Input.style.marginRight = "10px";
         container.appendChild(password0Input);
 
@@ -172,16 +136,18 @@ function convertMangerSelfPasswordView(container, editorStatus) {
 }
 
 function requestUpdateSelfManager(managerEntity) {
+    managerEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/manager/mUpdate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
-                var managerEntity = parseData.data;
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
                 resetMainContainer();
-                loadManagerSelfEditorView(managerEntity, FRAME_MENUS, false);
+                CURRENT_MANAGER.username = managerEntity.username;
+                CURRENT_MANAGER.password = managerEntity.password;
+                loadManagerSelfEditorView();
             } else {
                 new Toast().show("更新失败");
             }

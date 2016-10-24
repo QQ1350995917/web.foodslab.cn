@@ -35,6 +35,7 @@ function loadOrderView() {
 
 function onUnExpressTabCallback() {
     let orderEntity = new Object();
+    orderEntity.cs = getCookie(KEY_CS);
     orderEntity.status = 1;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
@@ -48,6 +49,7 @@ function onUnExpressTabCallback() {
 
 function onExpressingTabCallback() {
     let orderEntity = new Object();
+    orderEntity.cs = getCookie(KEY_CS);
     orderEntity.status = 2;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
@@ -61,6 +63,7 @@ function onExpressingTabCallback() {
 
 function onExpressedTabCallback() {
     let orderEntity = new Object();
+    orderEntity.cs = getCookie(KEY_CS);
     orderEntity.status = 3;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
@@ -79,6 +82,7 @@ function onOrderAllTabCallback() {
     getMainContainer().appendChild(searchView);
 
     let orderEntity = new Object();
+    orderEntity.cs = getCookie(KEY_CS);
     orderEntity.status = 0;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
@@ -183,16 +187,6 @@ function createExpressedView(orderEntities) {
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
         getMainContainer.appendChild(orderItemContainer);
     }
-}
-
-
-/**
- * 创建全部订单的搜索界面
- * @returns {Element}
- */
-function createAllOrderSearchContainer() {
-
-    return unExpressTitleView;
 }
 
 function createOrderAllView(orderEntities) {

@@ -16,6 +16,7 @@ function loadProductFormatView(seriesEntity, typeEntity) {
 }
 
 function requestFormatListData(typeEntity) {
+    typeEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/format/mRetrieves?p=" + JSON.stringify(typeEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -116,7 +117,7 @@ function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEnti
     baseInfoContainer.appendChild(baseInfoLeftLeftContainer);
     let baseInfoRightContainer = document.createElement("div");
     baseInfoRightContainer.className = "formatFunctionRightContainer";
-    if (!isNullValue(formatEntity)){
+    if (!isNullValue(formatEntity)) {
         let formatDelete = document.createElement("div");
         formatDelete.className = "formatDeleteView";
         formatDelete.innerHTML = "删除";
@@ -382,6 +383,7 @@ function saveFormat(typeEntity, formatEntity) {
 }
 
 function requestCreateFormat(typeEntity, formatEntity) {
+    formatEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -398,6 +400,7 @@ function requestCreateFormat(typeEntity, formatEntity) {
 }
 
 function requestUpdateFormat(typeEntity, formatEntity) {
+    formatEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/format/mUpdate?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -414,6 +417,7 @@ function requestUpdateFormat(typeEntity, formatEntity) {
 }
 
 function requestMarkFormat(typeEntity, formatEntity) {
+    formatEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/format/mMark?p=" + JSON.stringify(formatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);

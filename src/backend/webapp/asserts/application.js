@@ -1,6 +1,14 @@
 /**
  * Created by dingpengwei on 7/20/16.
  */
+const RC_SUCCESS = 200;//执行成功
+const RC_SUCCESS_EMPTY = 204;//执行成功,符合请求条件的参数是空
+const RC_PARAMS_BAD = 400;//提交参数不符合要求
+const RC_ACCESS_BAD = 401;//权限限制的无法访问
+const RC_ACCESS_TIMEOUT = 408;//权限超时造成的无法访问
+const RC_TO_MANY = 429;//访问频率造成的拒绝服务
+const RC_SEVER_ERROR = 500;//服务器内部异常导致的失败
+
 
 function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
     var xmlHttp = new XMLHttpRequest();
@@ -17,7 +25,7 @@ function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallba
     xmlHttp.send(null);
 }
 
-function asyncRequestByPost(url,onDataCallback, onErrorCallback, onTimeoutCallback,params) {
+function asyncRequestByPost(url, onDataCallback, onErrorCallback, onTimeoutCallback, params) {
     var xmlHttp = new XMLHttpRequest();
     xmlHttp.onreadystatechange = function () {
         if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
@@ -50,7 +58,6 @@ function onTimeoutCallback() {
 function checkResponseDataFormat(data) {
     return true;
 }
-
 
 
 /**

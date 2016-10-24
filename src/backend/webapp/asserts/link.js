@@ -10,6 +10,7 @@ function loadLinkView() {
     getTitleContainer().appendChild(titleView);
 
     let linkEntity = new Object();
+    linkEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -61,6 +62,7 @@ function initSubLinkView(linkEntity) {
 }
 
 function requestSubLink(pLinkEntity) {
+    pLinkEntity.cs = getCookie(KEY_CS);
     getMainContainer().innerHTML = null;
     let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(pLinkEntity);
     asyncRequestByGet(indexUrl, function (data) {
@@ -245,6 +247,7 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
  * 请求创建link数据
  */
 function requestCreateLink(linkEntity) {
+    linkEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/link/mCreate?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -253,7 +256,8 @@ function requestCreateLink(linkEntity) {
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("创建成功");
                 if (parseData.data.linkId == parseData.data.pid) {
-                    requestTopLink();
+                    resetMainContainer();
+                    loadLinkView();
                 } else {
                     let requestLinkEntity = new Object();
                     requestLinkEntity.linkId = linkEntity.pid;
@@ -268,6 +272,7 @@ function requestCreateLink(linkEntity) {
 }
 
 function requestMarkLink(linkEntity) {
+    linkEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/link/mMark?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -276,7 +281,8 @@ function requestMarkLink(linkEntity) {
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("操作成功");
                 if (parseData.data.linkId == parseData.data.pid) {
-                    requestTopLink();
+                    resetMainContainer();
+                    loadLinkView();
                 } else {
                     let requestLinkEntity = new Object();
                     requestLinkEntity.linkId = linkEntity.pid;
@@ -292,6 +298,7 @@ function requestMarkLink(linkEntity) {
 }
 
 function requestUpdateLink(linkEntity) {
+    linkEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -300,7 +307,8 @@ function requestUpdateLink(linkEntity) {
             if (parseData.code == RESPONSE_SUCCESS) {
                 new Toast().show("操作成功");
                 if (parseData.data.linkId == parseData.data.pid) {
-                    requestTopLink();
+                    resetMainContainer();
+                    loadLinkView();
                 } else {
                     let requestLinkEntity = new Object();
                     requestLinkEntity.linkId = linkEntity.pid;
@@ -315,6 +323,7 @@ function requestUpdateLink(linkEntity) {
 }
 
 function requestSwapSubLinkWeight(linkEntity) {
+    linkEntity.cs = getCookie(KEY_CS);
     let indexUrl = BASE_PATH + "/link/mSwap?p=" + JSON.stringify(linkEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);

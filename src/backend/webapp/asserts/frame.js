@@ -16,49 +16,34 @@ const RESPONSE_SUCCESS = 3050;
 const APP_CONST_CLIENT_ID = "clientId";
 //标记元素是添加按钮
 const APP_CONST_ADD_NEW = "addNew";
-let FRAME_MENUS = new Array();
+let CURRENT_MANAGER = new Object();
 
 function onFrameLoad() {
-    let iconDiv  = document.getElementById(ID_FRAME_HEADER_ICON);
+    let iconDiv = document.getElementById(ID_FRAME_HEADER_ICON);
     iconDiv.style.cursor = "pointer";
     iconDiv.onclick = function () {
         location.reload();
-    }
+    };
 
-    let topMenuEntity = new Object();
-    topMenuEntity.cs = getCookie(KEY_CS);
-    topMenuEntity.category = 1;
-    requestMenus(topMenuEntity,function (menuEntities) {
-        FRAME_MENUS = FRAME_MENUS.concat(menuEntities);
-        document.getElementById(ID_FRAME_HEADER_MENU).appendChild(createHorizontalTabHostDiv("mTop",menuEntities,"horizontalIndexSelect","horizontalIndexNormal",function (menuEntity) {
-            onFrameMenuItemClick(menuEntity.flag);
-            resetFrameVerticalTabHost("mLeft");
-        },-1));
-    });
-    let leftMenuEntity = new Object();
-    leftMenuEntity.cs = getCookie(KEY_CS);
-    leftMenuEntity.category = 2;
-    requestMenus(leftMenuEntity,function (menuEntities) {
-        FRAME_MENUS = FRAME_MENUS.concat(menuEntities);
-        document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("mLeft",menuEntities,function (menuEntity) {
-            onFrameMenuItemClick(menuEntity.flag);
-            resetTabHost("mTop","horizontalIndexNormal");
-        },-1));
-    });
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    asyncRequestByGet(BASE_PATH + "/manager/mRetrieve?p=" + JSON.stringify(object), function (data) {
+        var json = JSON.parse(data);
+        if (json.code == RC_SUCCESS) {
+            CURRENT_MANAGER = json.data;
+            document.getElementById(ID_FRAME_HEADER_MANAGER).innerHTML = CURRENT_MANAGER.username;
+        } else if (json.code == RC_ACCESS_TIMEOUT) {
+            delCookie(KEY_CS);
+            window.open(BASE_PATH, "_self");
+        }
+    }, onErrorCallback, onTimeoutCallback);
 
     let managerDiv = document.getElementById(ID_FRAME_HEADER_MANAGER);
     managerDiv.onclick = function () {
-        let object = new Object();
-        object.cs = getCookie(KEY_CS);
-        asyncRequestByGet(BASE_PATH + "/manager/mRetrieve?p=" + JSON.stringify(object), function (data) {
-            var json = JSON.parse(data);
-            if (json.code = RESPONSE_SUCCESS){
-                resetFrameVerticalTabHost("mLeft");
-                resetTabHost("mTop","horizontalIndexNormal");
-                resetMainContainer();
-                loadManagerSelfEditorView(json.data, json.data.menus, true);
-            }
-        }, onErrorCallback, onTimeoutCallback);
+        resetFrameVerticalTabHost("mLeft");
+        resetTabHost("mTop", "horizontalIndexNormal");
+        resetMainContainer();
+        loadManagerSelfEditorView();
     };
     let exitDiv = document.getElementById(ID_FRAME_HEADER_EXIT);
     exitDiv.onclick = function () {
@@ -66,24 +51,51 @@ function onFrameLoad() {
         object.cs = getCookie(KEY_CS);
         asyncRequestByGet(BASE_PATH + "/manager/mExit?p=" + JSON.stringify(object), function (data) {
             var json = JSON.parse(data);
-            if (json.code = RESPONSE_SUCCESS){
+            if (json.code == RC_SUCCESS) {
                 delCookie(KEY_CS);
-                window.open(BASE_PATH ,"_self");
+                window.open(BASE_PATH, "_self");
             }
         }, onErrorCallback, onTimeoutCallback);
     };
+
+    console.log(getCookie(KEY_CS));
+
+    let topMenuEntity = new Object();
+    topMenuEntity.cs = getCookie(KEY_CS);
+    requestMenus(topMenuEntity, function (menuEntities, topMenuEntities, leftMenuEntities) {
+        document.getElementById(ID_FRAME_HEADER_MENU).appendChild(createHorizontalTabHostDiv("mTop", topMenuEntities, "horizontalIndexSelect", "horizontalIndexNormal", function (menuEntity) {
+            onFrameMenuItemClick(menuEntity.flag);
+            resetFrameVerticalTabHost("mLeft");
+        }, -1));
+        document.getElementById(ID_FRAME_LEFT_MENU).appendChild(createFrameVerticalTabHostDiv("mLeft", leftMenuEntities, function (menuEntity) {
+            onFrameMenuItemClick(menuEntity.flag);
+            resetTabHost("mTop", "horizontalIndexNormal");
+        }, -1));
+    });
+
     requestMeta();
 }
 
-function requestMenus(menuEntity,callback) {
-    const url = BASE_PATH + "/menu/MRetrieves?p=" + JSON.stringify(menuEntity);
+function requestMenus(menuEntity, callback) {
+    const url = BASE_PATH + "/menu/mRetrieves?p=" + JSON.stringify(menuEntity);
     asyncRequestByGet(url, function (data) {
         let result = checkResponseDataFormat(data);
-        if (result){
+        if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.code == RESPONSE_SUCCESS){
+            if (jsonData.code == RC_SUCCESS) {
                 var menuEntities = jsonData.data;
-                callback(menuEntities);
+                let length = menuEntities == undefined ? 0 : menuEntities.length;
+                let topMenuEntities = new Array();
+                let leftMenuEntities = new Array();
+                for (let i = 0; i < length; i++) {
+                    let menuEntity = menuEntities[i];
+                    if (menuEntity.category == 1) {
+                        topMenuEntities.push(menuEntity);
+                    } else if (menuEntity.category == 2) {
+                        leftMenuEntities.push(menuEntity);
+                    }
+                }
+                callback(menuEntities, topMenuEntities, leftMenuEntities);
             }
         }
     }, onErrorCallback, onTimeoutCallback);
@@ -132,7 +144,7 @@ function createFrameVerticalTabHostDiv(viewId, tabItems, onItemClickCallback, de
 
 function resetFrameVerticalTabHost(viewId) {
     let container = document.getElementById(viewId);
-    if (container){
+    if (container) {
         let size = container.childElementCount;
         for (let i = 0; i < size; i++) {
             container.childNodes[i].childNodes[0].className = "verticalNormal";
@@ -206,7 +218,7 @@ function onFrameMenuItemClick(flag) {
  * @param callback
  * @returns {Element}
  */
-function createSearchWidget(width,callback) {
+function createSearchWidget(width, callback) {
     let searchContainer = document.createElement("div");
     searchContainer.className = "searchWidgetContainer";
     searchContainer.style.width = width;
@@ -224,7 +236,6 @@ function createSearchWidget(width,callback) {
         callback(searchEditor.value);
     };
     searchContainer.appendChild(searchActionView);
-
     return searchContainer;
 }
 

@@ -16,6 +16,7 @@ function loadProductTypeView(seriesEntity) {
 
 function requestTypeListData(seriesEntity) {
     getMainContainer().innerHTML = null;
+    seriesEntity.cs= getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/type/mRetrieves?p=" + JSON.stringify(seriesEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
@@ -392,6 +393,7 @@ function format() {
 }
 
 function requestCreateType(seriesEntity,typeEntity) {
+    typeEntity.cs= getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mCreate?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -407,7 +409,7 @@ function requestCreateType(seriesEntity,typeEntity) {
 }
 
 function requestRenameType(seriesEntity,typeEntity) {
-    console.log(typeEntity);
+    typeEntity.cs= getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mUpdate?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -423,6 +425,7 @@ function requestRenameType(seriesEntity,typeEntity) {
 }
 
 function requestMarkType(seriesEntity,typeEntity) {
+    typeEntity.cs= getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mMark?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -438,6 +441,7 @@ function requestMarkType(seriesEntity,typeEntity) {
 }
 
 function requestUpdateSummary(typeEntity) {
+    typeEntity.cs= getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mSummary?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -452,6 +456,7 @@ function requestUpdateSummary(typeEntity) {
 }
 
 function requestUpdateDirections(typeEntity) {
+    typeEntity.cs= getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mDirections?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {

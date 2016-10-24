@@ -60,6 +60,7 @@ function loadUserDetailView(userEntity) {
 }
 
 function onUserCartTabCallback(userEntity,mainContainer) {
+    userEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/cart/mRetrieve?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -71,6 +72,7 @@ function onUserCartTabCallback(userEntity,mainContainer) {
 }
 
 function onUserOrderTabCallback(userEntity,mainContainer) {
+    userEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
@@ -87,6 +89,7 @@ function onUserAccountTabCallback(userEntity,mainContainer) {
 }
 
 function onUserRequestReceiverCallback(userEntity,mainContainer) {
+    userEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/receiver/mRetrieveByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);

@@ -74,6 +74,15 @@
 </div>
 </body>
 <script>
+
+    const RC_SUCCESS = 200;//执行成功
+    const RC_SUCCESS_EMPTY = 204;//执行成功,符合请求条件的参数是空
+    const RC_PARAMS_BAD = 400;//提交参数不符合要求
+    const RC_ACCESS_BAD = 401;//权限限制的无法访问
+    const RC_ACCESS_TIMEOUT = 408;//权限超时造成的无法访问
+    const RC_TO_MANY = 429;//访问频率造成的拒绝服务
+    const RC_SEVER_ERROR = 500;//服务器内部异常导致的失败
+
     window.onload = function () {
         let background = document.getElementById("background");
         background.style.height = window.innerHeight + "px";
@@ -114,7 +123,7 @@
                 doubleClick = true;
                 asyncRequestByGet(url, function (data) {
                     var jsonData = JSON.parse(data);
-                    if (jsonData.code == 3050) {
+                    if (jsonData.code == RC_SUCCESS) {
                         setCookie("mcs",jsonData.data.cs);
                         let object = new Object();
                         object.cs = jsonData.data.cs;
@@ -151,7 +160,7 @@
 
     function setCookie(key, value) {
         var expireDate = new Date();
-        expireDate.setTime(expireDate.getTime() + (15 * 60 * 1000));
+        expireDate.setTime(expireDate.getTime() + (150 * 60 * 1000));
         document.cookie = key + "=" + encodeURI(value) + ";expires =" + expireDate.toGMTString();
     }
 

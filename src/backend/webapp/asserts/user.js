@@ -18,7 +18,9 @@ function loadUserView() {
     userListContainer.className = "managerItem";
     getMainContainer().appendChild(userListContainer);
 
-    var indexUrl = BASE_PATH + "/account/mRetrieves";
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    var indexUrl = BASE_PATH + "/account/mRetrieves?p=" + JSON.stringify(object);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -103,6 +105,7 @@ function attachUsersToMainContainer(userListContainer,userEntities) {
 }
 
 function requestUpdateStatus(userEntity) {
+    userEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/account/mMark?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);

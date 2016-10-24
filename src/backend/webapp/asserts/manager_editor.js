@@ -58,12 +58,12 @@ function attachManagerEditorView(managerEntity, menuEntities) {
 
     let password0Input = document.createElement("input")
     password0Input.className = "default";
-    password0Input.value = managerEntity.password;
     if (isNullValue(managerEntity)) {
         password0Input.placeholder = "请输入密码";
         password0Input.style.marginRight = "10px";
         passwordContainer.appendChild(password0Input);
     } else {
+        password0Input.value = managerEntity.password;
         convertMangerPasswordView(passwordContainer, false)
     }
 
@@ -271,12 +271,13 @@ function attachMenuSelectorToAccessView(container, selectedMenuEntities, leftMen
 }
 
 function requestCreateManager(managerEntity) {
+    managerEntity.cs = getCookie(KEY_CS);
     const url = BASE_PATH + "/manager/MCreate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 var managerEntity = parseData.data;
                 new Toast().show("创建成功");
                 resetMainContainer();
@@ -289,12 +290,13 @@ function requestCreateManager(managerEntity) {
 }
 
 function requestUpdateManager(managerEntity) {
+    managerEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/manager/MUpdate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 var managerEntity = parseData.data;
                 new Toast().show("更新成功");
                 resetMainContainer();

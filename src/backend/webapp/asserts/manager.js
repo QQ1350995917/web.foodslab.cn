@@ -6,7 +6,9 @@ function loadManagerView() {
     titleView.innerHTML = "管理员列表"
     getTitleContainer().appendChild(titleView);
 
-    const url = BASE_PATH + "/manager/MRetrieves";
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    const url = BASE_PATH + "/manager/MRetrieves?p="+ JSON.stringify(object);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -112,6 +114,7 @@ function attachManagerToMainContainer(managerEntities) {
  * @param managerEntity
  */
 function requestMarkManager(managerEntity) {
+    managerEntity.cs = getCookie(KEY_CS);
     const url = BASE_PATH + "/manager/MMark?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);

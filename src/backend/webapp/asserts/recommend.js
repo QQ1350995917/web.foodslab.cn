@@ -9,7 +9,9 @@ function loadRecommendView() {
     titleView.innerHTML = "推荐管理";
     getTitleContainer().appendChild(titleView);
 
-    var indexUrl = BASE_PATH + "/format/mWeights";
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    var indexUrl = BASE_PATH + "/format/mWeights?p=" + JSON.stringify(object);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -29,32 +31,13 @@ function loadRecommendView() {
  * @param weight
  */
 function swapRecommend(swapWeightFormatEntity) {
+    swapWeightFormatEntity.cs = getCookie(KEY_CS);
     var indexUrl = BASE_PATH + "/format/mSwapWeight?p="  + JSON.stringify(swapWeightFormatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RESPONSE_SUCCESS) {
-                new Toast().show("更新成功");
-            } else {
-                new Toast().show("更新失败");
-            }
-        }
-    }, onErrorCallback(), onTimeoutCallback());
-}
-
-/**
- * 请求产品推荐更新
- * @param formatId
- * @param weight
- */
-function updateRecommend(formatId, weight) {
-    var indexUrl = BASE_PATH + "/product/updateWeight?formatId=" + formatId + "&weight=" + weight;
-    asyncRequestByGet(indexUrl, function (data) {
-        var result = checkResponseDataFormat(data);
-        if (result) {
-            var parseData = JSON.parse(data);
-            if (parseData.code == 200) {
                 new Toast().show("更新成功");
             } else {
                 new Toast().show("更新失败");
@@ -135,7 +118,7 @@ function initRecommendView(formatEntities) {
             downLabel.formatId = formatEntity.formatId;
             downLabel.weight = formatEntity.weight;
             downLabel.onclick = function () {
-                updateRecommend(formatEntity.formatId,0);
+                console.log("TODO");
             };
             recommendItemRootView.appendChild(downLabel);
         } else {

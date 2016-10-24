@@ -10,28 +10,6 @@ function loadPosterEditor(posterEntity, isCreate) {
     initPosterEditorView(posterEntity, isCreate);
 }
 
-function createPoster(pid, status, clickable, href) {
-    var indexUrl = BASE_PATH + "/poster/create?pid=" + pid + "&status=" + status + "&clickable=" + clickable + "&href=" + href;
-    asyncRequestByGet(indexUrl, function (data) {
-        onCreateDataCallback(data);
-    }, onErrorCallback(), onTimeoutCallback());
-}
-
-function onCreateDataCallback(data) {
-    var result = checkResponseDataFormat(data);
-    if (result) {
-        var parseData = JSON.parse(data);
-        if (parseData.code == 200) {
-            new Toast().show("保存成功");
-            resetMainContainer();
-            loadPosterView();
-        } else {
-            new Toast().show("保存失败");
-        }
-    }
-}
-
-
 function initPosterEditorView(posterEntity, isCreate) {
     let imgViewContainer = document.createElement("div");
     imgViewContainer.className = "editorBlockView";
