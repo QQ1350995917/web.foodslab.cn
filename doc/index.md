@@ -50,7 +50,7 @@
 - [管理员按订单发货]()
 
 
-## [链接接口]()
+## [链接接口](domain/link.md)
 - [用户读取链接树集合](domain/link.md)
 - [管理员新建链接](domain/link.md)
 - [管理员修改链接](domain/link.md)

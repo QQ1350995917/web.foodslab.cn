@@ -13,7 +13,7 @@
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|p         |      |jsonObject|否| |参数名称|
-|01|2|managerId |p     |String    |否| |描述|
+|01|2|cs        |p     |String    |否| |描述|
 |02|2|key       |p     |String    |否| |描述|
 
 - GET请求链接示例：无

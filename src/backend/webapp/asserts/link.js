@@ -64,8 +64,8 @@ function initSubLinkView(linkEntity) {
 function requestSubLink(pLinkEntity) {
     pLinkEntity.cs = getCookie(KEY_CS);
     getMainContainer().innerHTML = null;
-    let indexUrl = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(pLinkEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/link/mRetrieves?p=" + JSON.stringify(pLinkEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
@@ -162,7 +162,6 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
                 new Toast().show("名称不能为空");
             } else {
                 let requestLinkEntity = new Object();
-                requestLinkEntity.sessionId = "admin";
                 requestLinkEntity.label = label;
                 requestCreateLink(requestLinkEntity);
             }
@@ -219,7 +218,6 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
         blockAction.onclick = function () {
             window.event.cancelBubble = true;
             let requestLinkEntity = new Object();
-            requestLinkEntity.sessionId = "admin";
             requestLinkEntity.linkId = linkEntity.linkId;
             requestLinkEntity.pid = linkEntity.pid;
             if (linkEntity.status == 1) {
@@ -227,13 +225,12 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
             } else if (linkEntity.status == 2) {
                 requestLinkEntity.status = 1;
             }
-            requestMarkLink(requestLinkEntity, requestLinkEntity);
+            requestMarkLink(requestLinkEntity);
         }
 
         deleteAction.onclick = function () {
             window.event.cancelBubble = true;
             let requestLinkEntity = new Object();
-            requestLinkEntity.sessionId = "admin";
             requestLinkEntity.linkId = linkEntity.linkId;
             requestLinkEntity.pid = linkEntity.pid;
             requestLinkEntity.status = -1;
@@ -248,14 +245,14 @@ function convertTopLinkContainerToEditor(linkContainer, linkEntity) {
  */
 function requestCreateLink(linkEntity) {
     linkEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/link/mCreate?p=" + JSON.stringify(linkEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/link/mCreate?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("创建成功");
-                if (parseData.data.linkId == parseData.data.pid) {
+                if (linkEntity.pid == undefined) {
                     resetMainContainer();
                     loadLinkView();
                 } else {
@@ -273,14 +270,14 @@ function requestCreateLink(linkEntity) {
 
 function requestMarkLink(linkEntity) {
     linkEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/link/mMark?p=" + JSON.stringify(linkEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/link/mMark?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("操作成功");
-                if (parseData.data.linkId == parseData.data.pid) {
+                if (linkEntity.linkId == linkEntity.pid) {
                     resetMainContainer();
                     loadLinkView();
                 } else {
@@ -299,14 +296,14 @@ function requestMarkLink(linkEntity) {
 
 function requestUpdateLink(linkEntity) {
     linkEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/link/mUpdate?p=" + JSON.stringify(linkEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("操作成功");
-                if (parseData.data.linkId == parseData.data.pid) {
+                if (linkEntity.linkId == linkEntity.pid) {
                     resetMainContainer();
                     loadLinkView();
                 } else {
@@ -324,12 +321,14 @@ function requestUpdateLink(linkEntity) {
 
 function requestSwapSubLinkWeight(linkEntity) {
     linkEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/link/mSwap?p=" + JSON.stringify(linkEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/link/mSwap?p=" + JSON.stringify(linkEntity);
+    console.log(url);
+    asyncRequestByGet(url, function (data) {
+        console.log(data);
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("操作成功");
                 let requestLinkEntity = new Object();
                 requestLinkEntity.linkId = linkEntity.pid;
@@ -471,7 +470,6 @@ function onAttachSubLinkEntityView(containerView, pid, linkEntity, viewEditorSta
             addHref.style.borderLeftWidth = "1px";
             addHref.style.width = "710px";
             addHref.value = linkEntity.href;
-            console.log(linkEntity.href);
             containerView.appendChild(addHref);
 
             // 连接线横线
@@ -599,8 +597,8 @@ function onAttachSubLinkEntityView(containerView, pid, linkEntity, viewEditorSta
 
             actionBlock.onclick = function () {
                 let requestLinkEntity = new Object();
-                requestLinkEntity.pid = linkEntity.pid;
                 requestLinkEntity.linkId = linkEntity.linkId;
+                requestLinkEntity.pid = linkEntity.pid;
                 if (linkEntity.status == 1) {
                     requestLinkEntity.status = 2;
                 } else if (linkEntity.status = 2) {
@@ -626,8 +624,8 @@ function onAttachSubLinkEntityView(containerView, pid, linkEntity, viewEditorSta
             }
             actionDelete.onclick = function () {
                 let requestLinkEntity = new Object();
-                requestLinkEntity.pid = linkEntity.pid;
                 requestLinkEntity.linkId = linkEntity.linkId;
+                requestLinkEntity.pid = linkEntity.pid;
                 requestLinkEntity.status = -1;
                 requestMarkLink(requestLinkEntity);
             }
@@ -683,7 +681,6 @@ function onLinkDrop(event) {
     requestLinkEntity.weight1 = sourceWeight;
     requestLinkEntity.linkId2 = targetLinkId;
     requestLinkEntity.weight2 = targetWeight;
-    console.log(requestLinkEntity);
     requestSwapSubLinkWeight(requestLinkEntity);
 }
 
