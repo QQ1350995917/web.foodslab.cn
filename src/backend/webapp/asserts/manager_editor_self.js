@@ -51,7 +51,7 @@ function attachManagerSelfEditorView(managerEntity, menuEntities) {
     password1Input.placeholder = "请输入确认密码";
     password1Input.style.marginLeft = "10px";
 
-    let allItemsNumber = menuEntities == undefined ? 0:menuEntities.length;//菜单总个数
+    let allItemsNumber = menuEntities == undefined ? 0 : menuEntities.length;//菜单总个数
     let itemWidth = accessContainer.clientWidth / allItemsNumber;//实际显示的菜单中每个菜单应该占用的宽度(样式中标注了左右各一个像素的边框)
     for (let index = 0; index < allItemsNumber; index++) {
         let selectedMenuEntity = menuEntities[index];
@@ -59,7 +59,7 @@ function attachManagerSelfEditorView(managerEntity, menuEntities) {
         selectedMenuDiv.innerHTML = selectedMenuEntity.label;
         selectedMenuDiv.className = "selectedMenu";
         selectedMenuDiv.style.textAlign = "center";
-        selectedMenuDiv.style.width = (itemWidth - 2.1) + "px";
+        selectedMenuDiv.style.width = (itemWidth - 3) + "px";// TODO 这的selectedMenuDiv的左右边框是1,偏差应该是2,但是在显示两个单元的时候回超出换行,是为什么呢?
         accessContainer.appendChild(selectedMenuDiv);
     }
 

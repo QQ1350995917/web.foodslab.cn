@@ -13,7 +13,7 @@ function loadManagerView() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 var managerEntities = parseData.data;
                 attachManagerToMainContainer(managerEntities);
             }
@@ -94,7 +94,7 @@ function attachManagerToMainContainer(managerEntities) {
         }
         editorDiv.onclick = function () {
             resetMainContainer();
-            loadManagerEditorView(managerEntity,FRAME_MENUS,false);
+            loadManagerEditorView(managerEntity,CURRENT_MANAGER.menus,false);
         }
     }
 
@@ -105,7 +105,7 @@ function attachManagerToMainContainer(managerEntities) {
     getMainContainer().appendChild(addNewManagerView);
     addNewManagerView.onclick = function () {
         resetMainContainer();
-        loadManagerEditorView(undefined,FRAME_MENUS,false);
+        loadManagerEditorView(undefined,CURRENT_MANAGER.menus,false);
     };
 }
 
@@ -120,7 +120,7 @@ function requestMarkManager(managerEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 resetMainContainer();
                 loadManagerView();
             }

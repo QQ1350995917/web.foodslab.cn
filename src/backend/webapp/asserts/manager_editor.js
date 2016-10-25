@@ -275,13 +275,14 @@ function requestCreateManager(managerEntity) {
     const url = BASE_PATH + "/manager/MCreate?p=" + JSON.stringify(managerEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
+        console.log(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RC_SUCCESS) {
                 var managerEntity = parseData.data;
                 new Toast().show("创建成功");
                 resetMainContainer();
-                loadManagerEditorView(managerEntity,FRAME_MENUS,false);
+                loadManagerEditorView(managerEntity,CURRENT_MANAGER.menus,false);
             } else {
                 new Toast().show("创建失败");
             }
@@ -300,7 +301,7 @@ function requestUpdateManager(managerEntity) {
                 var managerEntity = parseData.data;
                 new Toast().show("更新成功");
                 resetMainContainer();
-                loadManagerEditorView(managerEntity,FRAME_MENUS);
+                loadManagerEditorView(managerEntity,CURRENT_MANAGER.menus);
             } else {
                 new Toast().show("更新失败");
             }

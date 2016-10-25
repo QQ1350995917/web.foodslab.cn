@@ -34,7 +34,7 @@ function onFrameLoad() {
             document.getElementById(ID_FRAME_HEADER_MANAGER).innerHTML = CURRENT_MANAGER.username;
         } else if (json.code == RC_ACCESS_TIMEOUT) {
             delCookie(KEY_CS);
-            window.open(BASE_PATH, "_self");
+            window.open(BASE_PATH + "/ml", "_self");
         }
     }, onErrorCallback, onTimeoutCallback);
 
@@ -45,6 +45,7 @@ function onFrameLoad() {
         resetMainContainer();
         loadManagerSelfEditorView();
     };
+
     let exitDiv = document.getElementById(ID_FRAME_HEADER_EXIT);
     exitDiv.onclick = function () {
         let object = new Object();
@@ -53,7 +54,7 @@ function onFrameLoad() {
             var json = JSON.parse(data);
             if (json.code == RC_SUCCESS) {
                 delCookie(KEY_CS);
-                window.open(BASE_PATH, "_self");
+                window.open(BASE_PATH + "/ml", "_self");
             }
         }, onErrorCallback, onTimeoutCallback);
     };

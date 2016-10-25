@@ -65,36 +65,36 @@
 - [管理员修改海报](domain/poster.md)
 - [管理员禁/启/删海报](domain/poster.md)
 - [管理员交换海报排序](domain/poster.md)
-- [管理员读取海报集合](domain/link.md)
+- [管理员读取海报集合](domain/poster.md)
 
 
-## 登录接口
-- [管理员登录](backend/login.md)
-## frame接口
-- [菜单接口](backend/frame.md)
-- 菜单列表
-- [退出接口](backend/frame.md)
-- 管理员退出
-- [管理员接口](backend/frame_manager.md)
-- 管理员列表
-- 重名检测
-- 新建管理员
-- 更新管理员
+## [管理员接口](domain/manager.md)
+- [管理员登录](domain/manager.md)
+- [管理员读取账户信息](domain/manager.md)
+- [管理员更新账户信息](domain/manager.md)
+- [管理员检测是否登录](domain/manager.md)
+- [管理员退出登录](domain/manager.md)
+- [读取管理员列表](domain/manager.md)
+- [新建管理员](domain/manager.md)
+- [更新管理员](domain/manager.md)
+- [修改管理员状态](domain/manager.md)
 
-# **前端接口**
-## 页面接口
-- [显示页面](frontend/page.md)
 
-## 数据接口
-- [产品数据接口](frontend/product.md)
-- 用户登录接口
 
-- [订单数据接口](frontend/order.md)
-- 创建新订单
 
-- [元数据接口](frontend/meta.md)
-- 获取海报数据
-- 获取链接数据
-- 获取地址数据
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 http://localhost:8080/foodslab/

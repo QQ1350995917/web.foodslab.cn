@@ -5,6 +5,7 @@ const RC_SUCCESS = 200;//执行成功
 const RC_SUCCESS_EMPTY = 204;//执行成功,符合请求条件的参数是空
 const RC_PARAMS_BAD = 400;//提交参数不符合要求
 const RC_ACCESS_BAD = 401;//权限限制的无法访问
+const RC_PARAMS_REPEAT = 406;//登录名重复
 const RC_ACCESS_TIMEOUT = 408;//权限超时造成的无法访问
 const RC_TO_MANY = 429;//访问频率造成的拒绝服务
 const RC_SEVER_ERROR = 500;//服务器内部异常导致的失败

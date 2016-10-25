@@ -30,8 +30,8 @@
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
-|02|1|message  |         |String    |否	|    |相应消息|
-|03|1|data     |         |jsonArray |否	|    |数据集合体|
+|02|1|message  |         |String    |否	|    |响应消息|
+|03|1|data     |         |jsonArray |否	|    |响应数据体|
 
 - 响应数据结构(操作失败示例)：
 ```json

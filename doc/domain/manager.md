@@ -116,6 +116,12 @@
 |02|1|message  |         |String    |否	|    |相应消息|
 |03|1|data     |         |jsonObject|否	|    |数据集合体|
 |04|2|cs       |data     |String    |否	|    |cookie|
+|05|2|loginName|data     |String    |否	|    |登录名称|
+|06|2|username |data     |String    |否	|    |用户名称|
+|07|2|password |data     |String    |否	|    |登录密码|
+|08|2|menus    |data     |jsonArray |否	|    |管理菜单集合|
+|09|3|menuId   |menus    |String    |否	|    |菜单ID|
+|10|4|label    |menus    |String    |否	|    |菜单名称|
 
 - 响应数据结构(操作失败示例)：
 ```json
@@ -136,6 +142,7 @@
         "loginName": "aaa",
         "menus": [
             {
+                "menuId": "511434e69a5711e69f33a24fc0d9649c"
                 "label": "订单管理"
             }
         ],
@@ -334,26 +341,12 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-## 管理员列表
+## 读取管理员列表
 #### 描述
-- 请求用户权限下的管理员列表
+- 管理员读取管理员列表
 
 #### 请求地址
-- http://localhost:8080/manager
+- http://localhost:8080/manager/MRetrieves
 
 #### 请求方式
 - post
@@ -362,122 +355,83 @@
 
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|managerId      |      |String    |否| |描述|
+|01|1|p         |          |jsonObject|否| |参数名称|
+|02|2|cs        |          |String    |否| |cookie|
 
-示例：无
+- GET请求链接示例：http://localhost:8080/manager/MRetrieves?p={"cs": "0BD100BDCEFBA2B8AE2BCA717228F592"}
+- 请求数据结构示例：
 ```json
 {
-    "managerId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx"
+    "cs": "0BD100BDCEFBA2B8AE2BCA717228F592"
 }
 ```
-备注：无
+- 备注：无
 #### 响应参数
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |相应消息|
 |03|1|data     |         |jsonArray |否	|    |数据集合体|
-|04|2|managerId|data     |String    |否	|    |数据集合体-管理员ID|
-|05|2|username |data     |String    |否	|    |数据集合体-管理员用户名|
-|06|2|password |data     |String    |否	|    |数据集合体-密码|
-|07|2|level    |data     |int       |否	|    |数据集合体-级别|
-|08|2|queue    |data     |int       |否	|    |数据集合体-排序|
-|09|2|status   |data     |int       |否	|    |数据集合体-状态|
-|10|2|pId      |data     |String    |否	|    |数据集合体-上级ID|
-|11|2|managerMenuEntitiesMapping|data|jsonArray |否	|    |数据集合体-与菜单的映射关系|
-|12|3|managerId|managerMenuEntitiesMapping|String |否	|    |数据集合体-与菜单的映射关系-管理员ID|
-|13|3|menuId|managerMenuEntitiesMapping|String |否	|    |数据集合体-与菜单的映射关系-菜单ID|
-|14|3|menuLabel|managerMenuEntitiesMapping|String |否	|    |数据集合体-与菜单的映射关系-菜单名称|
-|15|3|createTime|managerMenuEntitiesMapping|long |否	|    |数据集合体-与菜单的映射关系-创建时间|
-|16|3|updateTime|managerMenuEntitiesMapping|long |否	|    |数据集合体-与菜单的映射关系-最近的的更新时间|
-|17|2|updateTime|data     |long    |否	|    |数据集合体-数据创建时间|
-|18|2|createTime|data     |long    |否	|    |数据集合体-数据最近的的修改时间|
+|04|2|managerId|data     |String    |否	|    |管理员ID|
+|05|2|loginName|data     |String    |否	|    |管理员登录名|
+|06|2|username |data     |String    |否	|    |管理员用户名|
+|07|2|password |data     |String    |否	|    |管理员登录密码|
+|08|2|status   |data     |int       |否	|    |管理员状态|
+|09|2|menus    |data     |jsonArray |否	|    |管理员菜单|
+|10|3|menuId   |menus    |String    |否	|    |管理员菜单ID|
+|11|3|label    |menus    |String    |否	|    |管理员菜单名称|
+|12|3|category |menus    |int       |否	|    |管理员菜单种类|
 
-
-示例：无
-
+- 响应数据结构(操作失败示例)：
 ```json
 {
-    "code": 0,
+    "code": 408,
+    "data": {
+        "cs": "0BD100BDCEFBA2B8AE2BCA717228F592"
+    },
+    "message": "LOGIN TIMEOUT"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 200,
     "data": [
         {
-            "managerMenuEntitiesMapping": [],
-            "password": "123456",
-            "level": 0,
-            "createTime": 1470103227000,
-            "pId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-            "updateTime": 1470103227000,
-            "managerId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-            "queue": 1,
-            "username": "admin",
-            "status": 1
-        },
-        {
-            "managerMenuEntitiesMapping": [
+            "loginName": "ccc",
+            "managerId": "709c0572-5918-4818-b212-0f0a827633c2",
+            "menus": [
                 {
-                    "createTime": 1470208522000,
-                    "menuId": "17d1a324-ca6f-4f1c-8e58-fdd4fdb1b9d7",
-                    "updateTime": 1470208522000,
-                    "managerId": "f4330db0-bc18-4899-9632-d0de2a81318c",
-                    "menuLabel": "产品管理"
+                    "category": 2,
+                    "label": "产品管理",
+                    "menuId": "17d1a324-ca6f-4f1c-8e58-fdd4fdb1b9d7"
+                },
+                {
+                    "category": 2,
+                    "label": "订单管理",
+                    "menuId": "c7c1677e-d320-4cdf-9820-f97a4cf187ce"
                 }
             ],
-            "password": "123",
-            "level": 1,
-            "createTime": 1470143907000,
-            "pId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-            "updateTime": 1470143907000,
-            "managerId": "f4330db0-bc18-4899-9632-d0de2a81318c",
-            "queue": 1,
-            "username": "dingpw",
-            "status": 1
+            "password": "ccc",
+            "status": 2,
+            "username": "ccc"
+        },
+        {
+            "loginName": "aaa",
+            "managerId": "39bf0681-8871-4cf6-88cb-65e3b91dd25c",
+            "menus": [],
+            "password": "aaa",
+            "status": 2,
+            "username": "aaa"
         }
     ],
     "message": "this is tip message!"
 }
 ```
-备注：无
+- 备注：无
 
-## 重名检测
-#### 描述
-- 检测管理员用户名是否重复
 
-#### 请求地址
-- http://localhost:8080/manager/check
 
-#### 请求方式
-- post
-
-#### 请求参数
-
-| No.|level|key|PKey|type|null|default|description|
-| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|username  |          |String    |否| |描述|
-
-示例：无
-```json
-{
-    "username": "admin"
-}
-```
-备注：无
-#### 响应参数
-| No.|level|key|PKey|type|null|default|description|
-| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|code     |	     |String    |否	|    |响应码|
-|02|1|message  |         |String    |否	|    |响应消息|
-|03|1|data     |         |Boolean   |否	|    |响应结果|
-
-示例：无
-
-```json
-{
-    "code": 0,
-    "data": "true",
-    "message": "this is tip message!"
-}
-```
-备注：无
 
 
 ## 新建管理员
@@ -485,7 +439,7 @@
 - 创建一个新的管理员
 
 #### 请求地址
-- http://localhost:8080/manager/create
+- http://localhost:8080/manager/MCreate
 
 #### 请求方式
 - post
@@ -494,18 +448,32 @@
 
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|pid  |          |String    |否| |描述|
-|01|1|username  |          |String    |否| |描述|
-|01|1|password  |          |String    |否| |描述|
-|01|1|menus     |          |String    |否| |描述|
+|01|1|p         |          |jsonObject|否| |参数名称|
+|02|2|cs        |          |String    |否| |cookie|
+|03|2|loginName |          |String    |否| |登录名称|
+|04|2|username  |          |String    |否| |用户名称|
+|05|2|password  |          |String    |否| |登录密码|
+|06|2|menus     |          |jsonString|否| |菜单集合|
+|07|3|menuId    |menus     |String    |否| |菜单ID|
+|08|3|label     |menus     |String    |否| |菜单名称|
 
-示例：无
+示例：http://localhost:8080/manager/MCreate?p={"username":"ddd","password":"ddd","menus":[{"label":"管理员","menuId":"c341aa66-3775-493f-93cf-358346c3477b"},{"label":"皮肤设置","menuId":"75a55868-669e-4f72-a368-20302bc79be5"}],"cs":"5000AE0035701567CDDFFF9872727F5C"}
 ```json
 {
-    "pid":"xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-    "username": "admin",
-    "password": "123456",
-    "menus": "17d1a324-ca6f-4f1c-8e58-fdd4fdb1b9d7:产品管理,999b42f6-3129-4f09-be16-27a26455c4c5:销售报表,321aa99c-3f34-433c-9a84-12e929d4a351:海报管理,bff0e87f-d59c-4549-a47b-4265ddf0ce37:消息管理"
+    "loginName": "ddd",
+    "username": "ddd",
+    "password": "ddd",
+    "menus": [
+        {
+            "label": "管理员",
+            "menuId": "c341aa66-3775-493f-93cf-358346c3477b"
+        },
+        {
+            "label": "皮肤设置",
+            "menuId": "75a55868-669e-4f72-a368-20302bc79be5"
+        }
+    ],
+    "cs": "5000AE0035701567CDDFFF9872727F5C"
 }
 ```
 备注：无
@@ -514,27 +482,93 @@
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |响应消息|
-|03|1|data     |         |Boolean   |否	|    |响应结果|
+|03|1|data     |         |jsonObject|否	|    |响应结果|
+|04|2|managerId|data     |String    |否	|    |管理员ID|
+|05|2|loginName|data     |String    |否	|    |管理员登录名|
+|06|2|username |data     |String    |否	|    |管理员用户名|
+|07|2|password |data     |String    |否	|    |管理员登录密码|
+|08|2|menus    |data     |String    |否	|    |管理员菜单|
+|09|2|menuId   |menus    |String    |否	|    |管理员菜单ID|
+|10|2|label    |menus    |String    |否	|    |管理员菜单名称|
 
 
-示例：无
-
+- 响应数据结构(操作失败示例)：
 ```json
 {
-    "code": 0,
-    "data": "true",
-    "message": "this is tip message!"
+    "code": 400,
+    "data": {
+        "menus": [
+            {
+                "menuId": "c341aa66-3775-493f-93cf-358346c3477b",
+                "label": "管理员"
+            },
+            {
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5",
+                "label": "皮肤设置"
+            }
+        ],
+        "password": "ddd",
+        "username": "ddd"
+    },
+    "message": "PARAMETERS BAD"
+}
+```
+```json
+{
+    "code": 406,
+    "data": {
+        "loginName": "ddd",
+        "menus": [
+            {
+                "menuId": "c341aa66-3775-493f-93cf-358346c3477b",
+                "label": "管理员"
+            },
+            {
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5",
+                "label": "皮肤设置"
+            }
+        ],
+        "password": "ddd",
+        "username": "ddd"
+    },
+    "message": "REPEAT ERROR"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 200,
+    "data": {
+        "loginName": "ddd",
+        "managerId":"33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+        "menus": [
+            {
+                "menuId": "c341aa66-3775-493f-93cf-358346c3477b",
+                "label": "管理员"
+            },
+            {
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5",
+                "label": "皮肤设置"
+            }
+        ],
+        "password": "ddd",
+        "username": "ddd"
+    },
+    "message": "SERVER OK"
 }
 ```
 备注：无
+
+
+
 
 
 ## 更新管理员
 #### 描述
-- 更新一个管理员信息
+- 更新管理员信息
 
 #### 请求地址
-- http://localhost:8080/manager/update
+- http://localhost:8080/foodslab/manager/MUpdate
 
 #### 请求方式
 - post
@@ -543,46 +577,173 @@
 
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
-|01|1|managerId |      |String    |否| |描述|
-|02|1|username |       |String    |否| |描述|
-|03|1|isUsernameU|     |Boolean    |否| |描述|
-|04|1|password |       |String    |否| |描述|
-|05|1|isPasswordU|     |String    |否| |描述|
-|06|1|status|          |int    |否| |描述|
-|07|1|isStatusU|       |String    |否| |描述|
-|08|1|pId|             |String    |否| |描述|
-|09|1|menus| |String    |否| |描述|
+|01|1|p         |          |jsonObject|否| |参数名称|
+|02|2|cs        |          |String    |否| |cookie|
+|03|2|managerId |          |String    |否| |管理员ID|
+|04|2|username  |          |String    |否| |用户名称|
+|05|2|password  |          |String    |否| |登录密码|
+|06|2|menus     |          |jsonString|否| |菜单集合|
+|07|3|menuId    |menus     |String    |否| |菜单ID|
+|08|3|label     |menus     |String    |否| |菜单名称|
 
-示例：无
+- GET请求链接示例：http://localhost:8080/foodslab/manager/MUpdate?p={"managerId":"33bfc550-aba8-4e16-a3c3-bcc896b423fb","username":"ddd","password":"ddd","menus":[{"label":"皮肤设置","menuId":"75a55868-669e-4f72-a368-20302bc79be5"}],"cs":"5000AE0035701567CDDFFF9872727F5C"}
+- 请求数据结构示例：
 ```json
 {
-    "managerId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-    "username": "admin",
-    "isUsernameU": "true",
-    "password": "123456",
-    "isPasswordU": "true",
-    "status": 1,
-    "isStatusU": "true",
-    "pId": "xxxx-xxxx-xxxx-xxxx-xxxx-xxxx-xxxx",
-    "menus": "17d1a324-ca6f-4f1c-8e58-fdd4fdb1b9d7:产品管理,999b42f6-3129-4f09-be16-27a26455c4c5:销售报表,321aa99c-3f34-433c-9a84-12e929d4a351:海报管理,bff0e87f-d59c-4549-a47b-4265ddf0ce37:消息管理"
+    "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+    "username": "ddd",
+    "password": "ddd",
+    "menus": [
+        {
+            "label": "皮肤设置",
+            "menuId": "75a55868-669e-4f72-a368-20302bc79be5"
+        }
+    ],
+    "cs": "5000AE0035701567CDDFFF9872727F5C"
 }
 ```
-备注：无
+- 备注：无
 #### 响应参数
 | No.|level|key|PKey|type|null|default|description|
 | ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
 |01|1|code     |	     |String    |否	|    |响应码|
 |02|1|message  |         |String    |否	|    |响应消息|
-|03|1|data     |         |Boolean   |否	|    |响应结果|
+|03|1|data     |         |jsonObject|否	|    |响应结果|
+|04|2|managerId|data     |String    |否	|    |管理员ID|
+|05|2|loginName|data     |String    |否	|    |管理员登录名|
+|06|2|username |data     |String    |否	|    |管理员用户名|
+|07|2|password |data     |String    |否	|    |管理员登录密码|
+|08|2|menus    |data     |String    |否	|    |管理员菜单|
+|09|2|menuId   |menus    |String    |否	|    |管理员菜单ID|
+|10|2|label    |menus    |String    |否	|    |管理员菜单名称|
 
-
-示例：无
-
+- 响应数据结构(操作失败示例)：
 ```json
 {
-    "code": 0,
-    "data": "true",
-    "message": "this is tip message!"
+    "code": 408,
+    "data": {
+        "cs": "5000AE0035701567CDDFFF9872727F5C",
+        "password": "ddd",
+        "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+        "menus": [
+            {
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5",
+                "label": "皮肤设置"
+            }
+        ],
+        "username": "ddd"
+    },
+    "message": "LOGIN TIMEOUT"
 }
 ```
-备注：无
+```json
+{
+    "code": 400,
+    "data": {
+        "menus": [
+            {
+                "label": "皮肤设置",
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5"
+            }
+        ],
+        "password": "ddd",
+        "username": "ddd"
+    },
+    "message": "PARAMETERS BAD"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 200,
+    "data": {
+        "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+        "menus": [
+            {
+                "label": "皮肤设置",
+                "menuId": "75a55868-669e-4f72-a368-20302bc79be5"
+            }
+        ],
+        "password": "ddd",
+        "username": "ddd"
+    },
+    "message": "SERVER OK"
+}
+```
+- 备注：无
+
+
+
+
+
+## 管理员修改管理员状态
+#### 描述
+- 管理员禁用/启用/删除管理员
+
+#### 请求地址
+- http://localhost:8080/foodslab/manager/MMark
+
+#### 请求方式
+- post
+
+#### 请求参数
+
+| No.|level|key|PKey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|p         |      |jsonObject|否| |参数名称|
+|02|2|cs        |p     |String    |否| |cookie|
+|03|2|managerId |p     |String    |否| |管理员ID|
+|04|2|status    |p     |String    |否| |管理员状态|
+
+- GET请求链接示例：http://localhost:8080/foodslab/manager/MMark?p={"cs":"5000AE0035701567CDDFFF9872727F5C","managerId":"33bfc550-aba8-4e16-a3c3-bcc896b423fb","status":1}
+- 请求数据结构示例：
+```json
+{
+    "cs": "5000AE0035701567CDDFFF9872727F5C",
+    "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+    "status": 1
+}
+```
+- 备注：无
+#### 响应参数
+| No.|level|key|PKey|type|null|default|description|
+| ------------- |:-------------:| -----:|:-------------:| -----:|:-------------:| -----:|:-------------:|
+|01|1|code     |	     |String    |否	|    |响应码|
+|02|1|message  |         |String    |否	|    |相应消息|
+|03|1|data     |         |jsonArray |否	|    |响应数据体|
+|03|1|managerId|         |String    |否	|    |管理员ID|
+|03|1|status   |         |String    |否	|    |管理员状态|
+
+- 响应数据结构(操作失败示例)：
+```json
+{
+    "code": 408,
+    "data": {
+        "cs": "5000AE0035701567CDDFFF9872727F5C",
+        "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+        "status": 1
+    },
+    "message": "LOGIN TIMEOUT"
+}
+```
+```json
+{
+    "code": 400,
+    "data": {
+        "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb"
+    },
+    "message": "PARAMETERS BAD"
+}
+```
+- 响应数据结构(操作成功示例)：
+```json
+{
+    "code": 200,
+    "data": {
+        "managerId": "33bfc550-aba8-4e16-a3c3-bcc896b423fb",
+        "status": 2
+    },
+    "message": "SERVER OK"
+}
+```
+- 备注：无
