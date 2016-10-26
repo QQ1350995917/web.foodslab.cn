@@ -1,45 +1,43 @@
-.posterItemContainer{
+div.posterItemContainer {
     float: left;
     width: 510px;
-    height:330px;
+    height: 330px;
     margin: 10px;
     text-align: center;
     border: 0px solid #CCCCCC;
 }
-img.posterSnap{
+
+img.posterSnap {
     width: 510px;
-    height:290px;
+    height: 260px;
     border: 1px;
     margin: 0px;
     background-color: #FFFFFF;
 }
-div.posterButtonContainer{
-    width: 510px;
-    height:30px;
+
+div.posterActionBar {
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
     margin: 0px;
     border: 0px;
 }
-div.posterButton{
+
+div.posterButton {
     float: left;
-    width: 126px;
-    height:30px;
+    width: 30%;
+    height: 30px;
     border: 0px;
-    line-height:30px;
+    line-height: 30px;
     text-align: center;
     color: #FFFFFF;
     background-color: #169BD5;
     cursor: pointer;
 }
-hr.posterButtonHL{
-    float: left;
-    width: 2px;
-    height:30px;
-    border: 0px;
-    margin: 0px;
-}
-div.editorBlockView{
+
+div.editorBlockView {
     width: 100%;
-    height:30px;
+    height: 30px;
     margin-bottom: 5px;
     border: 0px solid #CCCCCC;
 }

@@ -2,126 +2,140 @@
  * Created by dingpengwei on 8/15/16.
  */
 
-function loadPosterEditor(posterEntity, isCreate) {
+function loadPosterEditor(posterEntity) {
     let titleView = document.createElement("div");
     titleView.innerHTML = "海报编辑";
     titleView.style.cursor = "pointer";
     getTitleContainer().appendChild(titleView);
-    initPosterEditorView(posterEntity, isCreate);
+    initPosterEditorView(posterEntity);
 }
 
-function initPosterEditorView(posterEntity, isCreate) {
+function initPosterEditorView(posterEntity) {
     let imgViewContainer = document.createElement("div");
     imgViewContainer.className = "editorBlockView";
     imgViewContainer.style.height = "440px";
     imgViewContainer.style.borderWidth = "1px";
     imgViewContainer.style.cursor = "pointer";
     getMainContainer().appendChild(imgViewContainer);
-    let displayViewContainer = document.createElement("div");
-    displayViewContainer.className = "editorBlockView";
-    let displayView = document.createElement("input");
-    displayView.setAttribute("type", "checkbox");
-    displayView.className = "formatDisplayCheckBox";
-    if (!isCreate) {
-        if (posterEntity.status == 1) {
-            displayView.checked = false;
-        } else if (posterEntity.status == 2) {
-            displayView.checked = true;
-        }
-    }
-    displayViewContainer.appendChild(displayView);
-    let displayViewText = document.createElement("div");
-    displayViewText.style.float = "left";
-    displayViewText.style.height = "28px";
-    displayViewText.style.lineHeight = "28px";
-    displayViewText.style.fontSize = "14px";
-    displayViewText.innerHTML = "是否显示";
-    displayViewContainer.appendChild(displayViewText);
-    getMainContainer().appendChild(displayViewContainer);
-    let linkedViewContainer = document.createElement("div");
-    linkedViewContainer.className = "editorBlockView";
-    let linkedView = document.createElement("input");
-    linkedView.setAttribute("type", "checkbox");
-    linkedView.className = "formatDisplayCheckBox";
-    if (!isCreate) {
-        if (posterEntity.clickable == 1) {
-            linkedView.checked = false;
-        } else if (posterEntity.clickable == 2) {
-            linkedView.checked = true;
-        }
-    }
-    linkedViewContainer.appendChild(linkedView);
-    let linkedViewText = document.createElement("div");
-    linkedViewText.style.float = "left";
-    linkedViewText.style.height = "28px";
-    linkedViewText.style.lineHeight = "28px";
-    linkedViewText.style.fontSize = "14px";
-    linkedViewText.innerHTML = "是否可点击";
-    linkedViewContainer.appendChild(linkedViewText);
-    getMainContainer().appendChild(linkedViewContainer);
 
-    let linkedHrefText = document.createElement("div");
-    linkedHrefText.style.float = "left";
-    linkedHrefText.style.height = "28px";
-    linkedHrefText.style.lineHeight = "28px";
-    linkedHrefText.style.fontSize = "14px";
-    linkedHrefText.style.marginLeft = "20px";
-    linkedHrefText.innerHTML = "链接地址";
-    linkedViewContainer.appendChild(linkedHrefText);
-    let linkedEditor = document.createElement("input");
-    linkedEditor.className = "SS_IC_LABEL";
-    linkedEditor.style.width = "886px";
-    linkedEditor.style.height = "28px";
-    linkedEditor.style.borderLeftWidth = "1px";
-    linkedEditor.style.marginLeft = "10px";
-    if (!isCreate) {
-        linkedEditor.value = posterEntity.href;
-    }
-    linkedViewContainer.appendChild(linkedEditor);
-    getMainContainer().appendChild(linkedViewContainer);
+    let posterNameContainer = document.createElement("div");
+    posterNameContainer.className = "editorBlockView";
+    let posterNameLabelDiv = document.createElement("div");
+    posterNameLabelDiv.className = "editorBlockView";
+    posterNameLabelDiv.style.width = "7%";
+    posterNameLabelDiv.style.float = "left";
+    posterNameLabelDiv.innerHTML = "海报名称:";
+    posterNameContainer.appendChild(posterNameLabelDiv);
 
-    let buttonViewContainer = document.createElement("div");
-    buttonViewContainer.className = "editorBlockView";
-    buttonViewContainer.style.marginTop = "15px";
-    let cancelView = document.createElement("div");
-    cancelView.className = "B_B_D";
-    cancelView.style.marginLeft = "0px";
-    cancelView.style.width = "532px";
-    cancelView.innerHTML = "取消";
-    cancelView.onclick = function () {
+    let posterNameInput = document.createElement("input");
+    posterNameInput.className = "SS_IC_LABEL";
+    posterNameInput.style.width = "92%";
+    posterNameInput.style.height = "28px";
+    posterNameInput.style.borderLeftWidth = "1px";
+
+    posterNameContainer.appendChild(posterNameInput);
+
+    getMainContainer().appendChild(posterNameContainer);
+
+    let posterClickerContainer = document.createElement("div");
+    posterClickerContainer.className = "editorBlockView";
+    let posterHrefLabelDiv = document.createElement("div");
+    posterHrefLabelDiv.className = "editorBlockView";
+    posterHrefLabelDiv.style.width = "7%";
+    posterHrefLabelDiv.style.float = "left";
+    posterHrefLabelDiv.innerHTML = "链接地址:";
+    posterClickerContainer.appendChild(posterHrefLabelDiv);
+
+    let posterHrefInput = document.createElement("input");
+    posterHrefInput.className = "SS_IC_LABEL";
+    posterHrefInput.style.width = "82%";
+    posterHrefInput.style.height = "28px";
+    posterHrefInput.style.borderLeftWidth = "1px";
+    posterClickerContainer.appendChild(posterHrefInput);
+
+    let posterClickableLabelDiv = document.createElement("div");
+    posterClickableLabelDiv.style.float = "left";
+    posterClickableLabelDiv.style.marginLeft = "20px";
+    posterClickableLabelDiv.style.height = "28px";
+    posterClickableLabelDiv.style.lineHeight = "28px";
+    posterClickableLabelDiv.style.fontSize = "14px";
+    posterClickableLabelDiv.innerHTML = "是否可点击";
+    posterClickerContainer.appendChild(posterClickableLabelDiv);
+
+    let posterClickableInput = document.createElement("input");
+    posterClickableInput.setAttribute("type", "checkbox");
+    posterClickableInput.className = "formatDisplayCheckBox";
+    posterClickerContainer.appendChild(posterClickableInput);
+    getMainContainer().appendChild(posterClickerContainer);
+
+    let posterActionBar = document.createElement("div");
+    posterActionBar.className = "posterActionBar";
+    posterActionBar.style.marginTop = "15px";
+    let posterCancelDiv = document.createElement("div");
+    posterCancelDiv.className = "posterButton";
+    posterCancelDiv.innerHTML = "取消";
+    posterCancelDiv.style.width = "49%";
+    posterCancelDiv.style.marginRight = "1%";
+    let commitView = document.createElement("div");
+    commitView.className = "posterButton";
+    commitView.innerHTML = "提交";
+    commitView.style.width = "49%";
+    commitView.style.marginLeft = "1%";
+    posterActionBar.appendChild(posterCancelDiv);
+    posterActionBar.appendChild(commitView);
+
+
+    posterCancelDiv.onclick = function () {
         resetMainContainer();
         loadPosterView();
     };
-    buttonViewContainer.appendChild(cancelView);
-    let separateHL = document.createElement("hr");
-    separateHL.className = "posterButtonHL";
-    buttonViewContainer.appendChild(separateHL);
-    let commitView = document.createElement("div");
-    commitView.className = "B_B_D";
-    commitView.style.marginLeft = "0px";
-    commitView.style.width = "532px";
-    if (isCreate) {
+
+    if (posterEntity == undefined) {
         commitView.innerHTML = "提交";
         commitView.onclick = function () {
             let requestPosterEntity = new Object();
-            requestPosterEntity.href = linkedEditor.value;
-            requestPosterEntity.status = displayView.checked ? 2 : 1;
-            requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
+            requestPosterEntity.name = posterNameInput.value;
+            requestPosterEntity.href = posterHrefInput.value;
+            requestPosterEntity.clickable = posterClickableInput.checked ? 2 : 1;
             requestCreatePoster(requestPosterEntity);
         };
     } else {
+        posterNameInput.value = posterEntity.name;
+        posterHrefInput.value = posterEntity.href;
+        if (posterEntity.clickable == 1) {
+            posterClickableInput.checked = false;
+        } else if (posterEntity.clickable == 2) {
+            posterClickableInput.checked = true;
+        }
         commitView.innerHTML = "保存";
         commitView.onclick = function () {
             let requestPosterEntity = new Object();
             requestPosterEntity.posterId = posterEntity.posterId;
-            requestPosterEntity.href = linkedEditor.value;
-            requestPosterEntity.fileId = posterEntity.fileId;
-            requestPosterEntity.status = displayView.checked ? 2 : 1;
-            requestPosterEntity.clickable = linkedView.checked ? 2 : 1;
-            console.log(requestPosterEntity);
+            requestPosterEntity.name = posterNameInput.value;
+            requestPosterEntity.href = posterHrefInput.value;
+            requestPosterEntity.clickable = posterClickableInput.checked ? 2 : 1;
             requestUpdatePoster(requestPosterEntity);
         };
     }
-    buttonViewContainer.appendChild(commitView);
-    getMainContainer().appendChild(buttonViewContainer);
+
+    getMainContainer().appendChild(posterActionBar);
+}
+
+function requestUpdatePoster(posterEntity) {
+    posterEntity.cs = getCookie(KEY_CS);
+    var url = BASE_PATH + "/poster/mUpdate?p="  + JSON.stringify(posterEntity);;
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        console.log(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RC_SUCCESS) {
+                new Toast().show("保存成功");
+                resetMainContainer();
+                loadPosterView();
+            } else {
+                new Toast().show("保存失败");
+            }
+        }
+    }, onErrorCallback(), onTimeoutCallback());
 }
