@@ -6,23 +6,23 @@
  * Created by dingpengwei on 8/12/16.
  */
 
-function loadProductView(sessionEntity) {
+function loadProductView() {
     let titleView = document.createElement("div");
     titleView.innerHTML = "系列总览";
     getTitleContainer().appendChild(titleView);
-    requestSeriesListData(sessionEntity);
+    requestSeriesListData();
 }
 
-function requestSeriesListData(sessionEntity) {
+function requestSeriesListData() {
     getMainContainer().innerHTML = null;
     let tempSessionEntity = new Object();
     tempSessionEntity.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/series/mRetrieves?p=" + JSON.stringify(tempSessionEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    var url = BASE_PATH + "/series/mRetrieves?p=" + JSON.stringify(tempSessionEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 onRequestSeriesListDataCallback(parseData.data);
             } else {
                 new Toast().show("请求数据失败");
@@ -222,7 +222,7 @@ function requestCreateSeries(seriesEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("创建成功");
                 requestSeriesListData(undefined);
             } else {
@@ -239,7 +239,7 @@ function requestRenameSeries(seriesEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
                 requestSeriesListData(undefined);
             } else {
@@ -256,7 +256,7 @@ function requestMarkSeries(seriesEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("操作成功");
                 requestSeriesListData(undefined);
             } else {
