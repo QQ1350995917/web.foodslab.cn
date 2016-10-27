@@ -35,7 +35,8 @@ function requestFormatListData(typeEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            console.log(parseData);
+            if (parseData.code == RC_SUCCESS) {
                 onRequestFormatListDataCallback(typeEntity, parseData.data);
             } else {
                 new Toast().show("请求数据失败");
@@ -85,7 +86,6 @@ function onRequestFormatListDataCallback(typeEntity, formatEntities) {
         attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity);
         attachFormatDiscountContainer(discountContainer, formatEntity);
         attachFormatPostageContainer(postageContainer, formatEntity)
-        attachFormatGiftContainer(giftContainer, formatEntity);
         attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity);
     }, 0));
 }
@@ -197,29 +197,6 @@ function attachFormatPostageContainer(postageContainer, formatEntity) {
     createFormatDatePickerWidget(postageContainer, "formatExpressStartTime", formatEntity == undefined ? undefined : formatEntity.expressStart);
     createFormatDatePickerWidget(postageContainer, "formatExpressEndTime", formatEntity == undefined ? undefined : formatEntity.expressEnd);
 
-}
-
-function attachFormatGiftContainer(giftContainer, formatEntity) {
-    giftContainer.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "formatGiftStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.giftStatus == 1) {
-            display.checked = false;
-        } else if (formatEntity.giftStatus == 2) {
-            display.checked = true;
-        }
-    }
-    giftContainer.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("满赠", "formatGiftCount", formatEntity == undefined ? "" : formatEntity.giftCount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    createInputSelectWidget(giftContainer, formatBaseViewInfo1);
-    createFormatSelectWidget(giftContainer, "formatGift", ["giftProduct1", "giftProduct2"], formatEntity == undefined ? "" : formatEntity.giftLabel, "请选择赠送产品");
-    createFormatDatePickerWidget(giftContainer, "formatGiftStartTime", formatEntity == undefined ? undefined : formatEntity.giftStart);
-    createFormatDatePickerWidget(giftContainer, "formatGiftEndTime", formatEntity == undefined ? undefined : formatEntity.giftEnd);
 }
 
 function attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity) {
@@ -402,7 +379,7 @@ function requestCreateFormat(typeEntity, formatEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("保存成功");
                 requestFormatListData(typeEntity);
             } else {
@@ -419,7 +396,7 @@ function requestUpdateFormat(typeEntity, formatEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("保存成功");
                 requestFormatListData(typeEntity);
             } else {
@@ -436,7 +413,7 @@ function requestMarkFormat(typeEntity, formatEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("保存成功");
                 requestFormatListData(typeEntity);
             } else {

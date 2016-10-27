@@ -203,7 +203,6 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
 }
 
 function createMixContainer(typeEntity) {
-    console.log(typeEntity);
     getMainContainer().appendChild(createTopContainer(typeEntity));
     getMainContainer().appendChild(createBottomContainer(typeEntity));
 }
