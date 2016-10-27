@@ -20,9 +20,8 @@
 - 请求数据结构示例：
 ```json
 {
-    "code": 0,
-    "data": 88,
-    "message": "this is a tip message"
+    "cs": "XXX",
+    "key": "XXX"
 }
 ```
 - 备注：无

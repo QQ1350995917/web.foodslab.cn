@@ -16,13 +16,13 @@ function loadProductTypeView(seriesEntity) {
 
 function requestTypeListData(seriesEntity) {
     getMainContainer().innerHTML = null;
-    seriesEntity.cs= getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/type/mRetrieves?p=" + JSON.stringify(seriesEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    seriesEntity.cs = getCookie(KEY_CS);
+    var url = BASE_PATH + "/type/mRetrieves?p=" + JSON.stringify(seriesEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 onRequestTypeListDataCallback(seriesEntity, parseData.data);
             } else {
                 new Toast().show("请求数据失败");
@@ -133,10 +133,9 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
                 new Toast().show("类型名称不能为空");
             } else {
                 let requestTypeEntity = new Object();
-                requestTypeEntity.sessionId = "admin";
                 requestTypeEntity.seriesId = seriesEntity.seriesId;
                 requestTypeEntity.label = label;
-                requestCreateType(seriesEntity,requestTypeEntity);
+                requestCreateType(seriesEntity, requestTypeEntity);
             }
         }
 
@@ -178,7 +177,7 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
             requestTypeEntity.seriesId = seriesEntity.seriesId;
             requestTypeEntity.typeId = typeEntity.typeId;
             requestTypeEntity.label = typeLabelInput.value;
-            requestRenameType(seriesEntity,requestTypeEntity);
+            requestRenameType(seriesEntity, requestTypeEntity);
         }
         blockAction.onclick = function () {
             let requestTypeEntity = new Object();
@@ -190,7 +189,7 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
             } else if (typeEntity.status == 2) {
                 requestTypeEntity.status = 1;
             }
-            requestMarkType(seriesEntity,requestTypeEntity);
+            requestMarkType(seriesEntity, requestTypeEntity);
         }
         deleteAction.onclick = function () {
             let requestTypeEntity = new Object();
@@ -198,12 +197,13 @@ function convertTypeContainerToEditor(typeContainer, seriesEntity, typeEntity) {
             requestTypeEntity.seriesId = seriesEntity.seriesId;
             requestTypeEntity.typeId = typeEntity.typeId;
             requestTypeEntity.status = -1;
-            requestMarkType(seriesEntity,requestTypeEntity);
+            requestMarkType(seriesEntity, requestTypeEntity);
         }
     }
 }
 
 function createMixContainer(typeEntity) {
+    console.log(typeEntity);
     getMainContainer().appendChild(createTopContainer(typeEntity));
     getMainContainer().appendChild(createBottomContainer(typeEntity));
 }
@@ -392,13 +392,14 @@ function format() {
     }
 }
 
-function requestCreateType(seriesEntity,typeEntity) {
-    typeEntity.cs= getCookie(KEY_CS);
-    asyncRequestByGet(BASE_PATH + "/type/mCreate?p=" + JSON.stringify(typeEntity), function (data) {
+function requestCreateType(seriesEntity, typeEntity) {
+    typeEntity.cs = getCookie(KEY_CS);
+    let url = BASE_PATH + "/type/mCreate?p=" + JSON.stringify(typeEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
                 requestTypeListData(seriesEntity);
             } else {
@@ -408,13 +409,13 @@ function requestCreateType(seriesEntity,typeEntity) {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function requestRenameType(seriesEntity,typeEntity) {
-    typeEntity.cs= getCookie(KEY_CS);
+function requestRenameType(seriesEntity, typeEntity) {
+    typeEntity.cs = getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mUpdate?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
                 requestTypeListData(seriesEntity);
             } else {
@@ -424,13 +425,13 @@ function requestRenameType(seriesEntity,typeEntity) {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function requestMarkType(seriesEntity,typeEntity) {
-    typeEntity.cs= getCookie(KEY_CS);
+function requestMarkType(seriesEntity, typeEntity) {
+    typeEntity.cs = getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mMark?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
                 requestTypeListData(seriesEntity);
             } else {
@@ -441,12 +442,12 @@ function requestMarkType(seriesEntity,typeEntity) {
 }
 
 function requestUpdateSummary(typeEntity) {
-    typeEntity.cs= getCookie(KEY_CS);
+    typeEntity.cs = getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mSummary?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
             } else {
                 new Toast().show("更新失败");
@@ -456,12 +457,12 @@ function requestUpdateSummary(typeEntity) {
 }
 
 function requestUpdateDirections(typeEntity) {
-    typeEntity.cs= getCookie(KEY_CS);
+    typeEntity.cs = getCookie(KEY_CS);
     asyncRequestByGet(BASE_PATH + "/type/mDirections?p=" + JSON.stringify(typeEntity), function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
             } else {
                 new Toast().show("更新失败");

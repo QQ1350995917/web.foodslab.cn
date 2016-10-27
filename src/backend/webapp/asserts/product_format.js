@@ -11,8 +11,21 @@ function loadProductFormatView(seriesEntity, typeEntity) {
         resetMainContainer();
         loadProductTypeView(seriesEntity);
     };
-    createMixContainer(typeEntity);
-    requestFormatListData(typeEntity);
+
+    typeEntity.cs = getCookie(KEY_CS);
+    var url = BASE_PATH + "/type/mRetrieve?p=" + JSON.stringify(typeEntity);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RC_SUCCESS) {
+                createMixContainer(parseData.data);
+                requestFormatListData(typeEntity);
+            } else {
+                new Toast().show("请求数据失败");
+            }
+        }
+    }, onErrorCallback(), onTimeoutCallback());
 }
 
 function requestFormatListData(typeEntity) {
