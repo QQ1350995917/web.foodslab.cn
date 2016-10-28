@@ -18,6 +18,7 @@ ORDER_TABS.push(ORDER_tab0);
 ORDER_TABS.push(ORDER_tab1);
 ORDER_TABS.push(ORDER_tab2);
 ORDER_TABS.push(ORDER_tab3);
+
 function loadOrderView() {
     getTitleContainer().appendChild(createHorizontalTabHostDiv("orderMenus",ORDER_TABS,"defaultTabSelected","defaultTabNormal",function (tab) {
         getMainContainer().innerHTML = null;
@@ -169,7 +170,7 @@ function createOrderExpressingView(orderEntities) {
         paramView.style.borderRightWidth = "0px";
         attachExpressingStatusView(orderEntities[i], paramView, false);
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer.appendChild(orderItemContainer);
+        getMainContainer().appendChild(orderItemContainer);
     }
 }
 
@@ -290,13 +291,15 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
 }
 
 function requestExpress(orderEntity) {
+    orderEntity.cs = getCookie(KEY_CS);
     const url = BASE_PATH + "/order/mExpressing?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
+            console.log(data);
             var jsonData = JSON.parse(data);
-            if (jsonData.code == RESPONSE_SUCCESS) {
-                showOrderView();
+            if (jsonData.code == RC_SUCCESS) {
+                loadOrderView();
                 new Toast().show("发货成功");
             } else {
                 new Toast().show("发货失败");
