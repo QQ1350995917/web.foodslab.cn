@@ -264,8 +264,9 @@ div.formatFunctionRightContainer {
     border: 0px solid;
 }
 div.formatAction {
-    width: 100%;
-    height: 100%;
+    float: right;
+    width: 75px;
+    height: 100px;
     fontSize: 1rem;
     line-height: 97px;
     text-align: center;

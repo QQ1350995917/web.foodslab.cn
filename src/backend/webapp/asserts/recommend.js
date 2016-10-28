@@ -16,7 +16,7 @@ function loadRecommendView() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 initRecommendView(parseData.data);
             } else {
                 new Toast().show("更新失败");
@@ -37,7 +37,7 @@ function swapRecommend(swapWeightFormatEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 new Toast().show("更新成功");
             } else {
                 new Toast().show("更新失败");
@@ -51,6 +51,7 @@ function initRecommendView(formatEntities) {
     let formatSize = formatEntities == undefined ? 0 : formatEntities.length;
     for (let index = 0; index < formatSize; index++) {
         let formatEntity = formatEntities[index];
+        console.log(formatEntity);
         let recommendItemRootViewContainer = document.createElement("div");
         recommendItemRootViewContainer.className = "SS_IC";
         recommendItemRootViewContainer.style.height = "40px";

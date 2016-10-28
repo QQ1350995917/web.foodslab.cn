@@ -30,256 +30,305 @@ function loadProductFormatView(seriesEntity, typeEntity) {
 
 function requestFormatListData(typeEntity) {
     typeEntity.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/format/mRetrieves?p=" + JSON.stringify(typeEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    var url = BASE_PATH + "/format/mRetrieves?p=" + JSON.stringify(typeEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            console.log(parseData);
+            let formatContainer = document.getElementById("formatContainer");
+            formatContainer.innerHTML = null;
             if (parseData.code == RC_SUCCESS) {
-                onRequestFormatListDataCallback(typeEntity, parseData.data);
-            } else {
+                onAttachFormatTitleToContainer(formatContainer, typeEntity, parseData.data);
+            } else if (parseData.code == RC_SUCCESS_EMPTY) {
+                onAttachFormatTitleToContainer(formatContainer, typeEntity, parseData.data);
+            } else{
                 new Toast().show("请求数据失败");
             }
         }
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function onRequestFormatListDataCallback(typeEntity, formatEntities) {
-    let formatContainer = document.getElementById("formatContainer");
-    formatContainer.innerHTML = null;
-
+function onAttachFormatTitleToContainer(container, typeEntity, formatEntities) {
+    container.innerHTML = null;
     let titleContainer = document.createElement("div");
     titleContainer.className = "formatItemContainer";
     titleContainer.style.height = "45px";
     titleContainer.style.marginTop = "0px";
-    formatContainer.appendChild(titleContainer);
+    container.appendChild(titleContainer);
 
-    let baseInfoContainer = document.createElement("div");
-    baseInfoContainer.className = "formatItemContainer";
-    formatContainer.appendChild(baseInfoContainer);
+    let contentContainer = document.createElement("div");
+    contentContainer.className = "formatItemContainer";
+    contentContainer.style.height = "45px";
+    contentContainer.style.marginTop = "0px";
+    container.appendChild(contentContainer);
 
-    let discountContainer = document.createElement("div");
-    discountContainer.className = "formatItemContainer";
-    formatContainer.appendChild(discountContainer);
-
-    let postageContainer = document.createElement("div");
-    postageContainer.className = "formatItemContainer";
-    formatContainer.appendChild(postageContainer);
-
-    let giftContainer = document.createElement("div");
-    giftContainer.className = "formatItemContainer";
-    formatContainer.appendChild(giftContainer);
-
-    let functionContainer = document.createElement("div");
-    functionContainer.className = "formatItemContainer";
-    functionContainer.style.height = "96px";
-    formatContainer.appendChild(functionContainer);
     let newObject = new Object();
     newObject.label = "+";
-    newObject.tag = APP_CONST_CLIENT_ID;
     formatEntities.push(newObject);
-    titleContainer.appendChild(createHorizontalTabHostDiv("formatViewId", formatEntities, "defaultTabSelected", "defaultTabNormal", function (formatEntity) {
-        if (formatEntity != null && formatEntity.tag == APP_CONST_CLIENT_ID) {
-            formatEntity = undefined;
-        }
-        attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity);
-        attachFormatDiscountContainer(discountContainer, formatEntity);
-        attachFormatPostageContainer(postageContainer, formatEntity)
-        attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity);
-    }, 0));
+
+    titleContainer.appendChild(createHorizontalTabHostDiv("formatViewId", formatEntities, "defaultTabSelected", "defaultTabNormal",
+        function (formatEntity) {
+            if (formatEntity == null || formatEntity.formatId == undefined) {
+                formatEntity = undefined;
+            }
+            onAttachFormatContentToContainer(contentContainer, typeEntity, formatEntity);
+        }, 0));
 }
 
-function attachFormatBaseInfoContainer(baseInfoContainer, typeEntity, formatEntity) {
-    baseInfoContainer.innerHTML = null;
-    let baseInfoLeftLeftContainer = document.createElement("div");
-    baseInfoLeftLeftContainer.className = "formatFunctionLeftContainer";
-    let displayStatus = document.createElement("input");
-    displayStatus.setAttribute("type", "checkbox");
-    displayStatus.className = "formatDisplayCheckBox";
-    displayStatus.id = "formatStatus";
-    if (formatEntity == undefined) {
-        displayStatus.checked = false;
-    } else {
-        if (formatEntity.status == 1) {
-            displayStatus.checked = false;
-        } else if (formatEntity.status == 2) {
-            displayStatus.checked = true;
-        }
-    }
-    baseInfoLeftLeftContainer.appendChild(displayStatus);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("规格", "formatLabel", formatEntity == undefined ? "" : formatEntity.label, "formatLabelUnit", formatEntity == undefined ? "" : formatEntity.meta, true);
-    let formatBaseViewInfo2 = new FormatBaseViewInfo("数量", "formatMount", formatEntity == undefined ? "" : formatEntity.amount, "formatMountUnit", formatEntity == undefined ? "" : formatEntity.amountMeta, true);
-    let formatBaseViewInfo3 = new FormatBaseViewInfo("定价", "formatPrice", formatEntity == undefined ? "" : formatEntity.price, "formatPriceUnit", formatEntity == undefined ? "" : formatEntity.priceMeta, true);
-    let formatBaseViewInfo4 = new FormatBaseViewInfo("邮费", "formatPostage", formatEntity == undefined ? "" : formatEntity.postage, "formatPostageUnit", formatEntity == undefined ? "" : formatEntity.postageMeta, true);
-    let baseInfo = new Array();
-    baseInfo.push(formatBaseViewInfo1);
-    baseInfo.push(formatBaseViewInfo2);
-    baseInfo.push(formatBaseViewInfo3);
-    baseInfo.push(formatBaseViewInfo4);
-    let unitIndex = new Array();
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.meta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.amountMeta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.priceMeta);
-    unitIndex.push(formatEntity == undefined ? undefined : formatEntity.postageMeta);
+function onAttachFormatContentToContainer(container, typeEntity, formatEntity) {
+    container.innerHTML = null;
+    let formatBaseInfoDiv = document.createElement("div");
+    formatBaseInfoDiv.className = "formatItemContainer";
 
-    for (let index = 0; index < 4; index++) {
-        createInputSelectWidget(baseInfoLeftLeftContainer, baseInfo[index], unitIndex[index]);
-    }
+    let formatStatusInput = document.createElement("input");
+    formatStatusInput.setAttribute("type", "checkbox");
+    formatStatusInput.className = "formatDisplayCheckBox";
+    formatStatusInput.id = "formatStatus";
+    formatBaseInfoDiv.appendChild(formatStatusInput);
 
-    baseInfoContainer.appendChild(baseInfoLeftLeftContainer);
-    let baseInfoRightContainer = document.createElement("div");
-    baseInfoRightContainer.className = "formatFunctionRightContainer";
-    if (!isNullValue(formatEntity)) {
-        let formatDelete = document.createElement("div");
-        formatDelete.className = "formatDeleteView";
-        formatDelete.innerHTML = "删除";
-        baseInfoRightContainer.appendChild(formatDelete);
-        formatDelete.onclick = function () {
-            let requestFormatEntity = new Object();
-            requestFormatEntity.typeId = typeEntity.typeId;
-            requestFormatEntity.formatId = formatEntity.formatId;
-            requestFormatEntity.status = -1;
-            requestMarkFormat(typeEntity, requestFormatEntity);
-        }
-    }
-    baseInfoContainer.appendChild(baseInfoRightContainer);
-}
+    let labelDiv = document.createElement("div");
+    labelDiv.innerHTML = "规格:";
+    labelDiv.className = "formatLabel";
+    labelDiv.style.marginLeft = "5px";
+    formatBaseInfoDiv.appendChild(labelDiv);
 
-function attachFormatDiscountContainer(discountContainer, formatEntity) {
-    discountContainer.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "formatPricingStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.pricingStatus == 1) {
-            display.checked = false;
-        } else if (formatEntity.pricingStatus == 2) {
-            display.checked = true;
-        }
-    }
-    discountContainer.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("折扣", "formatPricingDiscount", formatEntity == undefined ? "" : formatEntity.pricingDiscount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    let formatBaseViewInfo2 = new FormatBaseViewInfo("现价", "formatPricing", formatEntity == undefined ? "" : formatEntity.pricing, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    let baseInfo = new Array();
-    baseInfo.push(formatBaseViewInfo1);
-    baseInfo.push(formatBaseViewInfo2);
-    for (let index = 0; index < 2; index++) {
-        createInputSelectWidget(discountContainer, baseInfo[index]);
-    }
-    createFormatDatePickerWidget(discountContainer, "formatDiscountStartTime", formatEntity == undefined ? undefined : formatEntity.pricingStart);
-    createFormatDatePickerWidget(discountContainer, "formatDiscountEndTime", formatEntity == undefined ? undefined : formatEntity.pricingEnd);
+    let labelInput = document.createElement("input");
+    labelInput.className = "formatInput";
 
-}
+    formatBaseInfoDiv.appendChild(labelInput);
 
-function attachFormatPostageContainer(postageContainer, formatEntity) {
-    postageContainer.innerHTML = null;
-    let display = document.createElement("input");
-    display.setAttribute("type", "checkbox");
-    display.className = "formatDisplayCheckBox";
-    display.id = "formatExpressStatus";
-    if (formatEntity == undefined) {
-        display.checked = false;
-    } else {
-        if (formatEntity.expressStatus == 1) {
-            display.checked = false;
-        } else if (formatEntity.expressStatus == 2) {
-            display.checked = true;
-        }
-    }
-    postageContainer.appendChild(display);
-    let formatBaseViewInfo1 = new FormatBaseViewInfo("包邮", "formatExpressCount", formatEntity == undefined ? "" : formatEntity.expressCount, "spaceholder", formatEntity == undefined ? "" : formatEntity.meta, false);
-    createInputSelectWidget(postageContainer, formatBaseViewInfo1);
-    createFormatSelectWidget(postageContainer, "formatExpress", EXPRESS, formatEntity == undefined ? undefined : formatEntity.expressName, "请选择快递公司");
-    createFormatDatePickerWidget(postageContainer, "formatExpressStartTime", formatEntity == undefined ? undefined : formatEntity.expressStart);
-    createFormatDatePickerWidget(postageContainer, "formatExpressEndTime", formatEntity == undefined ? undefined : formatEntity.expressEnd);
+    let labelMateSelector = createSelector();
+    formatBaseInfoDiv.appendChild(labelMateSelector);
 
-}
+    let amountLabelDiv = document.createElement("div");
+    amountLabelDiv.innerHTML = "数量:";
+    amountLabelDiv.className = "formatLabel";
+    amountLabelDiv.style.marginLeft = "5px";
+    formatBaseInfoDiv.appendChild(amountLabelDiv);
 
-function attachFormatFunctionContainer(functionContainer, typeEntity, formatEntity) {
-    functionContainer.innerHTML = null;
-    let functionLeftContainer = document.createElement("div");
-    functionLeftContainer.className = "formatFunctionLeftContainer";
-    functionContainer.appendChild(functionLeftContainer);
-    let functionRightContainer = document.createElement("div");
-    functionRightContainer.className = "formatFunctionRightContainer";
+    let amountInput = document.createElement("input");
+    amountInput.className = "formatInput";
+
+    formatBaseInfoDiv.appendChild(amountInput);
+    let amountMateSelector = createSelector();
+    formatBaseInfoDiv.appendChild(amountMateSelector);
+
+    let priceLabelDiv = document.createElement("div");
+    priceLabelDiv.innerHTML = "价格:";
+    priceLabelDiv.className = "formatLabel";
+    priceLabelDiv.style.marginLeft = "5px";
+    formatBaseInfoDiv.appendChild(priceLabelDiv);
+
+    let priceInput = document.createElement("input");
+    priceInput.className = "formatInput";
+    formatBaseInfoDiv.appendChild(priceInput);
+
+    let priceMateDiv = document.createElement("div");
+    priceMateDiv.innerHTML = "￥";
+    priceMateDiv.className = "formatLabel";
+    priceMateDiv.style.width = "20px";
+    priceMateDiv.style.marginLeft = "0px";
+    formatBaseInfoDiv.appendChild(priceMateDiv);
+
+    let postageLabelDiv = document.createElement("div");
+    postageLabelDiv.innerHTML = "邮费:";
+    postageLabelDiv.className = "formatLabel";
+    postageLabelDiv.style.marginLeft = "5px";
+    formatBaseInfoDiv.appendChild(postageLabelDiv);
+
+    let postageInput = document.createElement("input");
+    postageInput.className = "formatInput";
+    formatBaseInfoDiv.appendChild(postageInput);
+
+    let postageMateDiv = document.createElement("div");
+    postageMateDiv.innerHTML = "￥";
+    postageMateDiv.className = "formatLabel";
+    postageMateDiv.style.width = "20px";
+    postageMateDiv.style.marginLeft = "0px";
+    formatBaseInfoDiv.appendChild(postageMateDiv);
+
+    container.appendChild(formatBaseInfoDiv);
+
+    let formatPricingInfoDiv = document.createElement("div");
+    formatPricingInfoDiv.className = "formatItemContainer";
+
+    let pricingStatusInput = document.createElement("input");
+    pricingStatusInput.setAttribute("type", "checkbox");
+    pricingStatusInput.className = "formatDisplayCheckBox";
+    pricingStatusInput.id = "formatPricingStatus";
+    formatPricingInfoDiv.appendChild(pricingStatusInput);
+
+    let pricingDiscountLabelDiv = document.createElement("div");
+    pricingDiscountLabelDiv.innerHTML = "折扣:";
+    pricingDiscountLabelDiv.className = "formatLabel";
+    pricingDiscountLabelDiv.style.marginLeft = "5px";
+    formatPricingInfoDiv.appendChild(pricingDiscountLabelDiv);
+
+    let pricingDiscountInput = document.createElement("input");
+    pricingDiscountInput.className = "formatInput";
+    formatPricingInfoDiv.appendChild(pricingDiscountInput);
+
+    let pricingLabelDiv = document.createElement("div");
+    pricingLabelDiv.innerHTML = "现价:";
+    pricingLabelDiv.className = "formatLabel";
+    pricingLabelDiv.style.marginLeft = "5px";
+    formatPricingInfoDiv.appendChild(pricingLabelDiv);
+
+    let pricingInput = document.createElement("input");
+    pricingInput.className = "formatInput";
+    formatPricingInfoDiv.appendChild(pricingInput);
+
+    let pricingMateDiv = document.createElement("div");
+    pricingMateDiv.innerHTML = "￥";
+    pricingMateDiv.className = "formatLabel";
+    pricingMateDiv.style.width = "20px";
+    pricingMateDiv.style.marginLeft = "0px";
+    formatPricingInfoDiv.appendChild(pricingMateDiv);
+
+    let pricingStartInput = createDatePicker(formatEntity == undefined ? undefined : formatEntity.pricingStart);
+    formatPricingInfoDiv.appendChild(pricingStartInput);
+
+    let pricingEndInput = createDatePicker(formatEntity == undefined ? undefined : formatEntity.pricingEnd);
+    formatPricingInfoDiv.appendChild(pricingEndInput);
+
+    container.appendChild(formatPricingInfoDiv);
+
+    let formatExpressInfoDiv = document.createElement("div");
+    formatExpressInfoDiv.className = "formatItemContainer";
+
+    let expressStatusInput = document.createElement("input");
+    expressStatusInput.setAttribute("type", "checkbox");
+    expressStatusInput.className = "formatDisplayCheckBox";
+    expressStatusInput.id = "formatPricingStatus";
+    formatExpressInfoDiv.appendChild(expressStatusInput);
+
+    let expressLabelDiv = document.createElement("div");
+    expressLabelDiv.innerHTML = "包邮:";
+    expressLabelDiv.className = "formatLabel";
+    expressLabelDiv.style.marginLeft = "5px";
+    formatExpressInfoDiv.appendChild(expressLabelDiv);
+
+    let expressInput = document.createElement("input");
+    expressInput.className = "formatInput";
+    formatExpressInfoDiv.appendChild(expressInput);
+
+    let expressSelector = document.createElement("select");
+    expressSelector.className = "formatSelect";
+    expressSelector.style.width = "100px";
+    expressSelector.options.add(new Option("圆通快递", "圆通快递"));
+    expressSelector.options.add(new Option("中通快递", "中通快递"));
+    expressSelector.options.add(new Option("申通快递", "申通快递"));
+    expressSelector.options.add(new Option("顺丰快递", "顺丰快递"));
+    formatExpressInfoDiv.appendChild(expressSelector);
+
+    let expressStartInput = createDatePicker(formatEntity == undefined ? undefined : formatEntity.expressStart);
+    formatExpressInfoDiv.appendChild(expressStartInput);
+    let expressEndInput = createDatePicker(formatEntity == undefined ? undefined : formatEntity.expressEnd);
+    formatExpressInfoDiv.appendChild(expressEndInput);
+    container.appendChild(formatExpressInfoDiv);
+
+    let formatDisplayBarDiv = document.createElement("div");
+    formatDisplayBarDiv.className = "formatItemContainer";
     let saveFormatAction = document.createElement("div");
     saveFormatAction.className = "formatAction";
     saveFormatAction.innerHTML = "保存";
-    functionRightContainer.appendChild(saveFormatAction);
-    functionContainer.appendChild(functionRightContainer);
+    formatDisplayBarDiv.appendChild(saveFormatAction);
+    container.appendChild(formatDisplayBarDiv);
 
-    saveFormatAction.onclick = function () {
-        saveFormat(typeEntity, formatEntity);
-    }
-}
-
-class FormatBaseViewInfo {
-    constructor(title, labelId, label, unitId, unitLabel, isSelector) {
-        this.title = title;
-        this.labelId = labelId;
-        this.label = label;
-        this.unitId = unitId;
-        this.unitLabel = unitLabel;
-        this.isSelector = isSelector;
-    }
-}
-
-function createInputSelectWidget(container, formatBaseViewInfo, defaultUnit) {
-    let labelView = document.createElement("div");
-    labelView.innerHTML = formatBaseViewInfo.title;
-    labelView.className = "formatLabel";
-    labelView.style.marginLeft = "5px";
-    container.appendChild(labelView);
-    let inputView = document.createElement("input");
-    inputView.className = "formatInput";
-    inputView.value = formatBaseViewInfo.label;
-    inputView.id = formatBaseViewInfo.labelId;
-    container.appendChild(inputView);
-    if (formatBaseViewInfo.isSelector) {
-        let metaView = document.createElement("select");
-        metaView.value = formatBaseViewInfo.unit;
-        metaView.id = formatBaseViewInfo.unitId;
-        metaView.className = "formatSelect";
-        if (defaultUnit == undefined) {
-            metaView.options.add(new Option("单位", "单位"));
-        } else {
-            metaView.options.add(new Option(defaultUnit, "current"));
+    if (formatEntity == undefined) {
+        formatStatusInput.checked = false;
+        expressStatusInput.checked = false;
+    } else {
+        if (formatEntity.status == 1) {
+            formatStatusInput.checked = false;
+            container.style.color = "red";
+        } else if (formatEntity.status == 2) {
+            formatStatusInput.checked = true;
+            container.style.color = "black";
         }
 
+        if (formatEntity.pricingStatus == 1) {
+            pricingStatusInput.checked = false;
+        } else if (formatEntity.pricingStatus == 2) {
+            pricingStatusInput.checked = true;
+        }
+
+        if (formatEntity.expressStatus == 1) {
+            expressStatusInput.checked = false;
+        } else if (formatEntity.expressStatus == 2) {
+            expressStatusInput.checked = true;
+        }
+
+        labelInput.value = formatEntity.label;
+        amountInput.value = formatEntity.amount;
+        priceInput.value = formatEntity.label;
+        postageInput.value = formatEntity.label;
+        pricingDiscountInput.value = formatEntity.label;
+        pricingInput.value = formatEntity.label;
+        expressInput.value = formatEntity.label;
+
+        let formatDelete = document.createElement("div");
+        formatDelete.className = "formatDeleteView";
+        formatDelete.innerHTML = "删除";
+        formatDelete.style.width = "75px";
+        formatBaseInfoDiv.appendChild(formatDelete);
+        formatDelete.onclick = function () {
+            let requestFormatEntity = new Object();
+            requestFormatEntity.formatId = formatEntity.formatId;
+            requestFormatEntity.status = -1;
+            requestMarkFormat(requestFormatEntity);
+        }
+    }
+
+    saveFormatAction.onclick = function () {
+        let requestFormatEntity = new Object();
+        requestFormatEntity.typeId = typeEntity.typeId;
+        requestFormatEntity.status = (formatStatusInput.checked == true ? 2 : 1);
+        requestFormatEntity.label = labelInput.value;
+        requestFormatEntity.meta = labelMateSelector.options[labelMateSelector.selectedIndex].text;
+        requestFormatEntity.amount = amountInput.value;
+        requestFormatEntity.amountMeta = amountMateSelector.options[amountMateSelector.selectedIndex].text;
+        requestFormatEntity.price = pricingInput.value;
+        requestFormatEntity.postage = postageInput.value;
+
+        requestFormatEntity.pricingStatus = (pricingStatusInput.checked == true ? 2 : 1);
+        requestFormatEntity.pricingDiscount = pricingDiscountInput.value;
+        requestFormatEntity.pricing = pricingInput.value;
+        requestFormatEntity.pricingStart = new Date(pricingStartInput.value).getTime();
+        requestFormatEntity.pricingEnd = new Date(pricingEndInput.value).getTime();
+
+        requestFormatEntity.expressStatus = (expressStatusInput.checked == true ? 2 : 1);
+        requestFormatEntity.expressCount = expressInput.value;
+        requestFormatEntity.expressName = expressSelector.options[expressSelector.selectedIndex].text;
+        requestFormatEntity.expressStart = new Date(expressStartInput.value).getTime();
+        requestFormatEntity.expressEnd = new Date(expressEndInput.value).getTime();
+
+        if (formatEntity == undefined || isNullValue(formatEntity.formatId)) {
+            requestCreateFormat(typeEntity, requestFormatEntity);
+        } else {
+            requestFormatEntity.formatId = formatEntity.formatId;
+            requestUpdateFormat(typeEntity, requestFormatEntity);
+        }
+    }
+}
+
+function createSelector(defaultOptions) {
+    let metaView = document.createElement("select");
+    metaView.className = "formatSelect";
+    if (isNullValue(defaultOptions)) {
         for (let index = 0; index < UNITS.length; index++) {
             metaView.options.add(new Option(UNITS[index].label, UNITS[index].unitId));
         }
-        container.appendChild(metaView);
-    }
-}
-
-
-function createFormatSelectWidget(container, id, options, defaultOption, tip) {
-    let metaView = document.createElement("select");
-    metaView.id = id;
-    metaView.className = "formatSelect";
-    metaView.style.width = "200px";
-    metaView.style.marginLeft = "10px";
-
-    if (options != undefined) {
-        if (defaultOption == undefined) {
-            metaView.options.add(new Option(tip, tip));
-        } else {
-            metaView.options.add(new Option(defaultOption, "current"));
-        }
-        for (let index = 0; index < options.length; index++) {
-            metaView.options.add(new Option(options[index], options[index]));
+    } else {
+        for (let index = 0; index < defaultOptions.length; index++) {
+            metaView.options.add(new Option(defaultOptions[index], defaultOptions[index]));
         }
     }
 
-    container.appendChild(metaView);
+    return metaView;
 }
 
-function createFormatDatePickerWidget(container, id, defaultValue) {
+function createDatePicker(defaultValue) {
     let inputView = document.createElement("input");
     inputView.type = "text";
     if (defaultValue == undefined) {
@@ -291,9 +340,6 @@ function createFormatDatePickerWidget(container, id, defaultValue) {
     inputView.className = "formatInput";
     inputView.style.width = "200px";
     inputView.style.marginLeft = "10px";
-    inputView.id = id;
-    container.appendChild(inputView);
-
     new Pikaday({
         field: inputView,
         firstDay: 1,
@@ -301,82 +347,16 @@ function createFormatDatePickerWidget(container, id, defaultValue) {
         maxDate: new Date('2020-12-31'),
         yearRange: [2015, 2020]
     });
-}
-
-function saveFormat(typeEntity, formatEntity) {
-    let formatStatus = document.getElementById("formatStatus");
-    let formatLabel = document.getElementById("formatLabel");
-    let formatLabelUnit = document.getElementById("formatLabelUnit");
-    let formatMount = document.getElementById("formatMount");
-    let formatMountUnit = document.getElementById("formatMountUnit");
-    let formatPrice = document.getElementById("formatPrice");
-    let formatPriceUnit = document.getElementById("formatPriceUnit");
-    let formatPostage = document.getElementById("formatPostage");
-    let formatPostageUnit = document.getElementById("formatPostageUnit");
-
-    let formatPricingStatus = document.getElementById("formatPricingStatus");
-    let formatPricingDiscount = document.getElementById("formatPricingDiscount");
-    let formatPricing = document.getElementById("formatPricing");
-    let formatPricingDiscountStart = document.getElementById("formatDiscountStartTime");
-    let formatPricingDiscountEnd = document.getElementById("formatDiscountEndTime");
-
-    let formatExpressStatus = document.getElementById("formatExpressStatus");
-    let formatExpressCount = document.getElementById("formatExpressCount");
-    let formatExpress = document.getElementById("formatExpress");
-    let formatExpressStart = document.getElementById("formatExpressStartTime");
-    let formatExpressEnd = document.getElementById("formatExpressEndTime");
-
-    let formatGiftStatus = document.getElementById("formatGiftStatus");
-    let formatGiftCount = document.getElementById("formatGiftCount");
-    let formatGift = document.getElementById("formatGift");
-    let formatGiftStart = document.getElementById("formatGiftStartTime");
-    let formatGiftEnd = document.getElementById("formatGiftEndTime");
-
-
-    let requestFormatEntity = new Object();
-    requestFormatEntity.typeId = typeEntity.typeId;
-
-    requestFormatEntity.status = (formatStatus.checked == true ? 2 : 1);
-    requestFormatEntity.label = formatLabel.value;
-    requestFormatEntity.meta = formatLabelUnit.options[formatLabelUnit.selectedIndex].text;
-    requestFormatEntity.amount = formatMount.value;
-    requestFormatEntity.amountMeta = formatMountUnit.options[formatMountUnit.selectedIndex].text;
-    requestFormatEntity.price = formatPrice.value;
-    requestFormatEntity.priceMeta = formatPriceUnit.options[formatPriceUnit.selectedIndex].text;
-    requestFormatEntity.postage = formatPostage.value;
-    requestFormatEntity.postageMeta = formatPostageUnit.options[formatPostageUnit.selectedIndex].text;
-
-    requestFormatEntity.pricingStatus = (formatPricingStatus.checked == true ? 2 : 1);
-    requestFormatEntity.pricingDiscount = formatPricingDiscount.value;
-    requestFormatEntity.pricing = formatPricing.value;
-    requestFormatEntity.pricingStart = new Date(formatPricingDiscountStart.value).getTime();
-    requestFormatEntity.pricingEnd = new Date(formatPricingDiscountEnd.value).getTime();
-
-    requestFormatEntity.expressStatus = (formatExpressStatus.checked == true ? 1 : 0);
-    requestFormatEntity.expressCount = formatExpressCount.value;
-    requestFormatEntity.expressName = formatExpress.options[formatExpress.selectedIndex].text;
-    requestFormatEntity.expressStart = new Date(formatExpressStart.value).getTime();
-    requestFormatEntity.expressEnd = new Date(formatExpressEnd.value).getTime();
-
-    requestFormatEntity.giftStatus = (formatGiftStatus.checked == true ? 1 : 0);
-    requestFormatEntity.giftCount = formatGiftCount.value;
-    requestFormatEntity.giftLabel = formatGift.options[formatGift.selectedIndex].text;
-    requestFormatEntity.giftStart = new Date(formatGiftStart.value).getTime();
-    requestFormatEntity.giftEnd = new Date(formatGiftEnd.value).getTime();
-
-    if (formatEntity == undefined || formatEntity.formatId == undefined || formatEntity.formatId == null || formatEntity.formatId == APP_CONST_CLIENT_ID) {
-        requestCreateFormat(typeEntity, requestFormatEntity);
-    } else {
-        requestFormatEntity.formatId = formatEntity.formatId;
-        requestUpdateFormat(typeEntity, requestFormatEntity);
-    }
+    return inputView;
 }
 
 function requestCreateFormat(typeEntity, formatEntity) {
     formatEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(formatEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/format/mCreate?p=" + JSON.stringify(formatEntity);
+    console.log(url);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
+        console.log(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RC_SUCCESS) {
@@ -391,8 +371,8 @@ function requestCreateFormat(typeEntity, formatEntity) {
 
 function requestUpdateFormat(typeEntity, formatEntity) {
     formatEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/format/mUpdate?p=" + JSON.stringify(formatEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/format/mUpdate?p=" + JSON.stringify(formatEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
@@ -406,15 +386,17 @@ function requestUpdateFormat(typeEntity, formatEntity) {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function requestMarkFormat(typeEntity, formatEntity) {
+function requestMarkFormat(formatEntity) {
     formatEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/format/mMark?p=" + JSON.stringify(formatEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    let url = BASE_PATH + "/format/mMark?p=" + JSON.stringify(formatEntity);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RC_SUCCESS) {
                 new Toast().show("保存成功");
+                let typeEntity = new Object();
+                typeEntity.typeId = formatEntity.typeId;
                 requestFormatListData(typeEntity);
             } else {
                 new Toast().show("保存失败");
