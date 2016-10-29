@@ -299,6 +299,7 @@ function requestExpress(orderEntity) {
             console.log(data);
             var jsonData = JSON.parse(data);
             if (jsonData.code == RC_SUCCESS) {
+                resetMainContainer();
                 loadOrderView();
                 new Toast().show("发货成功");
             } else {

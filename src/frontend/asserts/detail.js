@@ -290,7 +290,7 @@ function createFormatDiscountItemView(formatEntity) {
                 var result = checkResponseDataFormat(data);
                 if (result) {
                     var jsonData = JSON.parse(data);
-                    if (jsonData.code == RESPONSE_SUCCESS) {
+                    if (jsonData.code == RC_SUCCESS) {
                         let requestFormatEntity = new Object();
                         requestFormatEntity.cs = getCookie(KEY_CS);
                         requestFormatEntity.formatId = formatEntity.formatId;

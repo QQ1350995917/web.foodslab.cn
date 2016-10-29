@@ -12,7 +12,6 @@ const ID_MAIN_TITLE = "mainTitle";
 const ID_MAIN_CONTAINER = "mainContainer";
 const KEY_CS = "mcs";
 
-const RESPONSE_SUCCESS = 3050;
 const APP_CONST_CLIENT_ID = "clientId";
 //标记元素是添加按钮
 const APP_CONST_ADD_NEW = "addNew";
