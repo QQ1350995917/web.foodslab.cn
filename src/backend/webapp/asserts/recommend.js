@@ -51,7 +51,6 @@ function initRecommendView(formatEntities) {
     let formatSize = formatEntities == undefined ? 0 : formatEntities.length;
     for (let index = 0; index < formatSize; index++) {
         let formatEntity = formatEntities[index];
-        console.log(formatEntity);
         let recommendItemRootViewContainer = document.createElement("div");
         recommendItemRootViewContainer.className = "SS_IC";
         recommendItemRootViewContainer.style.height = "40px";

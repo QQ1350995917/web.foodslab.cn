@@ -25,7 +25,7 @@ function loadUserView() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 attachUsersToMainContainer(userListContainer,parseData.data);
             } else {
                 new Toast().show("请求失败");
@@ -111,7 +111,7 @@ function requestUpdateStatus(userEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            if (parseData.code == RESPONSE_SUCCESS) {
+            if (parseData.code == RC_SUCCESS) {
                 resetMainContainer();
                 loadUserView();
             } else {

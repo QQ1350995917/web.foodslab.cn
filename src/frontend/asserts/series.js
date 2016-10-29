@@ -7,7 +7,6 @@ window.onload = function () {
     let seriesId = document.getElementById("seriesId") == undefined ? null : document.getElementById("seriesId").content;
     requestSeries(seriesId);
 };
-// + JSON.stringify(seriesEntity)
 function requestSeries(seriesId) {
     let url = BASE_PATH + "series/retrieves";
     asyncRequestByGet(url, function (data) {

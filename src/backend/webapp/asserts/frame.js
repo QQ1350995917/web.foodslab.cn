@@ -10,7 +10,7 @@ const ID_FRAME_HEADER_MENU = "headerMenu";
 const ID_FRAME_LEFT_MENU = "leftMenu";
 const ID_MAIN_TITLE = "mainTitle";
 const ID_MAIN_CONTAINER = "mainContainer";
-const KEY_CS = "cs";
+const KEY_CS = "mcs";
 
 const RESPONSE_SUCCESS = 3050;
 const APP_CONST_CLIENT_ID = "clientId";

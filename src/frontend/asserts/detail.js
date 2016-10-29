@@ -17,8 +17,22 @@ function requestType(typeEntity, selectedFormatId) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createTypeTitle(jsonData.data);
-            createTypeMainView(jsonData.data, selectedFormatId);
+            let typeEntity = jsonData.data;
+            createTypeMainView(typeEntity, selectedFormatId);
+            requestSeries(typeEntity.seriesId,typeEntity);
+        }
+    }, onErrorCallback, onTimeoutCallback);
+}
+
+function requestSeries(seriesId,typeEntity) {
+    let requestObject = new Object();
+    requestObject.seriesId = seriesId;
+    let url = BASE_PATH + "series/retrieve?p=" + JSON.stringify(requestObject);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var jsonData = JSON.parse(data);
+            createTypeTitle(jsonData.data,typeEntity);
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -39,7 +53,7 @@ function onRequestPutInCartCallback(data) {
     createPutInCartResultView(data);
 }
 
-function createTypeTitle(typeEntity) {
+function createTypeTitle(seriesEntity,typeEntity) {
     let typeEntityView = document.getElementById(ID_HEADER_MENU_DOWN);
     typeEntityView.innerHTML = null;
 
@@ -51,9 +65,9 @@ function createTypeTitle(typeEntity) {
 
     let seriesEntityView = document.createElement("div");
     seriesEntityView.className = "tabItem_normal";
-    seriesEntityView.innerHTML = typeEntity.parent.label;
+    seriesEntityView.innerHTML = seriesEntity.label;
     seriesEntityView.onclick = function () {
-        let url = BASE_PATH + "ps?seriesId=" + typeEntity.parent.seriesId;
+        let url = BASE_PATH + "ps?seriesId=" + seriesEntity.seriesId;
         window.open(url, "_self");
     };
     typeEntityView.appendChild(seriesEntityView);

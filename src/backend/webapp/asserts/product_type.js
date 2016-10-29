@@ -24,9 +24,12 @@ function requestTypeListData(seriesEntity) {
             var parseData = JSON.parse(data);
             if (parseData.code == RC_SUCCESS) {
                 onRequestTypeListDataCallback(seriesEntity, parseData.data);
+            } else if (parseData.code == RC_SUCCESS_EMPTY) {
+                onRequestTypeListDataCallback(seriesEntity, parseData.data);
             } else {
                 new Toast().show("请求数据失败");
             }
+
         }
     }, onErrorCallback(), onTimeoutCallback());
 }

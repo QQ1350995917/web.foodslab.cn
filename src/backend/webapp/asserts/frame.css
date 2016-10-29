@@ -42,6 +42,7 @@ div.headerMenu {
     float: left;
     width: 500px;
     height: 40px;
+    overflow-x: scroll;
 }
 
 div.headerUser {
