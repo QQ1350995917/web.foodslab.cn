@@ -450,7 +450,6 @@ function requestCreateOrder(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            console.log(data);
             if (jsonData.code == RC_SUCCESS){
                 let pageEntity = new Object();
                 pageEntity.cs = getCookie(KEY_CS);

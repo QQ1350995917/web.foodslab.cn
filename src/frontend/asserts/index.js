@@ -168,10 +168,31 @@ function fillRecommendContainer(recommendContainer, formatEntities, onResizeCall
         formatEntityBuyView.className = "productItem_buy";
         formatEntityBuyView.innerHTML = "立即购买";
         formatEntityBuyView.onclick = function () {
-            let object = new Object();
-            object.productIds = formatEntity.formatId;
-            let url = BASE_PATH + "pb?p=" + JSON.stringify(object);
-            window.open(url);
+            if (!isNullValue(KEY_CS)) {
+                let requestFormatEntity = new Object();
+                requestFormatEntity.cs = getCookie(KEY_CS);
+                requestFormatEntity.formatId = formatEntity.formatId;
+                requestFormatEntity.amount = 1;
+                let url = BASE_PATH + "cart/create?p=" + JSON.stringify(requestFormatEntity);
+                asyncRequestByGet(url, function (data) {
+                    var result = checkResponseDataFormat(data);
+                    if (result) {
+                        var jsonData = JSON.parse(data);
+                        if (jsonData.code == RC_SUCCESS){
+                            let object = new Object();
+                            object.productIds = jsonData.data.mappingId;
+                            console.log(jsonData.data.mappingId);
+                            let url = BASE_PATH + "pb?p=" + JSON.stringify(object);
+                            window.open(url);
+                        }
+                    }
+                }, onErrorCallback, onTimeoutCallback);
+            } else {
+                let object = new Object();
+                object.productIds = formatEntity.formatId;
+                let url = BASE_PATH + "pb?p=" + JSON.stringify(object);
+                window.open(url);
+            }
         };
         formatEntityView.appendChild(formatEntityBuyView);
         recommendContainer.appendChild(formatEntityView);
