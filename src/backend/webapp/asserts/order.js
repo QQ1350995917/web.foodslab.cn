@@ -186,7 +186,7 @@ function createExpressedView(orderEntities) {
         paramView.style.borderRightWidth = "0px";
         attachExpressingStatusView(orderEntities[i], paramView, false);
         let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer.appendChild(orderItemContainer);
+        getMainContainer().appendChild(orderItemContainer);
     }
 }
 
