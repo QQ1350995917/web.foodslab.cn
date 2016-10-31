@@ -261,11 +261,11 @@ function onAttachFormatContentToContainer(container, typeEntity, formatEntity) {
 
         labelInput.value = formatEntity.label;
         amountInput.value = formatEntity.amount;
-        priceInput.value = formatEntity.label;
-        postageInput.value = formatEntity.label;
-        pricingDiscountInput.value = formatEntity.label;
-        pricingInput.value = formatEntity.label;
-        expressInput.value = formatEntity.label;
+        priceInput.value = formatEntity.price;
+        postageInput.value = formatEntity.postage;
+        pricingDiscountInput.value = formatEntity.pricingDiscount;
+        pricingInput.value = formatEntity.pricing;
+        expressInput.value = formatEntity.expressCount;
 
         let formatDelete = document.createElement("div");
         formatDelete.className = "formatDeleteView";
@@ -288,7 +288,7 @@ function onAttachFormatContentToContainer(container, typeEntity, formatEntity) {
         requestFormatEntity.meta = labelMateSelector.options[labelMateSelector.selectedIndex].text;
         requestFormatEntity.amount = amountInput.value;
         requestFormatEntity.amountMeta = amountMateSelector.options[amountMateSelector.selectedIndex].text;
-        requestFormatEntity.price = pricingInput.value;
+        requestFormatEntity.price = priceInput.value;
         requestFormatEntity.postage = postageInput.value;
 
         requestFormatEntity.pricingStatus = (pricingStatusInput.checked == true ? 2 : 1);

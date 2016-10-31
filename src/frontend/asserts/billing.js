@@ -248,8 +248,12 @@ function attachPayBarContainer(container, formatEntities) {
     };
     container.appendChild(payAction);
 
+    let productAmount = 0;
+    let pricingAmount = 0;
     let length = formatEntities == undefined ? 0 : formatEntities.length;
     for (let i = 0; i < length; i++) {
+        productAmount = productAmount + formatEntities[i].amount;
+        pricingAmount = pricingAmount + (formatEntities[i].formatEntity.pricing * formatEntities[i].amount);
     }
 
     let buyInfoView = document.createElement("div");
@@ -262,12 +266,12 @@ function attachPayBarContainer(container, formatEntities) {
 
     let price = document.createElement("div");
     price.className = "payBarItem";
-    price.innerHTML = "商品总价:";
+    price.innerHTML = "商品总价:" + pricingAmount + "";
     buyInfoView.appendChild(price);
 
     let amount = document.createElement("div");
     amount.className = "payBarItem";
-    amount.innerHTML = "共选购" + "N" + "件商品";
+    amount.innerHTML = "共选购" + productAmount + "件商品";
     buyInfoView.appendChild(amount);
 
     container.appendChild(buyInfoView);
