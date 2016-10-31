@@ -56,6 +56,9 @@ function attachAnonymousReceiverContainer(container) {
     buyerPhoneEditor.style.float = "left";
     buyerInfoMessageLine.appendChild(buyerPhoneEditor);
     container.appendChild(buyerInfoMessageLine);
-    let receiverInfoMessageLine = createReceiverAddressEditorContainer(undefined,false);
-    container.appendChild(receiverInfoMessageLine);
+    let currentReceiverContainer = document.createElement("div");
+    currentReceiverContainer.id = "currentReceiverId";
+    currentReceiverContainer.className = "billingMoreReceiverItem";
+    attachCurrentReceiverToContainer(currentReceiverContainer,undefined,false);
+    container.appendChild(currentReceiverContainer);
 }

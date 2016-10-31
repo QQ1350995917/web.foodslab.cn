@@ -64,34 +64,28 @@ function onBillingRequestSessionStatusCommonCallback(data) {
     }
 }
 
-function createReceiverAddressEditorContainer(receiverEntity, submit) {
-    let receiverInfoMessageLine = document.createElement("div");
-    receiverInfoMessageLine.id = "currentReceiverId";
-    receiverInfoMessageLine.className = "billingReceiverItem";
-    receiverInfoMessageLine.style.height = "40px";
-    receiverInfoMessageLine.style.lineHeight = "40px";
+function attachCurrentReceiverToContainer(receiverContainer,receiverEntity, submit) {
+    receiverContainer.innerHTML = null;
     if (receiverEntity == undefined) {
-        receiverInfoMessageLine.innerHTML = "点击编辑收货人信息";
+        receiverContainer.innerHTML = "点击编辑收货人信息";
     } else {
-        receiverInfoMessageLine.bindReceiverId = receiverEntity.receiverId;
-        addCurrentReceiverViewToContainer(receiverInfoMessageLine, receiverEntity)
+        receiverContainer.bindReceiverId = receiverEntity.receiverId;
+        attachCurrentReceiverInfoToView(receiverContainer, receiverEntity)
     }
-
-    receiverInfoMessageLine.onclick = function () {
+    receiverContainer.onclick = function () {
         showReceiverEditorView(receiverEntity, function (newReceiverEntity) {
-            receiverInfoMessageLine.bindReceiverId = newReceiverEntity.receiverId;
-            addCurrentReceiverViewToContainer(receiverInfoMessageLine, newReceiverEntity);
+            receiverContainer.bindReceiverId = newReceiverEntity.receiverId;
+            attachCurrentReceiverInfoToView(receiverContainer, newReceiverEntity);
         }, submit);
     };
-    return receiverInfoMessageLine;
 }
 
 /**
- * 当前收货人信息
+ * 收货人信息展示
  * @param container
  * @param receiverEntity
  */
-function addCurrentReceiverViewToContainer(container, receiverEntity) {
+function attachCurrentReceiverInfoToView(container, receiverEntity) {
     container.innerHTML = null;
     container.style.fontSize = "1rem";
     let nameLabel = document.createElement("div");
