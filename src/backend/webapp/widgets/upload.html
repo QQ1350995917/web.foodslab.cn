@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+        img.main{
+            height: 300px;
+            width: 212px;
+        }
+        img.button{
+            height: 70px;
+            width: 50px;
+            cursor: pointer;
+        }
+        input{
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<img id="imgMain" class="main"><br>
+<img id="img1" class="button" onclick="onImageClick1()">
+<img id="img2" class="button" onclick="onImageClick2()">
+<img id="img3" class="button" onclick="onImageClick3()">
+<img id="img4" class="button" onclick="onImageClick4()">
+
+<form enctype="multipart/form-data" method="post" id="fileForm1">
+    <input id="file1" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img1'))">
+</form>
+<form enctype="multipart/form-data" method="post" id="fileForm2">
+    <input id="file2" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img2'))">
+</form>
+<form enctype="multipart/form-data" method="post" id="fileForm3">
+    <input id="file3" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img3'))">
+</form>
+<form enctype="multipart/form-data" method="post" id="fileForm4">
+    <input id="file4" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img4'))">
+</form>
+</body>
+<script >
+    function onImageClick1() {
+        document.getElementById('file1').click();
+    }
+    function onImageClick2() {
+        document.getElementById('file2').click();
+    }
+    function onImageClick3() {
+        document.getElementById('file3').click();
+    }
+    function onImageClick4() {
+        document.getElementById('file4').click();
+    }
+
+    function onFileChange(form,img) {
+        let requestObject = new Object();
+        requestObject.cs = "pwd";
+        var formData = new FormData(form);
+        let xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+                console.log(xmlHttpRequest.responseText);
+                document.getElementById("imgMain").src = JSON.parse(xmlHttpRequest.responseText).path;
+                img.src = JSON.parse(xmlHttpRequest.responseText).path;
+            } else {
+                console.log("error");
+            }
+        }
+        xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
+        xmlHttpRequest.onloadstart = function () {
+            console.log("upload start");
+        }
+        xmlHttpRequest.send(formData);
+    }
+
+
+
+//   * load事件：传输成功完成。
+//　　* abort事件：传输被用户取消。
+//　　* error事件：传输中出现错误。
+//　　* loadstart事件：传输开始。
+//　　* loadEnd事件：传输结束，但是不知道成功还是失败。
+
+    function asyncRequestByPost(url, onDataCallback, params) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                onDataCallback(xmlHttp.responseText);
+            } else {
+
+            }
+        }
+        xmlHttp.timeout = 5000;
+        xmlHttp.ontimeout = function () {
+
+        };
+        xmlHttp.open("POST", url, true);
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xmlHttp.send(encodeURI(params));
+    }
+
+
+
+
+
+
+
+    function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                onDataCallback(xmlHttp.responseText);
+            } else {
+                onErrorCallback;
+            }
+        }
+        xmlHttp.timeout = 5000;
+        xmlHttp.ontimeout = onTimeoutCallback;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send(null);
+    }
+
+    function asyncRequestByPost(url, onDataCallback, onErrorCallback, onTimeoutCallback, params) {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function () {
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200) {
+                onDataCallback(xmlHttp.responseText);
+            } else {
+                onErrorCallback();
+            }
+        }
+        xmlHttp.timeout = 5000;
+        xmlHttp.ontimeout = onTimeoutCallback;
+        xmlHttp.open("POST", url, true);
+        xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xmlHttp.send(encodeURI(params));
+    }
+
+    function onErrorCallback() {
+
+    }
+
+    function onTimeoutCallback() {
+
+    }
+</script>
+</html>

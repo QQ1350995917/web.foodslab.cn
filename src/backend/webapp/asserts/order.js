@@ -219,7 +219,9 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
      */
     let orderEntityTitleView = document.createElement("div");
     orderEntityTitleView.className = "orderItemTitle";
-    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: " + orderEntity.orderId + "  收货人：" + (orderEntity.senderName == undefined ? orderEntity.receiverId: orderEntity.senderName) + "    电话：123 4567 78900";
+    console.log(orderEntity.receiver.phone0);
+    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: "
+        + orderEntity.orderId + " 总价:" + orderEntity.cost + " 邮费:" + orderEntity.postage ;
     orderEntityView.appendChild(orderEntityTitleView);
 
     /**
@@ -235,9 +237,9 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
     /**
      * 动态添加产品数量
      */
-    let length = orderEntity == undefined ? 0 : orderEntity.formatEntities == undefined ? 0 : orderEntity.formatEntities.length;
+    let length = orderEntity == undefined ? 0 : orderEntity.cartEntities == undefined ? 0 : orderEntity.cartEntities.length;
     for (let i = 0; i < length; i++) {
-        let formatEntity = orderEntity.formatEntities[i];
+        let cartEntity = orderEntity.cartEntities[i];
         /**
          * 左右分为两个部分,做部分显示产品信息,右部分显示数量
          * @type {Element}
@@ -249,8 +251,9 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
          */
         let productNameView = document.createElement("div");
         productNameView.className = "orderItemMainProductItemLabel";
-        productNameView.style.width = "85%";
-        productNameView.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
+        productNameView.style.width = "70%";
+        productNameView.innerHTML = cartEntity.formatEntity.parent.parent.label + " "
+            + cartEntity.formatEntity.parent.label + " " + cartEntity.formatEntity.label + cartEntity.formatEntity.meta;
         productItemView.appendChild(productNameView);
 
         /**
@@ -258,8 +261,8 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
          */
         let productNumView = document.createElement("div");
         productNumView.className = "orderItemMainProductItemLabel";
-        productNumView.style.width = "15%";
-        productNumView.innerHTML = "x 5";
+        productNumView.style.width = "30%";
+        productNumView.innerHTML = "数量:" + cartEntity.amount + " 总价:" + cartEntity.pricing;
         productItemView.appendChild(productNumView);
         orderEntityProductContainer.appendChild(productItemView);
     }
@@ -271,7 +274,9 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
     orderEntityReceiverView.className = "orderItemMainBlock";
     orderEntityReceiverView.style.width = receiverViewWidth;
     orderEntityReceiverView.style.textAlign = "center";
-    orderEntityReceiverView.innerHTML = "北京 北京市 昌平区 回龙观 新龙城小区二期380号院 36A 8单元 9008";
+    orderEntityReceiverView.innerHTML = "收货人：" + orderEntity.receiver.name +  "电话：" + orderEntity.receiver.phone0 + "<br>" +orderEntity.receiver.province + " " + orderEntity.receiver.city + " "
+        + orderEntity.receiver.county + " " + orderEntity.receiver.town + " " + orderEntity.receiver.village + " "
+        + orderEntity.receiver.append;
     orderEntityContentView.appendChild(orderEntityReceiverView);
 
     /**

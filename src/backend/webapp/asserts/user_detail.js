@@ -153,10 +153,9 @@ function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
         /**
          * 动态添加产品数量
          */
-        let formatEntities = orderEntity.formatEntities
-        let length = formatEntities == undefined ? 0 : formatEntities.length;
+        let length = orderEntity.cartEntities == undefined ? 0 : orderEntity.cartEntities.length;
         for (let i = 0; i < length; i++) {
-            let formatEntity = formatEntities[i];
+            let cartEntity = orderEntity.cartEntities[i];
             /**
              * 左右分为两个部分,做部分显示产品信息,右部分显示数量
              * @type {Element}
@@ -174,12 +173,13 @@ function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
              */
             let productNameView = document.createElement("div");
             productNameView.className = "SS_IC";
-            productNameView.style.width = "490px";
+            productNameView.style.width = "400px";
             productNameView.style.height = "30px";
             productNameView.style.marginLeft = "10px";
             productNameView.style.borderWidth = "0px";
             productNameView.style.lineHeight = "30px";
-            productNameView.innerHTML = formatEntity.parent.parent.label + " " + formatEntity.parent.label + " " + formatEntity.label + formatEntity.meta;
+            productNameView.innerHTML = cartEntity.formatEntity.parent.parent.label + " "
+                + cartEntity.formatEntity.parent.label + " " + cartEntity.formatEntity.label + cartEntity.formatEntity.meta;
             productView.appendChild(productNameView);
 
             /**
@@ -187,14 +187,12 @@ function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
              */
             let productNumView = document.createElement("div");
             productNumView.className = "SS_IC";
-            productNumView.style.width = "50px";
+            productNumView.style.width = "140px";
             productNumView.style.height = "30px";
             productNumView.style.borderWidth = "0px";
             productNumView.style.lineHeight = "30px";
-            productNumView.innerHTML = "x 5";
+            productNumView.innerHTML = "数量:" + cartEntity.amount + " 总价:" + cartEntity.pricing;
             productView.appendChild(productNumView);
-
-
             orderProductView.appendChild(productView);
         }
         orderContentView.style.height = length * 31 + "px";// 高度根据产品数量动态设定
@@ -206,7 +204,7 @@ function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
         orderReceiverView.style.width = "213px";
         orderReceiverView.style.height = "100%";
         orderReceiverView.style.textAlign = "center";
-        orderReceiverView.innerHTML = "收货人";
+        orderReceiverView.innerHTML = "收货人:" + orderEntity.receiver.name;
         orderContentView.appendChild(orderReceiverView);
 
         let orderMoneyView = document.createElement("div");
@@ -214,7 +212,7 @@ function attachOrderViewToUserDetailMainContainer(mainContainer,orderEntities) {
         orderMoneyView.style.width = "150px";
         orderMoneyView.style.height = "100%";
         orderMoneyView.style.textAlign = "center";
-        orderMoneyView.innerHTML = "总额:8888";
+        orderMoneyView.innerHTML = "总额:" + orderEntity.cost;
         orderContentView.appendChild(orderMoneyView);
 
         let orderStatusView = document.createElement("div");
@@ -534,5 +532,9 @@ function attachReceiverViewToUserDetailMainContainer(mainContainer, receiverEnti
         }
         receiverItemContainer.appendChild(addressView);
         mainContainer.appendChild(receiverItemContainer);
+        if (receiverEntity.status == 3){
+            nameView.style.color = "red";
+            addressView.style.color = "red";
+        }
     }
 }
