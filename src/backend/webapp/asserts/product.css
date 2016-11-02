@@ -85,6 +85,15 @@ canvas.imageCuter {
     margin: 0px;
 }
 
+img.imageCuter {
+    width: 100%;
+    height: 300px;
+    cursor: move;
+    background-color: #CCCCCC;
+    border: 0px solid #CCCCCC;
+    margin: 0px;
+}
+
 div.imageCuterSubmit {
     cursor: pointer;
     width: 100%;
@@ -102,7 +111,7 @@ div.imageCuterSubmit {
     width: 33%;
     height: 105px;
     font-size: 1rem;
-    border: 1px solid #CCCCCC;
+    border: 0px solid #CCCCCC;
     color: #ffffff;
     cursor: pointer;
 }

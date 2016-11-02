@@ -219,37 +219,136 @@ function createTopContainer(typeEntity) {
 }
 
 function createTopLeftContainer(typeEntity) {
-    let imageContainer = document.createElement("div")
+    let imageContainer = document.createElement("div");
     imageContainer.className = "typeTopLeftContainer";
-    let imageCuter = document.createElement("canvas")
+    let imageCuter = document.createElement("img");
+    imageCuter.id = "imageCuter";
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])){
+        imageCuter.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
+    }
     imageCuter.className = "imageCuter";
     imageContainer.appendChild(imageCuter);
-
-    let imageCuterSubmit = document.createElement("div");
-    imageCuterSubmit.className = "imageCuterSubmit";
-    imageCuterSubmit.innerHTML = "保存修改";
-    imageContainer.appendChild(imageCuterSubmit);
 
     let imageUploadBar = document.createElement("div");
     imageUploadBar.className = "fillWidthContainer";
     imageUploadBar.style.height = "105px";
-    let fileButton1 = document.createElement("button");
+    var form1 = document.createElement("form");
+    form1.style.height = "0px";
+    form1.enctype = "multipart/form-data";
+    form1.method = "post";
+    form1.id = "fileForm1";
+
+    var form2 = document.createElement("form");
+    form2.style.height = "0px";
+    form2.enctype = "multipart/form-data";
+    form2.method = "post";
+    form2.id = "fileForm2";
+
+    var form3 = document.createElement("form");
+    form3.style.height = "0px";
+    form3.enctype = "multipart/form-data";
+    form3.method = "post";
+    form3.id = "fileForm3";
+
+    let fileInput1 = document.createElement("input");
+    fileInput1.type = "file";
+    fileInput1.id = "file1";
+    fileInput1.name="file";
+
+    let fileInput2 = document.createElement("input");
+    fileInput2.type = "file";
+    fileInput2.id = "file2";
+    fileInput2.name="file";
+
+    let fileInput3 = document.createElement("input");
+    fileInput3.type = "file";
+    fileInput3.id = "file3";
+    fileInput3.name="file";
+
+    form1.appendChild(fileInput1);
+    form2.appendChild(fileInput2);
+    form3.appendChild(fileInput3);
+
+    fileInput1.style.visibility = "hidden";
+    fileInput2.style.visibility = "hidden";
+    fileInput3.style.visibility = "hidden";
+
+    let fileButton1 = document.createElement("img");
     fileButton1.className = "fileInput";
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])){
+        fileButton1.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
+    }
     fileButton1.innerHTML = "添加图片";
-    let fileButton2 = document.createElement("button");
+    let fileButton2 = document.createElement("img");
     fileButton2.className = "fileInput";
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[1])){
+        fileButton2.src = "http://localhost:8080/foodslab" + typeEntity.covers[1].path;
+    }
     fileButton2.innerHTML = "添加图片";
-    let fileButton3 = document.createElement("button");
+    let fileButton3 = document.createElement("img");
     fileButton3.className = "fileInput";
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[2])){
+        fileButton3.src = "http://localhost:8080/foodslab" + typeEntity.covers[2].path;
+    }
     fileButton3.style.width = "34%";
     fileButton3.innerHTML = "添加图片";
+
+    imageUploadBar.appendChild(form1);
+    imageUploadBar.appendChild(form2);
+    imageUploadBar.appendChild(form3);
 
     imageUploadBar.appendChild(fileButton1);
     imageUploadBar.appendChild(fileButton2);
     imageUploadBar.appendChild(fileButton3);
     imageContainer.appendChild(imageUploadBar);
+    fileInput1.onchange = function () {
+        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[0]);
+    }
+    fileInput2.onchange = function () {
+        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[1]);
+    }
+    fileInput3.onchange = function () {
+        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[2]);
+    }
+    fileButton1.onclick = function () {
+        fileInput1.click();
+    }
+    fileButton2.onclick = function () {
+        fileInput2.click();
+    }
+    fileButton3.onclick = function () {
+        fileInput3.click();
+    }
+
 
     return imageContainer;
+}
+
+function requestUploadTypeCover(form,typeEntity,fileEntity) {
+    let requestObject = new Object();
+    requestObject.cs = "pwd";
+    if (!isNullValue(fileEntity) && !isNullValue(fileEntity.fileId)){
+        requestObject.fileId = fileEntity.fileId;
+    }
+    requestObject.trunkId = typeEntity.typeId;
+    var formData = new FormData(form);
+    let xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.onreadystatechange = function () {
+        if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+            var parseData = JSON.parse(xmlHttpRequest.responseText);
+            console.log(parseData.code);
+            if (parseData.code == RC_SUCCESS) {
+                document.getElementById("imageCuter").src = "http://localhost:8080/foodslab" + parseData.data.path;
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
+    }
+    xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
+    xmlHttpRequest.onloadstart = function () {
+        console.log("upload start");
+    }
+    xmlHttpRequest.send(formData);
 }
 
 function createTopRightContainer(typeEntity) {

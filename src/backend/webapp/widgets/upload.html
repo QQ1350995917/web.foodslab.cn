@@ -4,42 +4,139 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <style type="text/css">
-        img.main{
+        img.main {
             height: 300px;
             width: 212px;
         }
-        img.button{
+
+        img.button {
             height: 70px;
             width: 50px;
             cursor: pointer;
         }
-        input{
+
+        input {
             visibility: hidden;
         }
     </style>
 </head>
 <body>
 
-<img id="imgMain" class="main"><br>
-<img id="img1" class="button" onclick="onImageClick1()">
-<img id="img2" class="button" onclick="onImageClick2()">
-<img id="img3" class="button" onclick="onImageClick3()">
-<img id="img4" class="button" onclick="onImageClick4()">
+<!--<img id="imgMain" class="main"><br>-->
+<!--<img id="img1" class="button" onclick="onImageClick1()">-->
+<!--<img id="img2" class="button" onclick="onImageClick2()">-->
+<!--<img id="img3" class="button" onclick="onImageClick3()">-->
+<!--<img id="img4" class="button" onclick="onImageClick4()">-->
 
-<form enctype="multipart/form-data" method="post" id="fileForm1">
-    <input id="file1" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img1'))">
-</form>
-<form enctype="multipart/form-data" method="post" id="fileForm2">
-    <input id="file2" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img2'))">
-</form>
-<form enctype="multipart/form-data" method="post" id="fileForm3">
-    <input id="file3" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img3'))">
-</form>
-<form enctype="multipart/form-data" method="post" id="fileForm4">
-    <input id="file4" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img4'))">
-</form>
+<!--<form enctype="multipart/form-data" method="post" id="fileForm1">-->
+    <!--<input id="file1" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img1'))">-->
+<!--</form>-->
+<!--<form enctype="multipart/form-data" method="post" id="fileForm2">-->
+    <!--<input id="file2" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img2'))">-->
+<!--</form>-->
+<!--<form enctype="multipart/form-data" method="post" id="fileForm3">-->
+    <!--<input id="file3" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img3'))">-->
+<!--</form>-->
+<!--<form enctype="multipart/form-data" method="post" id="fileForm4">-->
+    <!--<input id="file4" name="file" type="file" onchange="onFileChange(this.parentNode,document.getElementById('img4'))">-->
+<!--</form>-->
 </body>
-<script >
+<script>
+    window.onload = function () {
+        let imageContainer = document.createElement("div");
+        imageContainer.style.width = "300px";
+        imageContainer.style.height = "500px";
+        imageContainer.style.backgroundColor = "grey";
+        let imageCuter = document.createElement("img");
+        imageCuter.id = "imageCuter";
+        imageCuter.style.width = "300px";
+        imageCuter.style.height = "400px";
+        imageCuter.style.backgroundColor = "red";
+        imageContainer.appendChild(imageCuter);
+
+        let imageUploadBar = document.createElement("div");
+        imageUploadBar.style.width = "300px";
+        imageUploadBar.style.height = "80px";
+        imageUploadBar.style.backgroundColor = "blue";
+
+        var form1 = document.createElement("form");
+        form1.style.height = "0px";
+        form1.enctype = "multipart/form-data";
+        form1.method = "post";
+        form1.id = "fileForm1";
+
+        var form2 = document.createElement("form");
+        form2.style.height = "0px";
+        form2.enctype = "multipart/form-data";
+        form2.method = "post";
+        form2.id = "fileForm2";
+
+        var form3 = document.createElement("form");
+        form3.style.height = "0px";
+        form3.enctype = "multipart/form-data";
+        form3.method = "post";
+        form3.id = "fileForm3";
+
+        let fileInput1 = document.createElement("input");
+        fileInput1.type = "file";
+        fileInput1.id = "file1";
+        fileInput1.name="file";
+
+        let fileInput2 = document.createElement("input");
+        fileInput2.type = "file";
+        fileInput2.id = "file2";
+        fileInput2.name="file";
+
+        let fileInput3 = document.createElement("input");
+        fileInput3.type = "file";
+        fileInput3.id = "file3";
+        fileInput3.name="file";
+
+
+        form1.appendChild(fileInput1);
+        form2.appendChild(fileInput2);
+        form3.appendChild(fileInput3);
+
+        fileInput1.style.visibility = "hidden";
+        fileInput2.style.visibility = "hidden";
+        fileInput3.style.visibility = "hidden";
+
+        let fileButton1 = document.createElement("button");
+        fileButton1.style.width = "100px";
+        fileButton1.style.height = "80px";
+        fileButton1.style.float = "left";
+        fileButton1.innerHTML = "添加图片";
+        let fileButton2 = document.createElement("button");
+        fileButton2.style.width = "100px";
+        fileButton2.style.height = "80px";
+        fileButton2.style.float = "left";
+        fileButton2.innerHTML = "添加图片";
+        fileButton2.style.backgroundColor = "red";
+        let fileButton3 = document.createElement("button");
+        fileButton3.style.width = "100px";
+        fileButton3.style.height = "80px";
+        fileButton3.style.float = "left";
+        fileButton3.innerHTML = "添加图片";
+
+        imageUploadBar.appendChild(form1);
+        imageUploadBar.appendChild(form2);
+        imageUploadBar.appendChild(form3);
+
+        imageUploadBar.appendChild(fileButton1);
+        imageUploadBar.appendChild(fileButton2);
+        imageUploadBar.appendChild(fileButton3);
+        imageContainer.appendChild(imageUploadBar);
+        fileInput1.onchange = function () {
+            onFileChange(this.parentNode);
+        }
+
+        fileButton1.onclick = function () {
+            fileInput1.click();
+        }
+
+        document.body.appendChild(imageContainer);
+    }
+
     function onImageClick1() {
         document.getElementById('file1').click();
     }
@@ -53,16 +150,17 @@
         document.getElementById('file4').click();
     }
 
-    function onFileChange(form,img) {
+    function onFileChange(form, img) {
         let requestObject = new Object();
         requestObject.cs = "pwd";
+        requestObject.trunkId = "test";
         var formData = new FormData(form);
         let xmlHttpRequest = new XMLHttpRequest();
         xmlHttpRequest.onreadystatechange = function () {
             if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
                 console.log(xmlHttpRequest.responseText);
-                document.getElementById("imgMain").src = JSON.parse(xmlHttpRequest.responseText).path;
-                img.src = JSON.parse(xmlHttpRequest.responseText).path;
+                document.getElementById("imageCuter").src = "http://localhost:8080/foodslab" + JSON.parse(xmlHttpRequest.responseText).data.path;
+                //img.src = JSON.parse(xmlHttpRequest.responseText).path;
             } else {
                 console.log("error");
             }
@@ -75,12 +173,11 @@
     }
 
 
-
-//   * load事件：传输成功完成。
-//　　* abort事件：传输被用户取消。
-//　　* error事件：传输中出现错误。
-//　　* loadstart事件：传输开始。
-//　　* loadEnd事件：传输结束，但是不知道成功还是失败。
+    //   * load事件：传输成功完成。
+    //　　* abort事件：传输被用户取消。
+    //　　* error事件：传输中出现错误。
+    //　　* loadstart事件：传输开始。
+    //　　* loadEnd事件：传输结束，但是不知道成功还是失败。
 
     function asyncRequestByPost(url, onDataCallback, params) {
         var xmlHttp = new XMLHttpRequest();
@@ -99,11 +196,6 @@
         xmlHttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         xmlHttp.send(encodeURI(params));
     }
-
-
-
-
-
 
 
     function asyncRequestByGet(url, onDataCallback, onErrorCallback, onTimeoutCallback) {
