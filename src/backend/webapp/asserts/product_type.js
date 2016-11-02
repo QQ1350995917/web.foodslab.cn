@@ -224,7 +224,7 @@ function createTopLeftContainer(typeEntity) {
     let imageCuter = document.createElement("img");
     imageCuter.id = "imageCuter";
     if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])) {
-        imageCuter.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
+        imageCuter.src = BASE_PATH + typeEntity.covers[0].path;
     }
     imageCuter.className = "imageCuter";
     imageContainer.appendChild(imageCuter);
@@ -276,19 +276,19 @@ function createTopLeftContainer(typeEntity) {
     let fileButton1 = document.createElement("img");
     fileButton1.className = "fileInput";
     if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])) {
-        fileButton1.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
+        fileButton1.src = BASE_PATH + typeEntity.covers[0].path;
     }
     fileButton1.innerHTML = "添加图片";
     let fileButton2 = document.createElement("img");
     fileButton2.className = "fileInput";
     if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[1])) {
-        fileButton2.src = "http://localhost:8080/foodslab" + typeEntity.covers[1].path;
+        fileButton2.src = BASE_PATH + typeEntity.covers[1].path;
     }
     fileButton2.innerHTML = "添加图片";
     let fileButton3 = document.createElement("img");
     fileButton3.className = "fileInput";
     if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[2])) {
-        fileButton3.src = "http://localhost:8080/foodslab" + typeEntity.covers[2].path;
+        fileButton3.src = BASE_PATH + typeEntity.covers[2].path;
     }
     fileButton3.style.width = "34%";
     fileButton3.innerHTML = "添加图片";
@@ -326,7 +326,7 @@ function createTopLeftContainer(typeEntity) {
 
 function requestUploadTypeCover(form, typeEntity, fileEntity) {
     let requestObject = new Object();
-    requestObject.cs = "pwd";
+    requestObject.cs = getCookie(KEY_CS);
     if (!isNullValue(fileEntity) && !isNullValue(fileEntity.fileId)) {
         requestObject.fileId = fileEntity.fileId;
     }
@@ -336,18 +336,15 @@ function requestUploadTypeCover(form, typeEntity, fileEntity) {
     xmlHttpRequest.onreadystatechange = function () {
         if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
             var parseData = JSON.parse(xmlHttpRequest.responseText);
-            console.log(parseData.code);
             if (parseData.code == RC_SUCCESS) {
-                document.getElementById("imageCuter").src = "http://localhost:8080/foodslab" + parseData.data.path;
+                document.getElementById("imageCuter").src = BASE_PATH + parseData.data.path;
             } else {
                 new Toast().show("更新失败");
             }
         }
     }
-    xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
-    xmlHttpRequest.onloadstart = function () {
-        console.log("upload start");
-    }
+    xmlHttpRequest.open("POST", BASE_PATH + "/file/mTypeCover?p=" + JSON.stringify(requestObject), true);
+    xmlHttpRequest.onloadstart = function () {}
     xmlHttpRequest.send(formData);
 }
 
@@ -561,21 +558,24 @@ function createBottomContainer(typeEntity) {
     };
     tool14.onchange = function () {
         let requestObject = new Object();
-        requestObject.trunkId = "test";
+        requestObject.cs = getCookie(KEY_CS);
         var formData = new FormData(this.parentNode);
         let xmlHttpRequest = new XMLHttpRequest();
         xmlHttpRequest.onreadystatechange = function () {
             if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
-                let imageUrl = "http://localhost:8080/foodslab" + JSON.parse(xmlHttpRequest.responseText).data.path;
-                let imgElement = "<img src='" + imageUrl + "'/>";
-                document.execCommand('insertHTML', false, imgElement);
-                document.getElementById("hyperEditor").focus();
+                var parseData = JSON.parse(xmlHttpRequest.responseText);
+                if (parseData.code == RC_SUCCESS) {
+                    let imageUrl = BASE_PATH + parseData.data.path;
+                    let imgElement = "<img src='" + imageUrl + "'/>";
+                    document.execCommand('insertHTML', false, imgElement);
+                    document.getElementById("hyperEditor").focus();   
+                } else {
+                    new Toast().show("上传失败");
+                }
             }
         }
-        xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
-        xmlHttpRequest.onloadstart = function () {
-            console.log("upload start");
-        }
+        xmlHttpRequest.open("POST", BASE_PATH + "/file/mTypeDirectionImage?p=" + JSON.stringify(requestObject), true);
+        xmlHttpRequest.onloadstart = function () {}
         xmlHttpRequest.send(formData);
 //            var file = window.URL.createObjectURL(tool14.files.item(0));
 //            document.execCommand('insertImage', false, file);
