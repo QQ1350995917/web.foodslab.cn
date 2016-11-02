@@ -223,7 +223,7 @@ function createTopLeftContainer(typeEntity) {
     imageContainer.className = "typeTopLeftContainer";
     let imageCuter = document.createElement("img");
     imageCuter.id = "imageCuter";
-    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])){
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])) {
         imageCuter.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
     }
     imageCuter.className = "imageCuter";
@@ -253,17 +253,17 @@ function createTopLeftContainer(typeEntity) {
     let fileInput1 = document.createElement("input");
     fileInput1.type = "file";
     fileInput1.id = "file1";
-    fileInput1.name="file";
+    fileInput1.name = "file";
 
     let fileInput2 = document.createElement("input");
     fileInput2.type = "file";
     fileInput2.id = "file2";
-    fileInput2.name="file";
+    fileInput2.name = "file";
 
     let fileInput3 = document.createElement("input");
     fileInput3.type = "file";
     fileInput3.id = "file3";
-    fileInput3.name="file";
+    fileInput3.name = "file";
 
     form1.appendChild(fileInput1);
     form2.appendChild(fileInput2);
@@ -275,19 +275,19 @@ function createTopLeftContainer(typeEntity) {
 
     let fileButton1 = document.createElement("img");
     fileButton1.className = "fileInput";
-    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])){
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[0])) {
         fileButton1.src = "http://localhost:8080/foodslab" + typeEntity.covers[0].path;
     }
     fileButton1.innerHTML = "添加图片";
     let fileButton2 = document.createElement("img");
     fileButton2.className = "fileInput";
-    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[1])){
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[1])) {
         fileButton2.src = "http://localhost:8080/foodslab" + typeEntity.covers[1].path;
     }
     fileButton2.innerHTML = "添加图片";
     let fileButton3 = document.createElement("img");
     fileButton3.className = "fileInput";
-    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[2])){
+    if (!isNullValue(typeEntity) && !isNullValue(typeEntity.covers) && !isNullValue(typeEntity.covers[2])) {
         fileButton3.src = "http://localhost:8080/foodslab" + typeEntity.covers[2].path;
     }
     fileButton3.style.width = "34%";
@@ -302,13 +302,13 @@ function createTopLeftContainer(typeEntity) {
     imageUploadBar.appendChild(fileButton3);
     imageContainer.appendChild(imageUploadBar);
     fileInput1.onchange = function () {
-        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[0]);
+        requestUploadTypeCover(this.parentNode, typeEntity, typeEntity.covers[0]);
     }
     fileInput2.onchange = function () {
-        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[1]);
+        requestUploadTypeCover(this.parentNode, typeEntity, typeEntity.covers[1]);
     }
     fileInput3.onchange = function () {
-        requestUploadTypeCover(this.parentNode,typeEntity,typeEntity.covers[2]);
+        requestUploadTypeCover(this.parentNode, typeEntity, typeEntity.covers[2]);
     }
     fileButton1.onclick = function () {
         fileInput1.click();
@@ -324,10 +324,10 @@ function createTopLeftContainer(typeEntity) {
     return imageContainer;
 }
 
-function requestUploadTypeCover(form,typeEntity,fileEntity) {
+function requestUploadTypeCover(form, typeEntity, fileEntity) {
     let requestObject = new Object();
     requestObject.cs = "pwd";
-    if (!isNullValue(fileEntity) && !isNullValue(fileEntity.fileId)){
+    if (!isNullValue(fileEntity) && !isNullValue(fileEntity.fileId)) {
         requestObject.fileId = fileEntity.fileId;
     }
     requestObject.trunkId = typeEntity.typeId;
@@ -388,53 +388,211 @@ function createFormatContainer() {
     return formatContainer;
 }
 
+class HyperEditorTool {
+    constructor(label, invoke, param, viewType, id) {
+        this.label = label;
+        this.invoke = invoke;
+        this.param = param;
+        this.viewType = viewType;
+        this.id = id;
+    }
+}
+
 function createBottomContainer(typeEntity) {
     let bottomContainer = document.createElement("div")
     bottomContainer.className = "fillWidthContainer";
     let directionsToolsBar = document.createElement("div");
-    let hyperEditorTool1 = new HyperEditorTool("H1", "formatblock", "H1", "button");
-    let hyperEditorTool2 = new HyperEditorTool("H2", "formatblock", "H2", "button");
-    let hyperEditorTool3 = new HyperEditorTool("H3", "formatblock", "H3", "button");
-    let hyperEditorTool4 = new HyperEditorTool("H4", "formatblock", "H4", "button");
-    let hyperEditorTool5 = new HyperEditorTool("H5", "formatblock", "H5", "button");
-    let hyperEditorTool6 = new HyperEditorTool("H6", "formatblock", "H6", "button");
-    let hyperEditorTool7 = new HyperEditorTool("居左", "justifyleft", null, "button");
-    let hyperEditorTool8 = new HyperEditorTool("居中", "justifycenter", null, "button");
-    let hyperEditorTool9 = new HyperEditorTool("居右", "justifyright", null, "button");
-    let hyperEditorTool10 = new HyperEditorTool("左缩进", "outdent", null, "button");
-    let hyperEditorTool11 = new HyperEditorTool("右缩进", "indent", null, "button");
-    let hyperEditorTool12 = new HyperEditorTool("有序列", "insertorderedlist", null, "button");
-    let hyperEditorTool13 = new HyperEditorTool("无序列", "insertunorderedlist", null, "button");
-    let hyperEditorTool14 = new HyperEditorTool("链接", "createlink", null, "button");
-    let hyperEditorTool15 = new HyperEditorTool("图片", null, null, "button");
-    let hyperEditorTool16 = new HyperEditorTool("图片", "formatblock", null, "file");
-    let tools = new Array();
+    directionsToolsBar.style.width = "100%";
+    let tool01 = document.createElement("div");
+    tool01.type = "button";
+    tool01.value = "H1";
+    tool01.cmd = "formatblock";
+    tool01.param = "H1";
+    directionsToolsBar.appendChild(tool01);
 
-    tools.push(hyperEditorTool1);
-    tools.push(hyperEditorTool2);
-    tools.push(hyperEditorTool3);
-    tools.push(hyperEditorTool4);
-    tools.push(hyperEditorTool5);
-    tools.push(hyperEditorTool6);
-    tools.push(hyperEditorTool7);
-    tools.push(hyperEditorTool8);
-    tools.push(hyperEditorTool9);
-    tools.push(hyperEditorTool10);
-    tools.push(hyperEditorTool11);
-    tools.push(hyperEditorTool12);
-    tools.push(hyperEditorTool13);
-    tools.push(hyperEditorTool14);
-    tools.push(hyperEditorTool15);
-    tools.push(hyperEditorTool16);
-    for (let index = 0; index < tools.length; index++) {
-        createHyperToolWidget(directionsToolsBar, tools[index]);
-    }
-    let hyperEditor = document.createElement("div");
-    hyperEditor.className = "hyperEditor";
-    hyperEditor.id = "hyperEditor";
-    hyperEditor.contentEditable = true;
-    hyperEditor.innerHTML = typeEntity.directions == undefined ? "" : typeEntity.directions;
+    let tool02 = document.createElement("input");
+    tool02.className = "hyperEditorToolButton";
+    tool02.type = "button";
+    tool02.value = "H2";
+    tool02.cmd = "formatblock";
+    tool02.param = "H2";
+    directionsToolsBar.appendChild(tool02);
+
+    let tool03 = document.createElement("input");
+    tool03.className = "hyperEditorToolButton";
+    tool03.type = "button";
+    tool03.value = "H3";
+    tool03.cmd = "formatblock";
+    tool03.param = "H3";
+    directionsToolsBar.appendChild(tool03);
+
+    let tool04 = document.createElement("input");
+    tool04.className = "hyperEditorToolButton";
+    tool04.type = "button";
+    tool04.value = "H4";
+    tool04.cmd = "formatblock";
+    tool04.param = "H4";
+    directionsToolsBar.appendChild(tool04);
+
+    let tool05 = document.createElement("input");
+    tool05.className = "hyperEditorToolButton";
+    tool05.type = "button";
+    tool05.value = "H5";
+    tool05.cmd = "formatblock";
+    tool05.param = "H5";
+    directionsToolsBar.appendChild(tool05);
+
+    let tool06 = document.createElement("input");
+    tool06.className = "hyperEditorToolButton";
+    tool06.type = "button";
+    tool06.value = "居左";
+    tool06.cmd = "justifyleft";
+    directionsToolsBar.appendChild(tool06);
+
+    let tool07 = document.createElement("input");
+    tool07.className = "hyperEditorToolButton";
+    tool07.type = "button";
+    tool07.value = "居中";
+    tool07.cmd = "justifycenter";
+    directionsToolsBar.appendChild(tool07);
+
+    let tool08 = document.createElement("input");
+    tool08.className = "hyperEditorToolButton";
+    tool08.type = "button";
+    tool08.value = "居右";
+    tool08.cmd = "justifyright";
+    directionsToolsBar.appendChild(tool08);
+
+    let tool09 = document.createElement("input");
+    tool09.className = "hyperEditorToolButton";
+    tool09.type = "button";
+    tool09.value = "左缩进";
+    tool09.cmd = "outdent";
+    directionsToolsBar.appendChild(tool09);
+
+    let tool10 = document.createElement("input");
+    tool10.className = "hyperEditorToolButton";
+    tool10.type = "button";
+    tool10.value = "右缩进";
+    tool10.cmd = "indent";
+    directionsToolsBar.appendChild(tool10);
+
+    let tool11 = document.createElement("input");
+    tool11.className = "hyperEditorToolButton";
+    tool11.type = "button";
+    tool11.value = "有序列";
+    tool11.cmd = "insertorderedlist";
+    directionsToolsBar.appendChild(tool11);
+
+    let tool12 = document.createElement("input");
+    tool12.className = "hyperEditorToolButton";
+    tool12.type = "button";
+    tool12.value = "无序列";
+    tool12.cmd = "insertunorderedlist";
+    directionsToolsBar.appendChild(tool12);
+
+    let tool13 = document.createElement("input");
+    tool13.className = "hyperEditorToolButton";
+    tool13.type = "button";
+    tool13.value = "连接";
+    tool13.cmd = "createlink";
+    directionsToolsBar.appendChild(tool13);
+
+    let tool141 = document.createElement("input");
+    tool141.className = "hyperEditorToolButton";
+    tool141.type = "button";
+    tool141.value = "图片";
+    directionsToolsBar.appendChild(tool141);
+
+    var directionImageForm = document.createElement("form");
+    directionImageForm.id = "directionImageForm";
+    directionImageForm.enctype = "multipart/form-data";
+    directionImageForm.method = "post";
+    directionImageForm.style.width = "0px";
+    directionImageForm.style.height = "0px";
+    let tool14 = document.createElement("input");
+    tool14.type = "file";
+    tool14.name = "file";
+    tool14.style.display = "none";
+    tool14.style.visibility = "hidden";
+    tool14.cmd = "formatblock";
+    directionImageForm.appendChild(tool14);
+    directionsToolsBar.appendChild(directionImageForm);
     bottomContainer.appendChild(directionsToolsBar);
+
+    tool01.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool02.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool03.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool04.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool05.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool06.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool07.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool08.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool09.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool10.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool11.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool12.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool13.onclick = function () {
+        format(this.cmd, this.param);
+    };
+    tool14.onchange = function () {
+        let requestObject = new Object();
+        requestObject.trunkId = "test";
+        var formData = new FormData(this.parentNode);
+        let xmlHttpRequest = new XMLHttpRequest();
+        xmlHttpRequest.onreadystatechange = function () {
+            if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+                let imageUrl = "http://localhost:8080/foodslab" + JSON.parse(xmlHttpRequest.responseText).data.path;
+                let imgElement = "<img src='" + imageUrl + "'/>";
+                document.execCommand('insertHTML', false, imgElement);
+                document.getElementById("hyperEditor").focus();
+            }
+        }
+        xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
+        xmlHttpRequest.onloadstart = function () {
+            console.log("upload start");
+        }
+        xmlHttpRequest.send(formData);
+//            var file = window.URL.createObjectURL(tool14.files.item(0));
+//            document.execCommand('insertImage', false, file);
+//            let urlbase = "http://localhost:8080/foodslab/upload/bird1.png";
+//            document.execCommand('insertHTML', false, url);
+//            document.getElementById("hyperEditor").focus();
+//            format(this.cmd,this.param);
+    };
+    tool141.onclick = function () {
+        tool14.click();
+    }
+
+    let hyperEditor = document.createElement("div");
+    hyperEditor.id = "hyperEditor";
+    hyperEditor.className = "hyperEditor";
+    hyperEditor.innerHTML = typeEntity.directions == undefined ? "" : typeEntity.directions;
+    hyperEditor.contentEditable = true;
     bottomContainer.appendChild(hyperEditor);
 
     let submitContainer = document.createElement("div")
@@ -451,44 +609,15 @@ function createBottomContainer(typeEntity) {
     return bottomContainer;
 }
 
-function createHyperToolWidget(container, hyperEditorTool) {
-    let tool = document.createElement("input");
-    tool.type = hyperEditorTool.viewType;
-    tool.className = "hyperEditorToolButton";
-    if (tool.type == "file") {
-        tool.accept = "image/*"
-        tool.onchange = function () {
-            var file = window.URL.createObjectURL(tool.files.item(0));
-            document.execCommand('insertImage', false, file);
-            // document.execCommand('insertHTML', false, "<img src='" + file + "'/>");
-            document.getElementById("hyperEditor").focus();
-        }
-    } else {
-        tool.value = hyperEditorTool.label;
-        tool.onclick = format;
-        tool.cmd = hyperEditorTool.invoke;
-        tool.param = hyperEditorTool.param;
-    }
-    container.appendChild(tool);
-}
-
-class HyperEditorTool {
-    constructor(label, invoke, param, viewType) {
-        this.label = label;
-        this.invoke = invoke;
-        this.param = param;
-        this.viewType = viewType;
-    }
-}
-
-function format() {
-    if (this.cmd == "createlink") {
+function format(cmd, param) {
+    if (cmd == "createlink") {
         var sLnk = prompt('请输入网络地址', 'http:\/\/');
         if (sLnk && sLnk != '' && sLnk != 'http://') {
-            document.execCommand(this.cmd, false, sLnk);
+            document.execCommand(cmd, false, sLnk);
         }
     } else {
-        document.execCommand(this.cmd, false, this.param);
+        console.log(cmd + " " + param);
+        document.execCommand(cmd, false, param);
         document.getElementById("hyperEditor").focus();
     }
 }

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div.directionToolBarButton {
+            float: left;
+            width: 50px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+</body>
+
+<script>
+    window.onload = function () {
+        load();
+    }
+
+    function load() {
+        let directionsToolsBar = document.createElement("div");
+        directionsToolsBar.style.width = "100%";
+        directionsToolsBar.style.height = "50px";
+        directionsToolsBar.style.backgroundColor = "red";
+        let tool01 = document.createElement("div");
+        tool01.type = "button";
+        tool01.value = "H1";
+        tool01.cmd = "formatblock";
+        tool01.param = "H1";
+        directionsToolsBar.appendChild(tool01);
+
+        let tool02 = document.createElement("input");
+        tool02.type = "button";
+        tool02.value = "H2";
+        tool02.cmd = "formatblock";
+        tool02.param = "H2";
+        directionsToolsBar.appendChild(tool02);
+
+        let tool03 = document.createElement("input");
+        tool03.type = "button";
+        tool03.value = "H3";
+        tool03.cmd = "formatblock";
+        tool03.param = "H3";
+        directionsToolsBar.appendChild(tool03);
+
+        let tool04 = document.createElement("input");
+        tool04.type = "button";
+        tool04.value = "H4";
+        tool04.cmd = "formatblock";
+        tool04.param = "H4";
+        directionsToolsBar.appendChild(tool04);
+
+        let tool05 = document.createElement("input");
+        tool05.type = "button";
+        tool05.value = "H5";
+        tool05.cmd = "formatblock";
+        tool05.param = "H5";
+        directionsToolsBar.appendChild(tool05);
+
+        let tool06 = document.createElement("input");
+        tool06.type = "button";
+        tool06.value = "居左";
+        tool06.cmd = "justifyleft";
+        directionsToolsBar.appendChild(tool06);
+
+        let tool07 = document.createElement("input");
+        tool07.type = "button";
+        tool07.value = "居中";
+        tool07.cmd = "justifycenter";
+        directionsToolsBar.appendChild(tool07);
+
+        let tool08 = document.createElement("input");
+        tool08.type = "button";
+        tool08.value = "居右";
+        tool08.cmd = "justifyright";
+        directionsToolsBar.appendChild(tool08);
+
+        let tool09 = document.createElement("input");
+        tool09.type = "button";
+        tool09.value = "左缩进";
+        tool09.cmd = "outdent";
+        directionsToolsBar.appendChild(tool09);
+
+        let tool10 = document.createElement("input");
+        tool10.type = "button";
+        tool10.value = "右缩进";
+        tool10.cmd = "indent";
+        directionsToolsBar.appendChild(tool10);
+
+        let tool11 = document.createElement("input");
+        tool11.type = "button";
+        tool11.value = "有序列";
+        tool11.cmd = "insertorderedlist";
+        directionsToolsBar.appendChild(tool11);
+
+        let tool12 = document.createElement("input");
+        tool12.type = "button";
+        tool12.value = "无序列";
+        tool12.cmd = "insertunorderedlist";
+        directionsToolsBar.appendChild(tool12);
+
+        let tool13 = document.createElement("input");
+        tool13.type = "button";
+        tool13.value = "连接";
+        tool13.cmd = "createlink";
+        directionsToolsBar.appendChild(tool13);
+
+        let tool141 = document.createElement("input");
+        tool141.type = "button";
+        tool141.value = "图片";
+        directionsToolsBar.appendChild(tool141);
+
+        var directionImageForm = document.createElement("form");
+        directionImageForm.id = "directionImageForm";
+        directionImageForm.enctype = "multipart/form-data";
+        directionImageForm.method = "post";
+        directionImageForm.style.width = "0px";
+        directionImageForm.style.height = "0px";
+        let tool14 = document.createElement("input");
+        tool14.type = "file";
+        tool14.name = "file";
+        tool14.style.display = "none";
+        tool14.style.visibility = "hidden";
+        tool14.cmd = "formatblock";
+        directionImageForm.appendChild(tool14);
+        directionsToolsBar.appendChild(directionImageForm);
+
+
+        tool01.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool02.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool03.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool04.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool05.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool06.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool07.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool08.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool09.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool10.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool11.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool12.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool13.onclick = function () {
+            format(this.cmd, this.param);
+        };
+        tool14.onchange = function () {
+            let requestObject = new Object();
+            requestObject.trunkId = "test";
+            var formData = new FormData(this.parentNode);
+            let xmlHttpRequest = new XMLHttpRequest();
+            xmlHttpRequest.onreadystatechange = function () {
+                if (xmlHttpRequest.readyState == 4 && xmlHttpRequest.status == 200) {
+                    let imageUrl = "http://localhost:8080/foodslab" + JSON.parse(xmlHttpRequest.responseText).data.path;
+                    let imgElement = "<img src='" + imageUrl + "'/>";
+                    document.execCommand('insertHTML', false, imgElement);
+                    document.getElementById("hyperEditor").focus();
+                }
+            }
+            xmlHttpRequest.open("POST", "http://localhost:8080/foodslab/file/mImage?p=" + JSON.stringify(requestObject), true);
+            xmlHttpRequest.onloadstart = function () {
+                console.log("upload start");
+            }
+            xmlHttpRequest.send(formData);
+
+
+//            var file = window.URL.createObjectURL(tool14.files.item(0));
+//            document.execCommand('insertImage', false, file);
+//            let urlbase = "http://localhost:8080/foodslab/upload/bird1.png";
+//            document.execCommand('insertHTML', false, url);
+//            document.getElementById("hyperEditor").focus();
+//            format(this.cmd,this.param);
+        };
+        tool141.onclick = function () {
+            tool14.click();
+        }
+
+        document.body.appendChild(directionsToolsBar);
+
+        let hyperEditor = document.createElement("div");
+        hyperEditor.id = "hyperEditor";
+        hyperEditor.style.width = "100%";
+        hyperEditor.style.borderWidth = "1px";
+        hyperEditor.style.height = "500px";
+        hyperEditor.contentEditable = true;
+        document.body.appendChild(hyperEditor);
+    }
+
+    function format(cmd, param) {
+        if (cmd == "createlink") {
+            var sLnk = prompt('请输入网络地址', 'http:\/\/');
+            if (sLnk && sLnk != '' && sLnk != 'http://') {
+                document.execCommand(cmd, false, sLnk);
+            }
+        } else {
+            console.log(cmd + " " + param);
+            document.execCommand(cmd, false, param);
+            document.getElementById("hyperEditor").focus();
+        }
+    }
+</script>
+</html>
