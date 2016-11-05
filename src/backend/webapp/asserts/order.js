@@ -20,7 +20,7 @@ ORDER_TABS.push(ORDER_tab2);
 ORDER_TABS.push(ORDER_tab3);
 
 function loadOrderView() {
-    getTitleContainer().appendChild(createHorizontalTabHostDiv("orderMenus",ORDER_TABS,"defaultTabSelected","defaultTabNormal",function (tab) {
+    getTitleContainer().appendChild(createHorizontalTabHostDiv("orderMenus", ORDER_TABS, "defaultTabSelected", "defaultTabNormal", function (tab) {
         getMainContainer().innerHTML = null;
         if (tab.index == 0) {
             onUnExpressTabCallback();
@@ -31,7 +31,7 @@ function loadOrderView() {
         } else if (tab.index == 3) {
             onOrderAllTabCallback();
         }
-    },0));
+    }, 0));
 }
 
 function onUnExpressTabCallback() {
@@ -43,7 +43,36 @@ function onUnExpressTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            createUnExpressView(jsonData.data);
+            let orderEntities = jsonData.data;
+            let length = orderEntities == undefined ? 0 : orderEntities.length;
+            for (let i = 0; i < length; i++) {
+                let unExpressParamView = document.createElement("div");
+                unExpressParamView.className = "orderUnExpressParam";
+                unExpressParamView.style.width = "100%";
+                let expressInfoDiv = document.createElement("div");
+                expressInfoDiv.style.width = "50%";
+                expressInfoDiv.style.backgroundColor = "#FFFFFF";
+                expressInfoDiv.className = "orderUnExpressParam";
+                expressInfoDiv.innerHTML = "圆通快递  1234567890";
+                let expressActionDiv = document.createElement("div");
+                expressActionDiv.className = "orderUnExpressParam";
+                expressActionDiv.innerHTML = "确认发货";
+                let genExpressActionDiv = document.createElement("div");
+                genExpressActionDiv.className = "orderUnExpressParam";
+                genExpressActionDiv.innerHTML = "生成面单";
+                let orderCancel = document.createElement("div");
+                orderCancel.className = "orderUnExpressParam";
+                orderCancel.innerHTML = "取消订单";
+                unExpressParamView.appendChild(orderCancel);
+                if (i % 2 == 0) {
+                    unExpressParamView.appendChild(expressActionDiv);
+                    unExpressParamView.appendChild(expressInfoDiv);
+                } else {
+                    unExpressParamView.appendChild(genExpressActionDiv);
+                }
+
+                attachOrderContainer(getMainContainer(), orderEntities[i], unExpressParamView);
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -77,10 +106,9 @@ function onExpressedTabCallback() {
 }
 
 function onOrderAllTabCallback() {
-    let searchView = createSearchWidget("100%", function (data) {
+    createSearchWidget(getMainContainer(), function (data) {
         console.log(data);
     });
-    getMainContainer().appendChild(searchView);
 
     let orderEntity = new Object();
     orderEntity.cs = getCookie(KEY_CS);
@@ -94,19 +122,6 @@ function onOrderAllTabCallback() {
         }
     }, onErrorCallback, onTimeoutCallback);
 }
-
-function createUnExpressView(orderEntities) {
-    let length = orderEntities == undefined ? 0 : orderEntities.length;
-    for (let i = 0; i < length; i++) {
-        let paramView = document.createElement("div");
-        paramView.className = "orderItemMainBlock";
-        paramView.style.borderRightWidth = "0px";
-        attachUnExpressView(orderEntities[i], paramView, false);
-        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer().appendChild(orderItemContainer);
-    }
-}
-
 
 function attachUnExpressView(orderEntity, container, status) {
     container.innerHTML = null;
@@ -165,12 +180,21 @@ function attachUnExpressView(orderEntity, container, status) {
 function createOrderExpressingView(orderEntities) {
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
-        let paramView = document.createElement("div");
-        paramView.className = "orderItemMainBlock";
-        paramView.style.borderRightWidth = "0px";
-        attachExpressingStatusView(orderEntities[i], paramView, false);
-        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer().appendChild(orderItemContainer);
+        let expressingParamView = document.createElement("div");
+        expressingParamView.className = "orderUnExpressParam";
+        expressingParamView.style.width = "100%";
+        let expressInfoDiv = document.createElement("div");
+        expressInfoDiv.style.width = "50%";
+        expressInfoDiv.style.backgroundColor = "#FFFFFF";
+        expressInfoDiv.style.float = "left";
+        expressInfoDiv.className = "orderUnExpressParam";
+        expressInfoDiv.innerHTML = "圆通快递  1234567890";
+        let expressStatus = document.createElement("div");
+        expressStatus.className = "orderUnExpressParam";
+        expressStatus.innerHTML = "查看流转";
+        expressingParamView.appendChild(expressStatus);
+        expressingParamView.appendChild(expressInfoDiv);
+        attachOrderContainer(getMainContainer(), orderEntities[i], expressingParamView);
     }
 }
 
@@ -181,12 +205,35 @@ function attachExpressingStatusView(orderEntity, container) {
 function createExpressedView(orderEntities) {
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
-        let paramView = document.createElement("div");
-        paramView.className = "orderItemMainBlock";
-        paramView.style.borderRightWidth = "0px";
-        attachExpressingStatusView(orderEntities[i], paramView, false);
-        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer().appendChild(orderItemContainer);
+        let expressedParamView = document.createElement("div");
+        expressedParamView.className = "orderUnExpressParam";
+        expressedParamView.style.width = "100%";
+        let expressInfoDiv = document.createElement("div");
+        expressInfoDiv.style.width = "100%";
+        expressInfoDiv.style.backgroundColor = "#FFFFFF";
+        expressInfoDiv.style.float = "left";
+        expressInfoDiv.className = "orderUnExpressParam";
+        expressInfoDiv.innerHTML = "圆通快递  1234567890";
+        let orderReissue= document.createElement("div");
+        orderReissue.className = "orderUnExpressParam";
+        orderReissue.style.width = "16%";
+        orderReissue.style.float = "left";
+        orderReissue.innerHTML = "补发";
+        let orderExchange = document.createElement("div");
+        orderExchange.className = "orderUnExpressParam";
+        orderExchange.style.width = "17%";
+        orderExchange.style.float = "left";
+        orderExchange.innerHTML = "换货";
+        let orderPayback = document.createElement("div");
+        orderPayback.className = "orderUnExpressParam";
+        orderPayback.style.float = "left";
+        orderPayback.style.width = "17%";
+        orderPayback.innerHTML = "退货";
+        expressedParamView.appendChild(expressInfoDiv);
+        // expressedParamView.appendChild(orderReissue);
+        // expressedParamView.appendChild(orderExchange);
+        // expressedParamView.appendChild(orderPayback);
+        attachOrderContainer(getMainContainer(), orderEntities[i], expressedParamView);
     }
 }
 
@@ -195,44 +242,42 @@ function createOrderAllView(orderEntities) {
     for (let i = 0; i < length; i++) {
         let orderEntity = orderEntities[i];
         let paramView = document.createElement("div");
-        paramView.className = "orderItemMainBlock";
+        paramView.className = "orderEntityContentBlock";
         paramView.style.borderRightWidth = "0px";
         if (orderEntity.status == 1) {
 
         } else {
             attachExpressingStatusView(orderEntities[i], paramView, false);
         }
-        let orderItemContainer = createOrderContainer(orderEntities[i], "40%", "30%", "29%", paramView);
-        getMainContainer().appendChild(orderItemContainer);
+        attachOrderContainer(getMainContainer(), orderEntities[i], paramView);
     }
 }
 
-function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, statusViewWidth, paramView) {
+function attachOrderContainer(orderEntitiesContainer, orderEntity, paramView) {
     /**
      * 最外层的容器根对象
      * 一个容器总体分为上下两个部分,上部分title,下部分内容,内容部分左右分为产品+数量\收货人\总金额\订单状态四个区域
      */
-    let orderEntityView = document.createElement("div");
-    orderEntityView.className = "orderItemContainer";
+    let orderEntityContainerDiv = document.createElement("div");
+    orderEntityContainerDiv.className = "orderEntityContainer";
     /**
-     * 上部分title容器
+     * 上部分:标题容器
      */
-    let orderEntityTitleView = document.createElement("div");
-    orderEntityTitleView.className = "orderItemTitle";
-    console.log(orderEntity.receiver.phone0);
-    orderEntityTitleView.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: "
-        + orderEntity.orderId + " 总价:" + orderEntity.cost + " 邮费:" + orderEntity.postage ;
-    orderEntityView.appendChild(orderEntityTitleView);
+    let orderEntityTitleDiv = document.createElement("div");
+    orderEntityTitleDiv.className = "orderEntityTitle";
+    orderEntityTitleDiv.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: "
+        + orderEntity.orderId + " 总价:" + orderEntity.cost + " 邮费:" + orderEntity.postage;
+    orderEntityContainerDiv.appendChild(orderEntityTitleDiv);
 
     /**
-     * 下部分内容容器
+     * 下部分:内容容器
      */
-    let orderEntityContentView = document.createElement("div");
-    orderEntityContentView.className = "orderItemMain";
+    let orderEntityContentDiv = document.createElement("div");
+    orderEntityContentDiv.className = "orderEntityContent";
 
     let orderEntityProductContainer = document.createElement("div");
-    orderEntityProductContainer.className = "orderItemMainBlock";
-    orderEntityProductContainer.style.width = productViewWidth;
+    orderEntityProductContainer.className = "orderEntityContentBlock";
+    orderEntityProductContainer.style.width = "40%";
 
     /**
      * 动态添加产品数量
@@ -245,13 +290,15 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
          * @type {Element}
          */
         let productItemView = document.createElement("div");
-        productItemView.className = "orderItemMainProductItem";
+        productItemView.className = "orderProductEntity";
+        if (i == 0) {
+            productItemView.style.borderTopWidth = "0px";
+        }
         /**
          * 添加左边产品名称区域
          */
         let productNameView = document.createElement("div");
-        productNameView.className = "orderItemMainProductItemLabel";
-        productNameView.style.width = "70%";
+        productNameView.className = "orderProductEntityLabel";
         productNameView.innerHTML = cartEntity.formatEntity.parent.parent.label + " "
             + cartEntity.formatEntity.parent.label + " " + cartEntity.formatEntity.label + cartEntity.formatEntity.meta;
         productItemView.appendChild(productNameView);
@@ -260,39 +307,41 @@ function createOrderContainer(orderEntity, productViewWidth, receiverViewWidth, 
          * 添加右边产品数量区域
          */
         let productNumView = document.createElement("div");
-        productNumView.className = "orderItemMainProductItemLabel";
+        productNumView.className = "orderProductEntityLabel";
         productNumView.style.width = "30%";
         productNumView.innerHTML = "数量:" + cartEntity.amount + " 总价:" + cartEntity.pricing;
         productItemView.appendChild(productNumView);
         orderEntityProductContainer.appendChild(productItemView);
     }
-    orderEntityContentView.style.height = length * 31 + "px";// 高度根据产品数量动态设定
-    orderEntityView.style.height = 40 + length * 31 + "px"; // 高度动态设定 其值=title部分+订单产品数量*单个产品高度
-    orderEntityContentView.appendChild(orderEntityProductContainer);
+    orderEntityProductContainer.style.height = length * 45;//每个产品条目的高度定义为45px
+    orderEntityContentDiv.appendChild(orderEntityProductContainer);
+    orderEntityContentDiv.style.height = length * 45 + "px";// 高度根据产品数量动态设定
 
-    let orderEntityReceiverView = document.createElement("div");
-    orderEntityReceiverView.className = "orderItemMainBlock";
-    orderEntityReceiverView.style.width = receiverViewWidth;
-    orderEntityReceiverView.style.textAlign = "center";
-    orderEntityReceiverView.innerHTML = "收货人：" + orderEntity.receiver.name +  "电话：" + orderEntity.receiver.phone0 + "<br>" +orderEntity.receiver.province + " " + orderEntity.receiver.city + " "
+    let orderEntityReceiverDiv = document.createElement("div");
+    orderEntityReceiverDiv.className = "orderEntityContentBlock";
+    orderEntityReceiverDiv.style.textAlign = "center";
+    orderEntityReceiverDiv.innerHTML = "收货人：" + orderEntity.receiver.name + "电话：" + orderEntity.receiver.phone0 + "<br>" + orderEntity.receiver.province + " " + orderEntity.receiver.city + " "
         + orderEntity.receiver.county + " " + orderEntity.receiver.town + " " + orderEntity.receiver.village + " "
         + orderEntity.receiver.append;
-    orderEntityContentView.appendChild(orderEntityReceiverView);
+    orderEntityContentDiv.appendChild(orderEntityReceiverDiv);
 
+    let orderEntityParamDiv = document.createElement("div");
+    orderEntityParamDiv.className = "orderEntityContentBlock";
+    orderEntityContentDiv.appendChild(orderEntityParamDiv);
+    orderEntityParamDiv.style.width = (orderEntitiesContainer.clientWidth * 30 / 100 - 7) + "px";
     /**
      * 状态区域
      */
     if (paramView != undefined) {
-        paramView.style.width = statusViewWidth;
-        orderEntityContentView.appendChild(paramView);
+        orderEntityParamDiv.appendChild(paramView);
     }
 
     /**
      * 想最外层的容器根对象添加内容容器
      */
-    orderEntityView.appendChild(orderEntityContentView);
-
-    return orderEntityView;
+    orderEntityContainerDiv.appendChild(orderEntityContentDiv);
+    orderEntityContainerDiv.style.height = 30 + length * 45 + "px"; // 高度动态设定 其值=title部分的高度+内容区域的高度
+    orderEntitiesContainer.appendChild(orderEntityContainerDiv);
 }
 
 function requestExpress(orderEntity) {

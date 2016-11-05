@@ -6,13 +6,9 @@ function loadUserView() {
     titleView.innerHTML = "用户列表";
     getTitleContainer().appendChild(titleView);
 
-    let searchContainer = document.createElement("div");
-    searchContainer.className = "listItem listItemWidthBottom";
-    let searchView = createSearchWidget("100%", function (data) {
+    createSearchWidget(getMainContainer(), function (data) {
         console.log(data);
     });
-    searchContainer.appendChild(searchView);
-    getMainContainer().appendChild(searchContainer);
 
     let userListContainer = document.createElement("div");
     userListContainer.className = "managerItem";

@@ -218,25 +218,25 @@ function onFrameMenuItemClick(flag) {
  * @param callback
  * @returns {Element}
  */
-function createSearchWidget(width, callback) {
+function createSearchWidget(container, callback,defaultKey) {
     let searchContainer = document.createElement("div");
     searchContainer.className = "searchWidgetContainer";
-    searchContainer.style.width = width;
 
     let searchEditor = document.createElement("input");
     searchEditor.className = "searchInput";
-    searchEditor.style.width = "89%";
+    searchEditor.value = defaultKey == undefined ? "":defaultKey;
+    searchEditor.style.width = ((container.clientWidth * 0.9) - 15) + "px";
     searchContainer.appendChild(searchEditor);
 
     let searchActionView = document.createElement("div");
     searchActionView.className = "actionButton";
-    searchActionView.style.width = "10%";
+    searchActionView.style.width = (container.clientWidth * 0.1) + "px";
     searchActionView.innerHTML = "搜索";
     searchActionView.onclick = function () {
         callback(searchEditor.value);
     };
     searchContainer.appendChild(searchActionView);
-    return searchContainer;
+    container.appendChild(searchContainer);
 }
 
 
