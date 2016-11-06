@@ -284,6 +284,14 @@ input.withoutBorder{
     border: 0px solid #CCCCCC;
 }
 
+div.paginationBar{
+    width: 100%;
+    height: 50px;
+    padding-top: 20px;
+    text-align: right;
+}
+
+
 
 
 

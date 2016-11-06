@@ -220,13 +220,13 @@ function onFrameMenuItemClick(flag) {
  * @param callback
  * @returns {Element}
  */
-function createSearchWidget(container, callback,defaultKey) {
+function createSearchWidget(container, callback, defaultKey) {
     let searchContainer = document.createElement("div");
     searchContainer.className = "searchWidgetContainer";
 
     let searchEditor = document.createElement("input");
     searchEditor.className = "searchInput";
-    searchEditor.value = defaultKey == undefined ? "":defaultKey;
+    searchEditor.value = defaultKey == undefined ? "" : defaultKey;
     searchEditor.style.width = ((container.clientWidth * 0.9) - 15) + "px";
     searchContainer.appendChild(searchEditor);
 
@@ -241,6 +241,80 @@ function createSearchWidget(container, callback,defaultKey) {
     container.appendChild(searchContainer);
 }
 
+function attachPaginationBar(container, allPageNumber, currentPageIndex, callback) {
+    let paginationBar = document.createElement("div");
+    paginationBar.className = "paginationBar";
+    paginationBar.style.backgroundColor = "red";
+    let previousPage = document.createElement("div");
+    previousPage.className = "SS_IC_LABEL";
+    previousPage.style.borderLeftWidth = "1px";
+    previousPage.innerHTML = "<<上一页";
+    if (currentPageIndex == 0) {
+        previousPage.style.cursor = "default";
+    }
+    paginationBar.appendChild(previousPage);
+    if (allPageNumber < 10) {
+        for (let i = 0; i < allPageNumber; i++) {
+            let pageIndex = document.createElement("div");
+            pageIndex.className = "SS_IC_LABEL";
+            pageIndex.style.width = "40px";
+            pageIndex.innerHTML = (i + 1);
+            if (i == currentPageIndex) {
+                pageIndex.style.borderWidth = "0px";
+                pageIndex.style.cursor = "default";
+            }
+            if (i == currentPageIndex + 1) {
+                pageIndex.style.borderLeftWidth = "1px";
+            }
+            paginationBar.appendChild(pageIndex);
+        }
+    } else {
+        for (let i = 0; i < allPageNumber; i++) {
+            let pageIndex = document.createElement("div");
+            pageIndex.className = "SS_IC_LABEL";
+            pageIndex.style.width = "40px";
+            pageIndex.innerHTML = (i + 1);
+            if (i == 2 && currentPageIndex > 5) {
+                pageIndex.style.borderWidth = "0px";
+                pageIndex.innerHTML = "...";
+                pageIndex.style.cursor = "default";
+                i = currentPageIndex - 3;
+            } else if (i == currentPageIndex) {
+                pageIndex.style.borderWidth = "0px";
+                pageIndex.style.cursor = "default";
+            } else if (i == currentPageIndex + 3) {
+                pageIndex.style.borderWidth = "0px";
+                pageIndex.innerHTML = "...";
+                pageIndex.style.cursor = "default";
+                i = allPageNumber - 3;
+            }
+            if (i == currentPageIndex - 2){
+                pageIndex.style.borderWidth = "1px";
+            }
+            if (i == currentPageIndex + 1){
+                pageIndex.style.borderWidth = "1px";
+            }
+            if (i == currentPageIndex + 4){
+                pageIndex.style.borderWidth = "1px";
+            }
+            if (i == allPageNumber - 2){
+                pageIndex.style.borderWidth = "1px";
+            }
+            paginationBar.appendChild(pageIndex);
+        }
+    }
+
+    let nextPage = document.createElement("div");
+    nextPage.className = "SS_IC_LABEL";
+    nextPage.innerHTML = "下一页>>";
+    if (currentPageIndex + 1 == allPageNumber) {
+        nextPage.style.cursor = "default";
+        nextPage.style.borderLeftWidth = "1px";
+    }
+    paginationBar.appendChild(nextPage);
+
+    container.appendChild(paginationBar);
+}
 
 /**
  * 数据层工具方法

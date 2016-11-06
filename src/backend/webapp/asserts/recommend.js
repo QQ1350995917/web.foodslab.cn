@@ -53,6 +53,7 @@ function initRecommendView(formatEntities) {
         let formatEntity = formatEntities[index];
         let recommendItemRootViewContainer = document.createElement("div");
         recommendItemRootViewContainer.className = "SS_IC";
+        recommendItemRootViewContainer.style.float = "none";
         recommendItemRootViewContainer.style.height = "40px";
         recommendItemRootViewContainer.style.width = "100%";
 
@@ -136,6 +137,14 @@ function initRecommendView(formatEntities) {
         }
         recommendItemRootViewContainer.appendChild(recommendItemRootView);
         contentViewContainer.appendChild(recommendItemRootViewContainer);
+        contentViewContainer.style.height = formatSize * 40 + "px";
+    }
+
+    if (formatSize > 0){
+        attachPaginationBar(contentViewContainer,20,4,function (pageIndex) {
+
+        });
+        contentViewContainer.style.height = (contentViewContainer.clientHeight + 50) + "px";
     }
 }
 
