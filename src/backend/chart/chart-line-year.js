@@ -2,14 +2,14 @@
  * Created by dingpengwei on 7/15/16.
  */
 
-function ChartItem(name, lineColor, lineWidth, data) {
+function ChartYearItem(name, lineColor, lineWidth, data) {
     this.name = name;
     this.lineColor = lineColor;
     this.lineWidth = lineWidth;
     this.data = data;
 }
 
-function Chart(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems) {
+function ChartYear(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems) {
     this.id = id;
     this.year = year; // 年份
     this.start = start;// 开始月份
@@ -23,7 +23,7 @@ function Chart(id, year, start, end, line, unit, borderColor, borderWidth, color
     this.chartItems = chartItems;
 };
 
-function NotePoint(x, y, radius) {
+function NoteYearPoint(x, y, radius) {
     this.x = x;
     this.y = y;
     this.radius = radius;
@@ -77,20 +77,21 @@ var textYOffset = 7;
 var marginTop;
 var marginLeft;
 
-function draw(chart) {
+function drawYear(chart) {
     var chartCanvas = document.getElementById("chart");
     marginTop = chartCanvas.offsetTop;
     marginLeft = chartCanvas.offsetLeft;
+    console.log(chartCanvas.offsetTop + " " + chartCanvas.offsetLeft);
     chartCanvas.addEventListener("mousemove", onMouseMove);
     chartCanvas.addEventListener("click", onMouseClick);
     var context = chartCanvas.getContext("2d");
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawYearTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
-        drawChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
+        drawYearChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
     }
     context.restore();
 }
@@ -99,7 +100,7 @@ function draw(chart) {
  * 仅仅显示某条线条
  * @param itemName 显示的线条名称
  */
-function drawItem(chart, itemName) {
+function drawYearItem(chart, itemName) {
     var chartCanvas = document.getElementById("chart");
     marginTop = chartCanvas.offsetTop;
     marginLeft = chartCanvas.offsetLeft;
@@ -109,11 +110,11 @@ function drawItem(chart, itemName) {
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawYearTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
         if (itemName == chart.chartItems[index].name) {
-            drawChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
+            drawYearChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
             break;
         }
     }
@@ -125,7 +126,7 @@ function drawItem(chart, itemName) {
  * @param itemName 线条名称
  * @param lineWidth 线条宽度
  */
-function drawItemByWidth(chart, itemName, lineWidth) {
+function drawYearItemByWidth(chart, itemName, lineWidth) {
     var chartCanvas = document.getElementById("chart");
     marginTop = chartCanvas.offsetTop;
     marginLeft = chartCanvas.offsetLeft;
@@ -135,13 +136,13 @@ function drawItemByWidth(chart, itemName, lineWidth) {
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawYearTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
         if (itemName == chart.chartItems[index].name) {
             chart.chartItems[index].lineWidth = lineWidth;
         }
-        drawChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
+        drawYearChart(context, chartCanvas.width, chartCanvas.height, chart.start, chart.end, chart.chartItems[index]);
     }
     context.restore();
 }
@@ -153,7 +154,7 @@ function drawItemByWidth(chart, itemName, lineWidth) {
  * @param height 表格高度
  * @param chartItem 数据源
  */
-function drawChart(context, width, height, start, end, chartItem) {
+function drawYearChart(context, width, height, start, end, chartItem) {
     context.save();
     context.beginPath();
     context.lineCap = "round";
@@ -181,7 +182,7 @@ function drawChart(context, width, height, start, end, chartItem) {
         } else {
             drawPoint(context, x, y, radius, chartItem.lineColor);
         }
-        var note = new NotePoint(x, y, radius);
+        var note = new NoteYearPoint(x, y, radius);
         eventElements.push(note);
     }
     context.restore();
@@ -211,7 +212,7 @@ function drawCircle(context, x, y, radius, color) {
  * @param height 表格高度
  * @param chart 数据源
  */
-function drawTable(context, width, height, chart) {
+function drawYearTable(context, width, height, chart) {
     context.save();
     context.beginPath();
     //边框样式

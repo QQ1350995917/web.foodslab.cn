@@ -2,14 +2,14 @@
  * Created by dingpengwei on 7/15/16.
  */
 
-function ChartItem(name, lineColor, lineWidth, data) {
+function ChartMonthItem(name, lineColor, lineWidth, data) {
     this.name = name;
     this.lineColor = lineColor;
     this.lineWidth = lineWidth;
     this.data = data;
 }
 
-function Chart(id, year, month, start, end, line, unit, borderColor, borderWidth, color, width, chartItems) {
+function ChartMonth(id, year, month, start, end, line, unit, borderColor, borderWidth, color, width, chartItems) {
     this.id = id;
     this.year = year; // 年份
     this.month = month; // 月份
@@ -38,17 +38,17 @@ var yOffset;
 var textXOffset = 5;
 var textYOffset = 7;
 
-function draw(chart) {
+function drawMonth(chart) {
     var chartCanvas = document.getElementById("chart");
     var context = chartCanvas.getContext("2d");
 
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawMonthTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
-        drawChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
+        drawMonthChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
     }
     context.restore();
 }
@@ -57,17 +57,17 @@ function draw(chart) {
  * 仅仅显示某条线条
  * @param itemName 显示的线条名称
  */
-function drawItem(chart, itemName) {
+function drawMonthItem(chart, itemName) {
     var chartCanvas = document.getElementById("chart");
     var context = chartCanvas.getContext("2d");
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawMonthTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
         if (itemName == chart.chartItems[index].name) {
-            drawChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
+            drawMonthChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
             break;
         }
     }
@@ -79,19 +79,19 @@ function drawItem(chart, itemName) {
  * @param itemName 线条名称
  * @param lineWidth 线条宽度
  */
-function drawItemByWidth(chart, itemName, lineWidth) {
+function drawMonthItemByWidth(chart, itemName, lineWidth) {
     var chartCanvas = document.getElementById("chart");
     var context = chartCanvas.getContext("2d");
     context.save();
     context.clearRect(0, 0, chartCanvas.width, chartCanvas.height);
     context.translate(0.5, 0.5);
-    drawTable(context, chartCanvas.width, chartCanvas.height, chart);
+    drawMonthTable(context, chartCanvas.width, chartCanvas.height, chart);
     var length = chart.chartItems.length;
     for (var index = 0; index < length; index++) {
         if (itemName == chart.chartItems[index].name) {
             chart.chartItems[index].lineWidth = lineWidth;
         }
-        drawChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
+        drawMonthChart(context, chartCanvas.width, chartCanvas.height,chart.start,chart.end, chart.chartItems[index]);
     }
     context.restore();
 }
@@ -103,7 +103,7 @@ function drawItemByWidth(chart, itemName, lineWidth) {
  * @param height 表格高度
  * @param chartItem 数据源
  */
-function drawChart(context, width, height,start,end, chartItem) {
+function drawMonthChart(context, width, height, start, end, chartItem) {
     context.save();
     context.beginPath();
     context.lineCap = "round";
@@ -124,7 +124,7 @@ function drawChart(context, width, height,start,end, chartItem) {
  * @param height 表格高度
  * @param chart 数据源
  */
-function drawTable(context, width, height, chart) {
+function drawMonthTable(context, width, height, chart) {
     context.save();
     context.beginPath();
     //边框样式

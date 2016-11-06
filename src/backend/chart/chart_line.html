@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        div.toolsBar {
+            width: 100%;
+            height: 50px;
+        }
+
+        div.button {
+            float: left;
+            width: 100px;
+            height: 50px;
+            line-height: 50px;
+            text-align: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div id="toolsBar" class="toolsBar">
+</div>
+<div>
+    <canvas id="polylineChart" width="1000" height="330" style="background-color: #EDEDED">your browser can not support
+        canvas
+    </canvas>
+</div>
+
+
+<!--<canvas id="polylineChart2" width="1000" height="330" style="background-color: #EDEDED">your browser can not support-->
+<!--canvas-->
+<!--</canvas>-->
+</body>
+<script type="text/javascript" src="chart_line.js"></script>
+<script type="text/javascript">
+    let colors = new Array("#FF00FF", "#FF0000", "#FFBB00", "#00FF00");
+    let toolsBar = document.getElementById("toolsBar");
+    let button = document.createElement("div");
+    button.className = "button";
+    button.style.backgroundColor = "#CCCCCC";
+    button.innerHTML = "初始显示";
+    toolsBar.appendChild(button);
+    button.onclick = function () {
+        drawPolylineChart(polylineChartTable, reset());
+    }
+    for (let i = 0; i < 4; i++) {
+        let button = document.createElement("div");
+        button.className = "button";
+        button.style.backgroundColor = colors[i];
+        button.innerHTML = "加粗显示";
+        toolsBar.appendChild(button);
+        button.onclick = function () {
+            drawPolylineChart(polylineChartTable, blod(colors[i]));
+        }
+    }
+
+    for (let i = 0; i < 4; i++) {
+        let button = document.createElement("div");
+        button.className = "button";
+        button.style.backgroundColor = colors[i];
+        button.innerHTML = "单独显示";
+        toolsBar.appendChild(button);
+        button.onclick = function () {
+            drawPolylineChart(polylineChartTable, sigle(colors[i]));
+        }
+    }
+
+    let polylineChartTable = new PolylineChartTable("polylineChart", 12, 10, 0, 0, 12, 5, "月", "ml", true, function (x, y) {
+        console.log(x + " = " + y);
+    });
+    let polylineCharts = new Array(
+            new PolylineChart(colors[0], "2", colors[0], new Array(0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 9)),
+            new PolylineChart(colors[1], "2", colors[1], new Array(1, 4, 1, 5, 2, 3, 9, 2, 4, 5, 2, 3)),
+            new PolylineChart(colors[2], "2", colors[2], new Array(5, 2, 1, 7, 5, 2, 3, 9, 2, 4, 4, 5)),
+            new PolylineChart(colors[3], "2", colors[3], new Array(5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2))
+    );
+    drawPolylineChart(polylineChartTable, polylineCharts);
+
+    function reset() {
+        polylineCharts = new Array(
+                new PolylineChart(colors[0], "2", colors[0], new Array(0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 9)),
+                new PolylineChart(colors[1], "2", colors[1], new Array(1, 4, 1, 5, 2, 3, 9, 2, 4, 5, 2, 3)),
+                new PolylineChart(colors[2], "2", colors[2], new Array(5, 2, 1, 7, 5, 2, 3, 9, 2, 4, 4, 5)),
+                new PolylineChart(colors[3], "2", colors[3], new Array(5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2))
+        );
+        return polylineCharts;
+    }
+    function sigle(id) {
+        let singlePolylineCharts = new Array();
+        for (let i = 0; i < polylineCharts.length; i++) {
+            if (polylineCharts[i].id == id) {
+                polylineCharts[i].width = 2;
+                singlePolylineCharts.push(polylineCharts[i]);
+                break;
+            }
+        }
+        return singlePolylineCharts;
+    }
+    function blod(id) {
+        let singlePolylineCharts = new Array();
+        for (let i = 0; i < polylineCharts.length; i++) {
+            if (polylineCharts[i].id == id) {
+                polylineCharts[i].width = 5;
+            } else {
+                polylineCharts[i].width = 1;
+            }
+            singlePolylineCharts.push(polylineCharts[i]);
+        }
+        return singlePolylineCharts;
+    }
+</script>
+</html>

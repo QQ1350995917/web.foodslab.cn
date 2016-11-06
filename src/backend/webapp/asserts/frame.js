@@ -206,8 +206,10 @@ function onFrameMenuItemClick(flag) {
         resetMainContainer();
     } else if (flag == "sys_flow") {
         resetMainContainer();
+        loadFlowView();
     } else if (flag == "sale_chart") {
         resetMainContainer();
+        loadSaleView();
     } else {
         console.log("点击判断值超出范围");
     }

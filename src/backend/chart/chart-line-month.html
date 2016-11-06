@@ -20,10 +20,10 @@
 <script type="text/javascript" src="chart-line-month.js"></script>
 <script type="text/javascript">
     var chartItems = new Array(
-            new ChartItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
-            new ChartItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-            new ChartItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
-            new ChartItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
+            new ChartMonthItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
+            new ChartMonthItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+            new ChartMonthItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
+            new ChartMonthItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
     );
     var id = "this is the id";
     var year = 2016; // 年份
@@ -37,23 +37,23 @@
     var borderWidth = 1;
     var color = "#CCCCCC";
     var width = 1;
-    var chart = new Chart(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
-    window.onload = draw(chart);
+    var chart = new ChartMonth(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
+    window.onload = drawMonth(chart);
 
     function btn_drawItem(name) {
-        var chart = new Chart(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
-        drawItem(chart,name)
+        var chart = new ChartMonth(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
+        drawMonthItem(chart,name)
     }
 
     function btn_drawItemByWidth(name,lineWidth) {
         var chartItems = new Array(
-                new ChartItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
-                new ChartItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-                new ChartItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
-                new ChartItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
+                new ChartMonthItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
+                new ChartMonthItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+                new ChartMonthItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
+                new ChartMonthItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
         );
-        var chart = new Chart(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
-        drawItemByWidth(chart,name,lineWidth)
+        var chart = new ChartMonth(id,year,month,start,end,line,unit,borderColor,borderWidth,color,width,chartItems);
+        drawMonthItemByWidth(chart,name,lineWidth)
     }
 </script>
 </body>

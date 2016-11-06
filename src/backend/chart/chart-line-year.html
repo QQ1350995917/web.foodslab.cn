@@ -10,27 +10,25 @@
     <button onclick="btn_drawItem('VP')">VP</button>
     <button onclick="btn_drawItem('VV')">VV</button>
     <button onclick="btn_drawItem('UV')">UV</button>
-
     <br>
-
     <button onclick="btn_drawItemByWidth('IP','5')">IP</button>
     <button onclick="btn_drawItemByWidth('VP','5')">VP</button>
     <button onclick="btn_drawItemByWidth('VV','5')">VV</button>
     <button onclick="btn_drawItemByWidth('UV','5')">UV</button>
-
-
+</div>
+<div>
     <canvas id="chart" width="1000" height="330" style="background-color: #EDEDED">your browser can not support canvas
     </canvas>
 </div>
 <script type="text/javascript" src="chart-line-year.js"></script>
 <script type="text/javascript">
     var chartItems = new Array(
-            new ChartItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
-            new ChartItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-            new ChartItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
-            new ChartItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-            new ChartItem("UV", "#0000FF", "2", new Array(8, 7, 2, 4, 4, 5, 2, 10, 5, 2, 3, 9, 2, 5, 2, 10, 7, 10, 3, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-            new ChartItem("UV", "#0000FF", "2", new Array(6, 7, 6,10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2,  4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
+            new ChartYearItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
+            new ChartYearItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+            new ChartYearItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
+            new ChartYearItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+            new ChartYearItem("UV", "#0000FF", "2", new Array(8, 7, 2, 4, 4, 5, 2, 10, 5, 2, 3, 9, 2, 5, 2, 10, 7, 10, 3, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+            new ChartYearItem("UV", "#0000FF", "2", new Array(6, 7, 6,10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2,  4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
     );
     var id = "this is the id";
     var year = 2016; // 年份
@@ -43,23 +41,23 @@
     var borderWidth = 1;
     var color = "#CCCCCC";
     var width = 1;
-    var chart = new Chart(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
-    window.onload = draw(chart);
+    var chart = new ChartYear(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
+    window.onload = drawYear(chart);
 
     function btn_drawItem(name) {
-        var chart = new Chart(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
-        drawItem(chart, name)
+        var chart = new ChartYear(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
+        drawYearItem(chart, name)
     }
 
     function btn_drawItemByWidth(name, lineWidth) {
         var chartItems = new Array(
-                new ChartItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
-                new ChartItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
-                new ChartItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
-                new ChartItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
+                new ChartYearItem("IP", "#FF00FF", "2", new Array(0, 0, 0, 0, 0, 0, 3, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9)),
+                new ChartYearItem("VP", "#FF0000", "2", new Array(1, 4, 5, 2, 3, 7, 2, 4, 5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7)),
+                new ChartYearItem("VV", "#FFFF00", "2", new Array(5, 2, 10, 7, 10, 10, 5, 2, 3, 9, 2, 4, 4, 5, 2, 3, 7, 2, 4, 9, 2, 4, 5, 2, 3, 7, 5, 2, 3, 7, 3)),
+                new ChartYearItem("UV", "#0000FF", "2", new Array(3, 7, 2, 4, 5, 2, 10, 7, 10, 3, 4, 5, 2, 10, 5, 2, 3, 9, 2, 4, 5, 2, 3, 7, 9, 2, 4, 5, 2, 3, 7))
         );
-        var chart = new Chart(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
-        drawItemByWidth(chart, name, lineWidth)
+        var chart = new ChartYear(id, year, start, end, line, unit, borderColor, borderWidth, color, width, chartItems);
+        drawYearItemByWidth(chart, name, lineWidth)
     }
 </script>
 </body>
