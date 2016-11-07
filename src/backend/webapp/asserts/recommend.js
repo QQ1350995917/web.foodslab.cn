@@ -141,8 +141,8 @@ function initRecommendView(formatEntities) {
     }
 
     if (formatSize > 0){
-        attachPaginationBar(contentViewContainer,20,4,function (pageIndex) {
-
+        attachPaginationBar(contentViewContainer,20,13,function (pageIndex) {
+            console.log(pageIndex);
         });
         contentViewContainer.style.height = (contentViewContainer.clientHeight + 50) + "px";
     }

@@ -57,7 +57,6 @@ function attachUsersToMainContainer(userListContainer,userEntities) {
         userEntityContainer.appendChild(userDetailDiv);
         userEntityContainer.appendChild(blockUserDiv);
         userListContainer.appendChild(userEntityContainer);
-
         let accountEntities = userEntity.children;
         for (let i = 0; i < accountEntities.length; i++) {
             let accountEntity = userEntity.children[i];
@@ -97,6 +96,14 @@ function attachUsersToMainContainer(userListContainer,userEntities) {
             resetMainContainer();
             loadUserDetailView(userEntity);
         }
+    }
+
+    userListContainer.style.borderBottomWidth = "0px";
+    if (length > 0){
+        attachPaginationBar(userListContainer,20,13,function (pageIndex) {
+            console.log(pageIndex);
+        });
+        userListContainer.style.height = (userListContainer.clientHeight + 50) + "px";
     }
 }
 

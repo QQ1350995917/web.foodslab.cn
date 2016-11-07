@@ -242,77 +242,121 @@ function createSearchWidget(container, callback, defaultKey) {
 }
 
 function attachPaginationBar(container, allPageNumber, currentPageIndex, callback) {
+    if (allPageNumber < 0) {
+        allPageNumber = 0;
+    }
+    if (currentPageIndex > allPageNumber - 1 || currentPageIndex < 0) {
+        currentPageIndex = 0;
+    }
     let paginationBar = document.createElement("div");
     paginationBar.className = "paginationBar";
-    paginationBar.style.backgroundColor = "red";
     let previousPage = document.createElement("div");
     previousPage.className = "SS_IC_LABEL";
     previousPage.style.borderLeftWidth = "1px";
     previousPage.innerHTML = "<<上一页";
     if (currentPageIndex == 0) {
         previousPage.style.cursor = "default";
+    } else {
+        previousPage.onclick = function () {
+            callback(currentPageIndex - 1);
+        }
     }
     paginationBar.appendChild(previousPage);
-    if (allPageNumber < 10) {
-        for (let i = 0; i < allPageNumber; i++) {
+
+    if (currentPageIndex - 4 > 1) {
+        for (let i = 0; i < currentPageIndex; i++) {
             let pageIndex = document.createElement("div");
             pageIndex.className = "SS_IC_LABEL";
             pageIndex.style.width = "40px";
-            pageIndex.innerHTML = (i + 1);
-            if (i == currentPageIndex) {
+            if (i == 2) {
+                pageIndex.innerHTML = "...";
                 pageIndex.style.borderWidth = "0px";
                 pageIndex.style.cursor = "default";
+                i = currentPageIndex - 3;
+            } else {
+                pageIndex.innerHTML = i;
             }
+            if (i == currentPageIndex - 2) {
+                pageIndex.style.borderLeftWidth = "1px";
+            }
+            if (i != currentPageIndex - 3) {
+                pageIndex.onclick = function () {
+                    callback(i);
+                }
+            }
+            paginationBar.appendChild(pageIndex);
+
+        }
+    } else {
+        for (let i = 0; i < currentPageIndex; i++) {
+            let pageIndex = document.createElement("div");
+            pageIndex.className = "SS_IC_LABEL";
+            pageIndex.style.width = "40px";
+            pageIndex.innerHTML = i;
+            paginationBar.appendChild(pageIndex);
+            pageIndex.onclick = function () {
+                callback(i);
+            }
+        }
+    }
+    let pageIndex = document.createElement("div");
+    pageIndex.className = "SS_IC_LABEL";
+    pageIndex.style.width = "40px";
+    pageIndex.innerHTML = (currentPageIndex);
+    pageIndex.style.borderWidth = "0px";
+    paginationBar.appendChild(pageIndex);
+    if (currentPageIndex + 5 < allPageNumber - 1) {
+        for (let i = currentPageIndex + 1; i < allPageNumber; i++) {
+            let pageIndex = document.createElement("div");
+            pageIndex.className = "SS_IC_LABEL";
+            pageIndex.style.width = "40px";
+            pageIndex.innerHTML = i;
+            if (i == currentPageIndex + 1) {
+                pageIndex.style.borderLeftWidth = "1px";
+            } else if (i == currentPageIndex + 3) {
+                pageIndex.innerHTML = "...";
+                pageIndex.style.borderWidth = "0px";
+                pageIndex.style.cursor = "default";
+                i = allPageNumber - 3;
+            }
+            if (i == allPageNumber - 2) {
+                pageIndex.style.borderLeftWidth = "1px";
+            }
+            if (i != allPageNumber - 3) {
+                pageIndex.onclick = function () {
+                    callback(i);
+                }
+            }
+            paginationBar.appendChild(pageIndex);
+
+        }
+    } else {
+        for (let i = currentPageIndex + 1; i < allPageNumber; i++) {
+            let pageIndex = document.createElement("div");
+            pageIndex.className = "SS_IC_LABEL";
+            pageIndex.style.width = "40px";
+            pageIndex.innerHTML = i;
             if (i == currentPageIndex + 1) {
                 pageIndex.style.borderLeftWidth = "1px";
             }
             paginationBar.appendChild(pageIndex);
-        }
-    } else {
-        for (let i = 0; i < allPageNumber; i++) {
-            let pageIndex = document.createElement("div");
-            pageIndex.className = "SS_IC_LABEL";
-            pageIndex.style.width = "40px";
-            pageIndex.innerHTML = (i + 1);
-            if (i == 2 && currentPageIndex > 5) {
-                pageIndex.style.borderWidth = "0px";
-                pageIndex.innerHTML = "...";
-                pageIndex.style.cursor = "default";
-                i = currentPageIndex - 3;
-            } else if (i == currentPageIndex) {
-                pageIndex.style.borderWidth = "0px";
-                pageIndex.style.cursor = "default";
-            } else if (i == currentPageIndex + 3) {
-                pageIndex.style.borderWidth = "0px";
-                pageIndex.innerHTML = "...";
-                pageIndex.style.cursor = "default";
-                i = allPageNumber - 3;
+            pageIndex.onclick = function () {
+                callback(i);
             }
-            if (i == currentPageIndex - 2){
-                pageIndex.style.borderWidth = "1px";
-            }
-            if (i == currentPageIndex + 1){
-                pageIndex.style.borderWidth = "1px";
-            }
-            if (i == currentPageIndex + 4){
-                pageIndex.style.borderWidth = "1px";
-            }
-            if (i == allPageNumber - 2){
-                pageIndex.style.borderWidth = "1px";
-            }
-            paginationBar.appendChild(pageIndex);
         }
     }
-
     let nextPage = document.createElement("div");
     nextPage.className = "SS_IC_LABEL";
     nextPage.innerHTML = "下一页>>";
     if (currentPageIndex + 1 == allPageNumber) {
         nextPage.style.cursor = "default";
         nextPage.style.borderLeftWidth = "1px";
+    } else {
+        nextPage.onclick = function () {
+            callback(currentPageIndex + 1);
+        }
     }
     paginationBar.appendChild(nextPage);
-
     container.appendChild(paginationBar);
 }
 

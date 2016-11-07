@@ -45,6 +45,9 @@ function onUnExpressTabCallback() {
             var jsonData = JSON.parse(data);
             let orderEntities = jsonData.data;
             let length = orderEntities == undefined ? 0 : orderEntities.length;
+            if (length > 0){
+                getMainContainer().style.height = "0px";
+            }
             for (let i = 0; i < length; i++) {
                 let unExpressParamView = document.createElement("div");
                 unExpressParamView.className = "orderUnExpressParam";
@@ -73,6 +76,11 @@ function onUnExpressTabCallback() {
 
                 attachOrderContainer(getMainContainer(), orderEntities[i], unExpressParamView);
             }
+            if (length > 0){
+                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
+                    console.log(pageIndex);
+                });
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -86,7 +94,15 @@ function onExpressingTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
+            if (jsonData.data.length > 0){
+                getMainContainer().style.height = "0px";
+            }
             createOrderExpressingView(jsonData.data);
+            if (jsonData.data.length > 0){
+                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
+                    console.log(pageIndex);
+                });
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -100,7 +116,15 @@ function onExpressedTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
+            if (jsonData.data.length > 0){
+                getMainContainer().style.height = "0px";
+            }
             createExpressedView(jsonData.data);
+            if (jsonData.data.length > 0){
+                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
+                    console.log(pageIndex);
+                });
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -118,7 +142,15 @@ function onOrderAllTabCallback() {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
+            if (jsonData.data.length > 0){
+                getMainContainer().style.height = "0px";
+            }
             createOrderAllView(jsonData.data);
+            if (jsonData.data.length > 0){
+                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
+                    console.log(pageIndex);
+                });
+            }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -251,6 +283,7 @@ function createOrderAllView(orderEntities) {
         }
         attachOrderContainer(getMainContainer(), orderEntities[i], paramView);
     }
+
 }
 
 function attachOrderContainer(orderEntitiesContainer, orderEntity, paramView) {
@@ -342,6 +375,7 @@ function attachOrderContainer(orderEntitiesContainer, orderEntity, paramView) {
     orderEntityContainerDiv.appendChild(orderEntityContentDiv);
     orderEntityContainerDiv.style.height = 30 + length * 45 + "px"; // 高度动态设定 其值=title部分的高度+内容区域的高度
     orderEntitiesContainer.appendChild(orderEntityContainerDiv);
+    orderEntitiesContainer.style.height = orderEntitiesContainer.clientHeight + orderEntityContainerDiv.clientHeight + "px";
 }
 
 function requestExpress(orderEntity) {
