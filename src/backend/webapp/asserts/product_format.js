@@ -41,7 +41,7 @@ function requestFormatListData(typeEntity) {
                 onAttachFormatTitleToContainer(formatContainer, typeEntity, parseData.data);
             } else if (parseData.code == RC_SUCCESS_EMPTY) {
                 onAttachFormatTitleToContainer(formatContainer, typeEntity, parseData.data);
-            } else{
+            } else {
                 new Toast().show("请求数据失败");
             }
         }
@@ -281,6 +281,16 @@ function onAttachFormatContentToContainer(container, typeEntity, formatEntity) {
     }
 
     saveFormatAction.onclick = function () {
+        if (isNullValue(labelInput.value) || !isNum(labelInput.value)
+            || isNullValue(amountInput.value) || !isNum(amountInput.value)
+            || isNullValue(priceInput.value) || !isNum(priceInput.value)
+            || isNullValue(postageInput.value) || !isNum(postageInput.value)
+            || isNullValue(pricingDiscountInput.value) || !isNum(pricingDiscountInput.value)
+            || isNullValue(pricingInput.value) || !isNum(pricingInput.value)
+            || isNullValue(expressInput.value) || !isNum(expressInput.value)) {
+            new Toast().show("格式数据错误");
+            return;
+        }
         let requestFormatEntity = new Object();
         requestFormatEntity.typeId = typeEntity.typeId;
         requestFormatEntity.status = (formatStatusInput.checked == true ? 2 : 1);
@@ -308,6 +318,52 @@ function onAttachFormatContentToContainer(container, typeEntity, formatEntity) {
         } else {
             requestFormatEntity.formatId = formatEntity.formatId;
             requestUpdateFormat(typeEntity, requestFormatEntity);
+        }
+    }
+
+    labelInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    amountInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    priceInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    postageInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    pricingDiscountInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    pricingInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    expressInput.onkeypress = function () {
+        if (!isNum(this.value)) {
+            new Toast().show("必填项:整数或小数");
+        }
+    };
+    pricingDiscountInput.onblur = function () {
+        if (!isNullValue(priceInput.value) && isNum(priceInput.value) && !isNullValue(this.value) && isNum(this.value)) {
+            pricingInput.value = priceInput.value * this.value;
+        }
+    }
+    pricingInput.onblur = function () {
+        if (!isNullValue(priceInput.value) && isNum(priceInput.value) && !isNullValue(this.value) && isNum(this.value)) {
+            pricingDiscountInput.value = this.value / priceInput.value;
         }
     }
 }

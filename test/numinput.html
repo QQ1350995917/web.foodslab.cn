@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input onkeypress="return isNum(this.value)">
+</body>
+<script language="javascript" type="text/javascript">
+    function isNum(value) {
+        var regexp = /^-?\d+\.?\d{0,1}$/;
+        if (value != "" && !regexp.test(value)) {
+            if (window.event) {
+                window.event.returnValue = false;
+            } else {
+                window.event.preventDefault(); //for firefox
+            }
+        }
+    }
+</script>
+</html>

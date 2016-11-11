@@ -95,3 +95,17 @@ Date.prototype.format = function (format) {
     return format;
 }
 
+function isNum(value) {
+    var regexp = /^-?\d+\.?\d{0,1}$/;
+    if (value == "" || regexp.test(value)) {
+        return true;
+    } else {
+        if (window.event) {
+            window.event.returnValue = false;
+        } else {
+            window.event.preventDefault(); //for firefox
+        }
+        return false;
+    }
+}
+
