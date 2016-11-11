@@ -299,7 +299,7 @@ function attachOrderContainer(orderEntitiesContainer, orderEntity, paramView) {
     let orderEntityTitleDiv = document.createElement("div");
     orderEntityTitleDiv.className = "orderEntityTitle";
     orderEntityTitleDiv.innerHTML = new Date(orderEntity.createTime).format("yyyy-MM-dd hh:mm") + " " + " 订单号: "
-        + orderEntity.orderId + " 总价:" + orderEntity.cost + " 邮费:" + orderEntity.postage;
+        + orderEntity.code + " 总价:" + orderEntity.cost + " 邮费:" + orderEntity.postage;
     orderEntityContainerDiv.appendChild(orderEntityTitleDiv);
 
     /**
