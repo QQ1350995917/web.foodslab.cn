@@ -16,13 +16,28 @@ function loadUserView() {
 
     let object = new Object();
     object.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/account/mRetrieves?p=" + JSON.stringify(object);
-    asyncRequestByGet(indexUrl, function (data) {
+    object.currentPageIndex = 0;
+    object.sizeInPage = 12;
+    requestUsersList(userListContainer,object);
+}
+
+function requestUsersList(userListContainer,object) {
+    var url = BASE_PATH + "/account/mRetrieves?p=" + JSON.stringify(object);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
             if (parseData.code == RC_SUCCESS) {
-                attachUsersToMainContainer(userListContainer,parseData.data);
+                attachUsersToMainContainer(userListContainer, parseData.data.dataInPage);
+                if (parseData.data.totalPageNumber > 0) {
+                    attachPaginationBar(userListContainer, parseData.data.totalPageNumber, parseData.data.currentPageIndex,
+                        function (pageIndex) {
+                            object.currentPageIndex = pageIndex;
+                            userListContainer.innerHTML = null;
+                            requestUsersList(userListContainer,object)
+                        });
+                    userListContainer.style.height = (userListContainer.clientHeight + 50) + "px";
+                }
             } else {
                 new Toast().show("请求失败");
             }
@@ -30,7 +45,7 @@ function loadUserView() {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
-function attachUsersToMainContainer(userListContainer,userEntities) {
+function attachUsersToMainContainer(userListContainer, userEntities) {
     let length = userEntities == undefined ? 0 : userEntities.length;
     for (let i = 0; i < length; i++) {
         let userEntity = userEntities[i];
@@ -99,12 +114,6 @@ function attachUsersToMainContainer(userListContainer,userEntities) {
     }
 
     userListContainer.style.borderBottomWidth = "0px";
-    if (length > 0){
-        attachPaginationBar(userListContainer,20,13,function (pageIndex) {
-            console.log(pageIndex);
-        });
-        userListContainer.style.height = (userListContainer.clientHeight + 50) + "px";
-    }
 }
 
 function requestUpdateStatus(userEntity) {

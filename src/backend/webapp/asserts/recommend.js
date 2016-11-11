@@ -11,15 +11,31 @@ function loadRecommendView() {
 
     let object = new Object();
     object.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/format/mWeights?p=" + JSON.stringify(object);
-    asyncRequestByGet(indexUrl, function (data) {
+    object.currentPageIndex = 0;
+    object.sizeInPage = 12;
+    requestRecommendByPage(object);
+}
+function requestRecommendByPage(object) {
+    var url = BASE_PATH + "/format/mWeights?p=" + JSON.stringify(object);
+    console.log(url);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
+            console.log(parseData);
             if (parseData.code == RC_SUCCESS) {
-                initRecommendView(parseData.data);
+                initRecommendView(parseData.data.dataInPage);
+                if (parseData.data.totalPageNumber > 0) {
+                    attachPaginationBar(getMainContainer(), parseData.data.totalPageNumber, parseData.data.currentPageIndex,
+                        function (pageIndex) {
+                            object.currentPageIndex = pageIndex;
+                            resetMainContainer();
+                            requestRecommendByPage(object)
+                        });
+                    getMainContainer().style.height = (getMainContainer().clientHeight + 50) + "px";
+                }
             } else {
-                new Toast().show("更新失败");
+                new Toast().show("获取失败");
             }
         }
     }, onErrorCallback(), onTimeoutCallback());
@@ -32,7 +48,7 @@ function loadRecommendView() {
  */
 function swapRecommend(swapWeightFormatEntity) {
     swapWeightFormatEntity.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/format/mSwapWeight?p="  + JSON.stringify(swapWeightFormatEntity);
+    var indexUrl = BASE_PATH + "/format/mSwapWeight?p=" + JSON.stringify(swapWeightFormatEntity);
     asyncRequestByGet(indexUrl, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
@@ -138,13 +154,6 @@ function initRecommendView(formatEntities) {
         recommendItemRootViewContainer.appendChild(recommendItemRootView);
         contentViewContainer.appendChild(recommendItemRootViewContainer);
         contentViewContainer.style.height = formatSize * 40 + "px";
-    }
-
-    if (formatSize > 0){
-        attachPaginationBar(contentViewContainer,20,13,function (pageIndex) {
-            console.log(pageIndex);
-        });
-        contentViewContainer.style.height = (contentViewContainer.clientHeight + 50) + "px";
     }
 }
 

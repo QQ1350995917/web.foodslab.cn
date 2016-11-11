@@ -40,10 +40,13 @@ function loadUserDetailView(userEntity) {
         object.userId = userEntity.userId;
         requestUserEntity.userId = userEntity.userId;
         object.user = requestUserEntity;
+        object.currentPageIndex = 0;
+        object.sizeInPage = 12;
         userDetailMainView.innerHTML = null;
         if (tab.index == 0) {
             onUserCartTabCallback(object,userDetailMainView);
         } else if (tab.index == 1) {
+            object.cs = getCookie(KEY_CS);
             onUserOrderTabCallback(object,userDetailMainView);
         } else if (tab.index == 2) {
             onUserAccountTabCallback(object,userDetailMainView);
@@ -72,13 +75,16 @@ function onUserCartTabCallback(userEntity,mainContainer) {
 }
 
 function onUserOrderTabCallback(userEntity,mainContainer) {
-    userEntity.cs = getCookie(KEY_CS);
     let url = BASE_PATH + "/order/mRetrievesByUser?p=" + JSON.stringify(userEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            attachOrderViewToUserDetailMainContainer(mainContainer,jsonData.data);
+            attachOrderViewToUserDetailMainContainer(mainContainer,jsonData.data.dataInPage);
+            attachPaginationBar(mainContainer,20,13,function (pageIndex) {
+                console.log(pageIndex);
+            });
+            mainContainer.style.height = (mainContainer.clientHeight + 50) + "px";
         }
     }, onErrorCallback, onTimeoutCallback);
 }
@@ -305,6 +311,11 @@ function attachCartViewToUserDetailMainContainer(mainContainer, cartEntities) {
         cartView.appendChild(moneyView);
         mainContainer.appendChild(cartView);
     }
+
+    attachPaginationBar(mainContainer,20,13,function (pageIndex) {
+        console.log(pageIndex);
+    });
+    mainContainer.style.height = (mainContainer.clientHeight + 50) + "px";
 }
 
 function attachAccountViewToUserDetailMainContainer(mainContainer) {

@@ -23,29 +23,46 @@ function loadOrderView() {
     getTitleContainer().appendChild(createHorizontalTabHostDiv("orderMenus", ORDER_TABS, "defaultTabSelected", "defaultTabNormal", function (tab) {
         getMainContainer().innerHTML = null;
         if (tab.index == 0) {
-            onUnExpressTabCallback();
+            let orderEntity = new Object();
+            orderEntity.cs = getCookie(KEY_CS);
+            orderEntity.status = 1;
+            orderEntity.currentPageIndex = 0;
+            orderEntity.sizeInPage = 12;
+            onUnExpressTabCallback(orderEntity);
         } else if (tab.index == 1) {
-            onExpressingTabCallback();
+            let orderEntity = new Object();
+            orderEntity.cs = getCookie(KEY_CS);
+            orderEntity.status = 2;
+            orderEntity.currentPageIndex = 0;
+            orderEntity.sizeInPage = 12;
+            onExpressingTabCallback(orderEntity);
         } else if (tab.index == 2) {
-            onExpressedTabCallback();
+            let orderEntity = new Object();
+            orderEntity.cs = getCookie(KEY_CS);
+            orderEntity.status = 3;
+            orderEntity.currentPageIndex = 0;
+            orderEntity.sizeInPage = 12;
+            onExpressedTabCallback(orderEntity);
         } else if (tab.index == 3) {
-            onOrderAllTabCallback();
+            let orderEntity = new Object();
+            orderEntity.cs = getCookie(KEY_CS);
+            orderEntity.status = 0;
+            orderEntity.currentPageIndex = 0;
+            orderEntity.sizeInPage = 12;
+            onOrderAllTabCallback(orderEntity);
         }
     }, 0));
 }
 
-function onUnExpressTabCallback() {
-    let orderEntity = new Object();
-    orderEntity.cs = getCookie(KEY_CS);
-    orderEntity.status = 1;
+function onUnExpressTabCallback(orderEntity) {
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            let orderEntities = jsonData.data;
+            let orderEntities = jsonData.data.dataInPage;
             let length = orderEntities == undefined ? 0 : orderEntities.length;
-            if (length > 0){
+            if (length > 0) {
                 getMainContainer().style.height = "0px";
             }
             for (let i = 0; i < length; i++) {
@@ -76,79 +93,77 @@ function onUnExpressTabCallback() {
 
                 attachOrderContainer(getMainContainer(), orderEntities[i], unExpressParamView);
             }
-            if (length > 0){
-                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
-                    console.log(pageIndex);
+            if (length > 0) {
+                attachPaginationBar(getMainContainer(), jsonData.data.totalPageNumber, jsonData.data.currentPageIndex, function (pageIndex) {
+                    orderEntity.currentPageIndex = pageIndex;
+                    resetMainContainer();
+                    onUnExpressTabCallback(orderEntity);
                 });
             }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function onExpressingTabCallback() {
-    let orderEntity = new Object();
-    orderEntity.cs = getCookie(KEY_CS);
-    orderEntity.status = 2;
+function onExpressingTabCallback(orderEntity) {
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0){
+            if (jsonData.data.length > 0) {
                 getMainContainer().style.height = "0px";
             }
-            createOrderExpressingView(jsonData.data);
-            if (jsonData.data.length > 0){
-                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
-                    console.log(pageIndex);
+            createOrderExpressingView(jsonData.data.dataInPage);
+            if (jsonData.data.totalPageNumber > 0) {
+                attachPaginationBar(getMainContainer(), jsonData.data.totalPageNumber, jsonData.data.currentPageIndex, function (pageIndex) {
+                    orderEntity.currentPageIndex = pageIndex;
+                    resetMainContainer();
+                    onExpressingTabCallback(orderEntity);
                 });
             }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function onExpressedTabCallback() {
-    let orderEntity = new Object();
-    orderEntity.cs = getCookie(KEY_CS);
-    orderEntity.status = 3;
+function onExpressedTabCallback(orderEntity) {
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0){
+            if (jsonData.data.length > 0) {
                 getMainContainer().style.height = "0px";
             }
-            createExpressedView(jsonData.data);
-            if (jsonData.data.length > 0){
-                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
-                    console.log(pageIndex);
+            createExpressedView(jsonData.data.dataInPage);
+            if (jsonData.data.totalPageNumber > 0) {
+                attachPaginationBar(getMainContainer(), jsonData.data.totalPageNumber, jsonData.data.currentPageIndex, function (pageIndex) {
+                    orderEntity.currentPageIndex = pageIndex;
+                    resetMainContainer();
+                    onExpressedTabCallback(orderEntity);
                 });
             }
         }
     }, onErrorCallback, onTimeoutCallback);
 }
 
-function onOrderAllTabCallback() {
+function onOrderAllTabCallback(orderEntity) {
     createSearchWidget(getMainContainer(), function (data) {
         console.log(data);
     });
-
-    let orderEntity = new Object();
-    orderEntity.cs = getCookie(KEY_CS);
-    orderEntity.status = 0;
     const url = BASE_PATH + "/order/mRetrieves?p=" + JSON.stringify(orderEntity);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0){
+            if (jsonData.data.length > 0) {
                 getMainContainer().style.height = "0px";
             }
-            createOrderAllView(jsonData.data);
-            if (jsonData.data.length > 0){
-                attachPaginationBar(getMainContainer(),20,13,function (pageIndex) {
-                    console.log(pageIndex);
+            createOrderAllView(jsonData.data.dataInPage);
+            if (jsonData.data.totalPageNumber > 0) {
+                attachPaginationBar(getMainContainer(), jsonData.data.totalPageNumber, jsonData.data.currentPageIndex, function (pageIndex) {
+                    orderEntity.currentPageIndex = pageIndex;
+                    resetMainContainer();
+                    onOrderAllTabCallback(orderEntity);
                 });
             }
         }
@@ -246,7 +261,7 @@ function createExpressedView(orderEntities) {
         expressInfoDiv.style.float = "left";
         expressInfoDiv.className = "orderUnExpressParam";
         expressInfoDiv.innerHTML = "圆通快递  1234567890";
-        let orderReissue= document.createElement("div");
+        let orderReissue = document.createElement("div");
         orderReissue.className = "orderUnExpressParam";
         orderReissue.style.width = "16%";
         orderReissue.style.float = "left";
