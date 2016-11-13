@@ -110,7 +110,7 @@ function onExpressingTabCallback(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0) {
+            if (jsonData.data.dataInPage.length > 0) {
                 getMainContainer().style.height = "0px";
             }
             createOrderExpressingView(jsonData.data.dataInPage);
@@ -131,7 +131,7 @@ function onExpressedTabCallback(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0) {
+            if (jsonData.data.dataInPage.length > 0) {
                 getMainContainer().style.height = "0px";
             }
             createExpressedView(jsonData.data.dataInPage);
@@ -155,7 +155,7 @@ function onOrderAllTabCallback(orderEntity) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var jsonData = JSON.parse(data);
-            if (jsonData.data.length > 0) {
+            if (jsonData.data.dataInPage.length > 0) {
                 getMainContainer().style.height = "0px";
             }
             createOrderAllView(jsonData.data.dataInPage);
@@ -287,15 +287,10 @@ function createExpressedView(orderEntities) {
 function createOrderAllView(orderEntities) {
     let length = orderEntities == undefined ? 0 : orderEntities.length;
     for (let i = 0; i < length; i++) {
-        let orderEntity = orderEntities[i];
         let paramView = document.createElement("div");
         paramView.className = "orderEntityContentBlock";
         paramView.style.borderRightWidth = "0px";
-        if (orderEntity.status == 1) {
-
-        } else {
-            attachExpressingStatusView(orderEntities[i], paramView, false);
-        }
+        // attachExpressingStatusView(orderEntities[i], paramView, false);
         attachOrderContainer(getMainContainer(), orderEntities[i], paramView);
     }
 

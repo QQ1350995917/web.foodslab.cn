@@ -202,6 +202,7 @@ function onFrameMenuItemClick(flag) {
         loadOrderView();
     } else if (flag == "sys_status") {
         resetMainContainer();
+        loadSystemView();
     } else if (flag == "sys_log") {
         resetMainContainer();
     } else if (flag == "sys_flow") {

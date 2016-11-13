@@ -1,17 +1,28 @@
-body, html {
+/*定义全局html body样式*/
+html, body {
     padding: 0;
     margin: 0;
 }
 
-input:focus, textarea:focus,select:focus {
+/*定义全局输入框样式*/
+input:focus, textarea:focus, select:focus {
     outline: none;
 }
 
-div.clearFloat{
+div.floatLeft{
+    float: left;
+}
+
+div.floatRight{
+    float: left;
+}
+
+/*定义全局浮动换行样式*/
+div.clearFloat {
     clear: both;
 }
 
-
+/*定义头部内容容器样式*/
 div.headerContainer {
     position: fixed;
     width: 100%;
@@ -20,12 +31,7 @@ div.headerContainer {
     background-color: #333333;
 }
 
-div.mainContainer{
-    width: 100%;
-    height: 100%;
-    margin-top: 40px;
-}
-
+/*定义头部icon容器样式*/
 div.headerIcon {
     float: left;
     margin: 0px;
@@ -38,6 +44,7 @@ div.headerIcon {
     font-size: 32px;
 }
 
+/*定义头部菜单容器样式*/
 div.headerMenu {
     float: left;
     width: 500px;
@@ -45,6 +52,7 @@ div.headerMenu {
     overflow-x: scroll;
 }
 
+/*定义头部用户名容器样式*/
 div.headerUser {
     float: right;
     width: 14%;
@@ -54,6 +62,14 @@ div.headerUser {
     color: #FFF;
 }
 
+/*定义内容区域样式 内容区域包含左菜单区域*/
+div.mainContainer {
+    width: 100%;
+    height: 610px;
+    margin-top: 40px;
+}
+
+/*定义内容区域->左菜单区域样式*/
 div.leftMenuContainer {
     position: fixed;
     float: left;
@@ -63,6 +79,7 @@ div.leftMenuContainer {
     background-color: #66666E;
 }
 
+/*定义内容区域->右边主内容区域样式*/
 div.rightMainContainer {
     float: left;
     width: 85%;
@@ -70,6 +87,7 @@ div.rightMainContainer {
     margin-left: 15%;
 }
 
+/*定义内容区域->右边主内容区->标题容器样式*/
 div.mainTitle {
     position: fixed;
     width: 85%;
@@ -80,6 +98,13 @@ div.mainTitle {
     font-size: 1rem;
     border: 0px solid #CCCCCC;
     background: linear-gradient(to bottom, #BBBBBB 0%, #ffffff 100%);
+}
+
+/*定义内容区域->右边主内容区->内容容器样式*/
+div.mainContent {
+    width: 100%;
+    height: 560px;
+    margin-top: 40px;
 }
 
 /*
@@ -95,6 +120,7 @@ div.defaultTabSelected {
     background: linear-gradient(to bottom, #999999 0%, #ffffff 100%);
     pointer-events: none;
 }
+
 /*
 tabHost默认的选择器
 */
@@ -196,11 +222,16 @@ div.frameVTabNormalArrow {
     background-color: transparent;
 }
 
+/*横向容器->横向填充父窗体的容器*/
+div.defaultHContainer{
+    width: 100%;
+}
+
 /*
 高度为31,是为了和按钮的35保持一致性
 同样高度的input要比div高出4px?
 */
-input.searchInput{
+input.searchInput {
     float: left;
     height: 31px;
     text-align: center;
@@ -213,7 +244,7 @@ input.searchInput{
 高度为35,是为了和按钮的31保持一致性
 同样高度的input要比div高出4px?
 */
-div.actionButton{
+div.actionButton {
     float: left;
     width: 60px;
     height: 35px;
@@ -225,25 +256,25 @@ div.actionButton{
     color: #FFFFFF;
 }
 
-div.searchWidgetContainer{
+div.searchWidgetContainer {
     width: 100%;
     height: 35px;
 }
 
-div.listItem{
+div.listItem {
     width: 100%;
     height: 35px;
     line-height: 35px;
 }
 
-div.listItemWidthBottom{
+div.listItemWidthBottom {
     height: 34px;
     line-height: 34px;
     border: 0px solid #CCCCCC;
     border-bottom-width: 1px;
 }
 
-div.listItemLabel{
+div.listItemLabel {
     float: left;
     width: 24%;
     height: 30px;
@@ -254,16 +285,19 @@ div.listItemLabel{
     white-space: nowrap;
 }
 
-div.listItemNormal{
+div.listItemNormal {
     color: #CCCCCC;
 }
-div.listItemActive{
+
+div.listItemActive {
     color: #000000;
 }
-div.listItemBlock{
+
+div.listItemBlock {
     color: #FF0000;
 }
-div.listAction{
+
+div.listAction {
     float: right;
     width: 4%;
     height: 34px;
@@ -273,29 +307,24 @@ div.listAction{
     background-color: #169BD5;
     cursor: pointer;
 }
-div.listActionWidthDouble{
+
+div.listActionWidthDouble {
     width: 8%;
 }
 
-input.withoutBorder{
+input.withoutBorder {
     width: 20%;
     height: 30px;
     font-size: 1rem;
     border: 0px solid #CCCCCC;
 }
 
-div.paginationBar{
+div.paginationBar {
     width: 100%;
     height: 50px;
     padding-top: 20px;
     text-align: right;
 }
-
-
-
-
-
-
 
 /*
 悬挂风格样式
