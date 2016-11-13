@@ -17,12 +17,10 @@ function loadRecommendView() {
 }
 function requestRecommendByPage(object) {
     var url = BASE_PATH + "/format/mWeights?p=" + JSON.stringify(object);
-    console.log(url);
     asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
-            console.log(parseData);
             if (parseData.code == RC_SUCCESS) {
                 initRecommendView(parseData.data.dataInPage);
                 if (parseData.data.totalPageNumber > 0) {
@@ -48,8 +46,9 @@ function requestRecommendByPage(object) {
  */
 function swapRecommend(swapWeightFormatEntity) {
     swapWeightFormatEntity.cs = getCookie(KEY_CS);
-    var indexUrl = BASE_PATH + "/format/mSwapWeight?p=" + JSON.stringify(swapWeightFormatEntity);
-    asyncRequestByGet(indexUrl, function (data) {
+    var url = BASE_PATH + "/format/mSwapWeight?p=" + JSON.stringify(swapWeightFormatEntity);
+    console.log(url);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
@@ -115,8 +114,7 @@ function initRecommendView(formatEntities) {
         formatLabel.style.width = "70%";
         formatLabel.innerHTML = formatEntity.label + " " + formatEntity.meta;
         recommendItemRootView.appendChild(formatLabel);
-
-        if (index > 8) {
+        if (formatEntity.weight > 0) {
             seriesLabel.style.cursor = "default";
             typeLabel.style.cursor = "default";
             formatLabel.style.cursor = "default";

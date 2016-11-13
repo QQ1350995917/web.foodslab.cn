@@ -46,7 +46,7 @@ function loadUserDetailView(userEntity) {
         if (tab.index == 0) {
             object.cs = getCookie(KEY_CS);
             object.currentPageIndex = 0;
-            object.sizeInPage = 12;
+            object.sizeInPage = 1;
             onUserCartTabCallback(object,userDetailMainView);
         } else if (tab.index == 1) {
             object.cs = getCookie(KEY_CS);
