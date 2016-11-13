@@ -39,6 +39,22 @@ function requestRecommendByPage(object) {
     }, onErrorCallback(), onTimeoutCallback());
 }
 
+function kingWeight(object) {
+    var url = BASE_PATH + "/format/mKingWeight?p=" + JSON.stringify(object);
+    asyncRequestByGet(url, function (data) {
+        var result = checkResponseDataFormat(data);
+        if (result) {
+            var parseData = JSON.parse(data);
+            if (parseData.code == RC_SUCCESS) {
+                resetMainContainer();
+                requestRecommendByPage(object)
+            } else {
+                new Toast().show("更新失败");
+            }
+        }
+    }, onErrorCallback(), onTimeoutCallback());
+}
+
 /**
  * 请求产品推荐交换
  * @param formatId
@@ -114,7 +130,7 @@ function initRecommendView(formatEntities) {
         formatLabel.style.width = "70%";
         formatLabel.innerHTML = formatEntity.label + " " + formatEntity.meta;
         recommendItemRootView.appendChild(formatLabel);
-        if (formatEntity.weight > 0) {
+        if (formatEntity.weight > 11) {
             seriesLabel.style.cursor = "default";
             typeLabel.style.cursor = "default";
             formatLabel.style.cursor = "default";
@@ -133,7 +149,11 @@ function initRecommendView(formatEntities) {
             downLabel.formatId = formatEntity.formatId;
             downLabel.weight = formatEntity.weight;
             downLabel.onclick = function () {
-                console.log("TODO");
+                let object = new Object();
+                object.cs = getCookie(KEY_CS);
+                object.formatId = formatEntity.formatId;
+                object.sizeInPage = 12;
+                kingWeight(object);
             };
             recommendItemRootView.appendChild(downLabel);
         } else {
