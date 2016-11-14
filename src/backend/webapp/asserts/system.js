@@ -2,10 +2,10 @@
  * Created by dingpengwei on 11/13/16.
  */
 function loadSystemView() {
-    let linkEntity = new Object();
-    linkEntity.cs = getCookie(KEY_CS);
-    let indexUrl = BASE_PATH + "/system/mStatus";
-    asyncRequestByGet(indexUrl, function (data) {
+    let object = new Object();
+    object.cs = getCookie(KEY_CS);
+    let url = BASE_PATH + "/system/mStatus?p=" + JSON.stringify(object);
+    asyncRequestByGet(url, function (data) {
         var result = checkResponseDataFormat(data);
         if (result) {
             var parseData = JSON.parse(data);
